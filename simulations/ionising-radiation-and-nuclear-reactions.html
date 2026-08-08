@@ -90,6 +90,20 @@
   .theme-toggle button { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; background: transparent; border: none; color: var(--text-dim); padding: 6px 10px; border-radius: 2px; cursor: pointer; }
   .theme-toggle button.active { background: var(--panel-2); color: var(--accent); }
 
+  .text-size-toggle {
+    display: flex; align-items: center; gap: 2px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 2px;
+  }
+  .text-size-toggle button {
+    font-family: var(--mono); font-size: 12px; font-weight: 700; background: transparent;
+    border: none; color: var(--text-dim); padding: 6px 9px; border-radius: 2px; cursor: pointer; line-height: 1;
+  }
+  .text-size-toggle button:hover:not(:disabled) { color: var(--accent); }
+  .text-size-toggle button:disabled { opacity: 0.35; cursor: default; }
+  .text-size-toggle .ts-label {
+    font-family: var(--mono); font-size: 10px; color: var(--text-faint); padding: 0 3px; min-width: 32px; text-align: center;
+  }
+
   nav.tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
   nav.tabs button {
     font-family: var(--display); font-weight: 600; font-size: 13.5px; letter-spacing: 0.01em;
@@ -285,9 +299,16 @@
       <p class="subtitle">Three linked instruments for the nucleus: radioactive decay &amp; half-life, how α, β and γ radiation interact with matter and fields, and mass&ndash;energy release in nuclear reactions.</p>
       <p style="font-size:12px; color:var(--text-faint); margin:6px 0 0;">Companion resources: <a href="https://claude.ai/code/artifact/d965b171-cd1c-4f0a-93b2-e932b63a9abf" target="_blank" rel="noopener" style="color:var(--accent-soft);">Teacher &amp; Student Guide</a> &middot; <a href="https://claude.ai/code/artifact/f2194565-8e7a-473a-8cde-873af6519c77" target="_blank" rel="noopener" style="color:var(--accent-soft);">Student Worksheet</a></p>
     </div>
-    <div class="theme-toggle" id="themeToggle">
-      <button data-theme="dark" class="active">Dark</button>
-      <button data-theme="light">Light</button>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <div class="text-size-toggle" id="textSizeToggle" role="group" aria-label="Text size">
+        <button data-action="dec" aria-label="Decrease text size">A&minus;</button>
+        <span class="ts-label" id="textSizeLabel">100%</span>
+        <button data-action="inc" aria-label="Increase text size">A+</button>
+      </div>
+      <div class="theme-toggle" id="themeToggle">
+        <button data-theme="dark" class="active">Dark</button>
+        <button data-theme="light">Light</button>
+      </div>
     </div>
   </header>
 
@@ -495,6 +516,41 @@
     Array.prototype.forEach.call(themeToggle.querySelectorAll('button'), function (b) { b.classList.toggle('active', b === btn); });
     reRenderAll.forEach(function (fn) { fn(); });
   });
+
+  /* ---------------- Text size ---------------- */
+  (function () {
+    var STEPS = [90, 100, 112, 125, 140, 160];
+    var DEFAULT_INDEX = 2; // 112% — a more legible default than the browser baseline
+    var STORE_KEY = 'qcaa-sim-textsize';
+    var toggle = document.getElementById('textSizeToggle');
+    var label = document.getElementById('textSizeLabel');
+    var decBtn = toggle.querySelector('[data-action="dec"]');
+    var incBtn = toggle.querySelector('[data-action="inc"]');
+    var idx = DEFAULT_INDEX;
+    try {
+      var saved = parseInt(localStorage.getItem(STORE_KEY), 10);
+      var savedIdx = STEPS.indexOf(saved);
+      if (savedIdx !== -1) idx = savedIdx;
+    } catch (e) {}
+
+    function apply() {
+      var pct = STEPS[idx];
+      document.body.style.zoom = pct / 100;
+      label.textContent = pct + '%';
+      decBtn.disabled = idx === 0;
+      incBtn.disabled = idx === STEPS.length - 1;
+      try { localStorage.setItem(STORE_KEY, String(pct)); } catch (e) {}
+      reRenderAll.forEach(function (fn) { fn(); });
+    }
+    toggle.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn || btn.disabled) return;
+      if (btn.getAttribute('data-action') === 'inc' && idx < STEPS.length - 1) idx++;
+      if (btn.getAttribute('data-action') === 'dec' && idx > 0) idx--;
+      apply();
+    });
+    apply();
+  })();
 
   /* ---------------- Tabs ---------------- */
   var tabs = document.getElementById('tabs');
