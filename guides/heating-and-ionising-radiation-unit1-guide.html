@@ -1,0 +1,250 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Unit 1 Simulation Guide — QCAA Physics</title>
+<style>
+  :root {
+    --bg: #10151a; --bg-2: #161d23; --panel: #1a2229; --panel-2: #202a32;
+    --border: #2a3540; --border-soft: #232d35; --text: #eaf0f4; --text-dim: #93a5b3; --text-faint: #5f7280;
+    --accent: #e2823f; --accent-soft: #f2a769; --accent-dim: #6b4a2e;
+    --good: #7fbf6a; --partial: #f2c14e; --gap: #e2483a;
+    --mono: 'Consolas', 'SFMono-Regular', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+    --sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --display: 'Bahnschrift', 'Segoe UI Semibold', 'Segoe UI', system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f4; --bg-2: #e6ebee; --panel: #f8fafb; --panel-2: #eef2f4;
+    --border: #cdd7dd; --border-soft: #dbe2e6; --text: #162027; --text-dim: #4d616f; --text-faint: #8395a1;
+    --accent: #c9631f; --accent-soft: #a4501a; --accent-dim: #f1cba3;
+    --good: #2e7d32; --partial: #b06a00; --gap: #a63b2e;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #eef1f4; --bg-2: #e6ebee; --panel: #f8fafb; --panel-2: #eef2f4;
+      --border: #cdd7dd; --border-soft: #dbe2e6; --text: #162027; --text-dim: #4d616f; --text-faint: #8395a1;
+      --accent: #c9631f; --accent-soft: #a4501a; --accent-dim: #f1cba3;
+      --good: #2e7d32; --partial: #b06a00; --gap: #a63b2e; color-scheme: light;
+    }
+  }
+  * { box-sizing: border-box; min-width: 0; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.6; }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 30px 22px 70px; }
+  header.top { border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 8px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 28px; margin: 0 0 4px; text-wrap: balance; }
+  .subtitle { color: var(--text-dim); font-size: 13.5px; max-width: 62ch; }
+  .theme-toggle { display: flex; gap: 2px; background: var(--panel); border: 1px solid var(--border); border-radius: 3px; padding: 2px; height: fit-content; }
+  .theme-toggle button { font-family: var(--mono); font-size: 11px; background: transparent; border: none; color: var(--text-dim); padding: 6px 10px; border-radius: 2px; cursor: pointer; }
+  .theme-toggle button.active { background: var(--panel-2); color: var(--accent); }
+
+  .text-size-toggle {
+    display: flex; align-items: center; gap: 2px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 3px; padding: 2px; height: fit-content;
+  }
+  .text-size-toggle button {
+    font-family: var(--mono); font-size: 12px; font-weight: 700; background: transparent;
+    border: none; color: var(--text-dim); padding: 6px 9px; border-radius: 2px; cursor: pointer; line-height: 1;
+  }
+  .text-size-toggle button:hover:not(:disabled) { color: var(--accent); }
+  .text-size-toggle button:disabled { opacity: 0.35; cursor: default; }
+  .text-size-toggle .ts-label {
+    font-family: var(--mono); font-size: 10px; color: var(--text-faint); padding: 0 3px; min-width: 32px; text-align: center;
+  }
+
+  .linkbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 18px 0 26px; }
+  .linkbar a { flex: 1; min-width: 240px; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 12px 14px; text-decoration: none; color: var(--text); display: flex; flex-direction: column; gap: 3px; }
+  .linkbar a:hover { border-color: var(--accent-dim); }
+  .linkbar .tag { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  .linkbar .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+  .linkbar .url { font-family: var(--mono); font-size: 10px; color: var(--text-faint); word-break: break-all; }
+
+  section { margin: 34px 0; }
+  h2 { font-family: var(--display); font-size: 20px; border-bottom: 1px solid var(--border); padding-bottom: 8px; margin: 0 0 14px; }
+  h3 { font-family: var(--display); font-size: 15px; color: var(--accent-soft); margin: 22px 0 8px; }
+  p { margin: 0 0 12px; }
+  .lede { color: var(--text-dim); font-size: 14px; }
+
+  .module-card { background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 14px 16px; margin-bottom: 10px; }
+  .module-card .mh { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; flex-wrap: wrap; }
+  .module-card .mh b { font-family: var(--display); font-size: 14.5px; }
+  .module-card .mh span { font-family: var(--mono); font-size: 9.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .module-card .mh .ext { color: var(--partial); }
+  .module-card p { color: var(--text-dim); font-size: 13.5px; margin: 0; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 10px 0 6px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border-soft); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--text-faint); background: var(--panel-2); }
+  td.first { font-weight: 600; }
+  .tag-cov { font-family: var(--mono); font-weight: 700; font-size: 10.5px; padding: 2px 7px; border-radius: 20px; white-space: nowrap; }
+  .tag-cov.full { color: var(--good); background: color-mix(in srgb, var(--good) 16%, transparent); }
+  .tag-cov.partial { color: var(--partial); background: color-mix(in srgb, var(--partial) 16%, transparent); }
+  .tag-cov.gap { color: var(--gap); background: color-mix(in srgb, var(--gap) 16%, transparent); }
+  .note { font-size: 12.5px; color: var(--text-faint); font-style: italic; margin-top: 4px; }
+
+  ul.notes { padding-left: 20px; margin: 8px 0; }
+  ul.notes li { margin-bottom: 10px; font-size: 13.5px; color: var(--text-dim); }
+  ul.notes li b { color: var(--text); }
+
+  footer.note { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--text-faint); font-size: 11.5px; }
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">QCAA Physics · Unit 1 · Thermal, Nuclear and Electrical Physics</p>
+      <h1>Interactive Simulation Guide</h1>
+      <p class="subtitle">Topic 1: Heating Processes &middot; Topic 2: Ionising Radiation and Nuclear Reactions — teacher &amp; student reference.</p>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; height:fit-content;">
+      <div class="text-size-toggle" id="textSizeToggle" role="group" aria-label="Text size">
+        <button data-action="dec" aria-label="Decrease text size">A&minus;</button>
+        <span class="ts-label" id="textSizeLabel">100%</span>
+        <button data-action="inc" aria-label="Increase text size">A+</button>
+      </div>
+      <div class="theme-toggle" id="themeToggle">
+        <button data-theme="dark" class="active">Dark</button>
+        <button data-theme="light">Light</button>
+      </div>
+    </div>
+  </header>
+
+  <p class="lede">This guide accompanies two linked interactive simulations built for QCAA Physics Unit 1. Each has three modules with adjustable parameters, live graphs and worked calculations — built to make relationships tangible that are hard to picture from a static diagram: how temperature behaves while a substance changes state, why radioactive decay is random for one atom but predictable for a billion, or where the energy in E&nbsp;=&nbsp;&Delta;mc&sup2; actually goes.</p>
+
+  <div class="linkbar">
+    <a href="https://claude.ai/code/artifact/d4b52c71-7b49-472e-b0bb-1252d2de17f9" target="_blank" rel="noopener">
+      <span class="tag">Topic 1</span>
+      <span class="name">Heating Processes</span>
+      <span class="url">claude.ai/code/artifact/d4b52c71&hellip;</span>
+    </a>
+    <a href="https://claude.ai/code/artifact/75c883c6-9b91-44ab-aea3-db4240254992" target="_blank" rel="noopener">
+      <span class="tag">Topic 2</span>
+      <span class="name">Ionising Radiation &amp; Nuclear Reactions</span>
+      <span class="url">claude.ai/code/artifact/75c883c6&hellip;</span>
+    </a>
+  </div>
+
+  <section>
+    <h2>How to use each module</h2>
+    <h3>Topic 1 — Heating Processes</h3>
+    <div class="module-card">
+      <div class="mh"><b>1. Heating Curve</b><span>Module 1</span></div>
+      <p>Choose water, ethanol, or build a custom substance by setting melting/boiling points and specific and latent heats. Set mass and heater power, then Play or scrub through time to watch temperature plateau during melting and boiling, with a live particle view showing why. Playback now runs past the plotted curve if left going, with the axes expanding to keep the marker in view.</p>
+    </div>
+    <div class="module-card">
+      <div class="mh"><b>2. Thermal Equilibrium</b><span>Module 2</span></div>
+      <p>Set the material, mass and starting temperature of two bodies, then bring them into contact to watch them settle to a common final temperature — calculated live from conservation of energy.</p>
+    </div>
+    <div class="module-card">
+      <div class="mh"><b>3. Black-Body Radiation</b><span class="ext">Extension</span></div>
+      <p>Drag temperature (300–12,000&nbsp;K) to see total power and peak wavelength/colour change live, via Stefan's Law and Wien's Law. Goes beyond this topic's official subject matter (see alignment below) but reinforces radiation as an energy-transfer mechanism.</p>
+    </div>
+
+    <h3>Topic 2 — Ionising Radiation &amp; Nuclear Reactions</h3>
+    <div class="module-card">
+      <div class="mh"><b>1. Radioactive Decay</b><span>Module 1</span></div>
+      <p>Pick a real isotope (or set a custom half-life) and Play or scrub through time. A smooth theoretical curve (N&nbsp;=&nbsp;N&#8320;(&#189;)&#8319;) is plotted against the actual, randomly-timed fate of a sample of atoms — each atom's decay instant is fixed when the sample is built, so scrubbing always shows the same consistent history.</p>
+    </div>
+    <div class="module-card">
+      <div class="mh"><b>2. Radiation &amp; Matter</b><span>Module 2</span></div>
+      <p>Alpha, beta and gamma radiation shown together as three rays from a source. Switch between Penetration (paper/aluminium/lead shielding) and Fields (magnetic/electric) views, alongside a reference table of charge, mass and ionising power.</p>
+    </div>
+    <div class="module-card">
+      <div class="mh"><b>3. Nuclear Reactions</b><span>Module 3</span></div>
+      <p>Choose a decay (&alpha;, &beta;&#8315;, &beta;&#8314; or &gamma;) or a fission/fusion reaction to see its balanced nuclear equation, a live conservation check, and the energy released — computed from real nuclear masses via E&nbsp;=&nbsp;&Delta;mc&sup2;, in u, kg, J and MeV.</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>Syllabus alignment</h2>
+    <p class="lede">Mapped against the subject matter subheadings in the QCAA Physics General Senior Syllabus, Unit 1. Coverage is marked honestly — some subheadings are fully explorable in the simulation, some are only partly addressed, and a few aren't simulated at all. The student worksheet bridges every gap listed here.</p>
+
+    <h3>Topic 1: Heating processes</h3>
+    <table>
+      <thead><tr><th style="width:22%">Subject matter</th><th>What the module covers</th><th style="width:16%">Module(s)</th><th style="width:12%">Coverage</th></tr></thead>
+      <tbody>
+        <tr><td class="first">Kinetic particle model and heat flow</td><td>Particle view links temperature to particle speed/vibration. Conduction, convection and radiation as transfer mechanisms are not modelled.</td><td>Heating Curve</td><td><span class="tag-cov partial">Partial</span></td></tr>
+        <tr><td class="first">Temperature and specific heat capacity</td><td>Adjustable mass and power directly demonstrate Q&nbsp;=&nbsp;mc&Delta;T on the solid/liquid/gas ramps.</td><td>Heating Curve</td><td><span class="tag-cov full">Full</span></td></tr>
+        <tr><td class="first">Phase changes and specific latent heat</td><td>Melting/boiling plateaus and adjustable L&fnof;/L&#7515; directly demonstrate Q&nbsp;=&nbsp;mL and why temperature holds steady during a phase change.</td><td>Heating Curve</td><td><span class="tag-cov full">Full</span></td></tr>
+        <tr><td class="first">Energy conservation in calorimetry</td><td>Two bodies reach a common final temperature, calculated live from conservation of energy; the zeroth law is stated directly in-module.</td><td>Thermal Equilibrium</td><td><span class="tag-cov full">Full</span></td></tr>
+        <tr><td class="first">Energy in systems — mechanical work and efficiency</td><td>Not addressed by any module — the first law of thermodynamics (&Delta;U&nbsp;=&nbsp;Q&nbsp;+&nbsp;W) and efficiency need separate teaching.</td><td>&mdash;</td><td><span class="tag-cov gap">Not simulated</span></td></tr>
+      </tbody>
+    </table>
+    <p class="note">Note: Stefan's Law and Wien's Law (Black-Body Radiation module) aren't part of this topic's official subject matter — the syllabus only requires radiation to be described qualitatively as one of three heat-transfer mechanisms. Included as useful extension content, not examinable Unit 1 material.</p>
+
+    <h3>Topic 2: Ionising radiation and nuclear reactions</h3>
+    <table>
+      <thead><tr><th style="width:22%">Subject matter</th><th>What the module covers</th><th style="width:16%">Module(s)</th><th style="width:12%">Coverage</th></tr></thead>
+      <tbody>
+        <tr><td class="first">Nuclear model and stability</td><td><sup>A</sup><sub>Z</sub>X nuclide notation used throughout Module 3. Why the strong nuclear force keeps a nucleus stable against electrostatic repulsion is not explained by any module.</td><td>Nuclear Reactions</td><td><span class="tag-cov partial">Partial</span></td></tr>
+        <tr><td class="first">Spontaneous decay and half-life</td><td>Half-life, N&nbsp;=&nbsp;N&#8320;(&#189;)&#8319;, and the properties (penetration, charge, mass, ionising power) of &alpha;, &beta;&#8314;, &beta;&#8315; and &gamma; radiation, plus balanced decay equations for each.</td><td>Radioactive Decay; Radiation &amp; Matter; Nuclear Reactions</td><td><span class="tag-cov full">Full</span></td></tr>
+        <tr><td class="first">Energy and mass defect</td><td>Fission and fusion defined with worked equations; E&nbsp;=&nbsp;&Delta;mc&sup2; computed live for 8 reactions. Binding energy per nucleon and &ldquo;artificial transmutation&rdquo; aren't labelled in-module (the worksheet derives them from the module's numbers).</td><td>Nuclear Reactions</td><td><span class="tag-cov partial">Partial</span></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2>Notes for teachers: where to supplement</h2>
+    <p class="lede">The gaps above are intentional — concepts better served by discussion or worked examples than by a slider-driven simulation.</p>
+    <ul class="notes">
+      <li><b>Conduction, convection and radiation (Topic 1):</b> qualitative heat-transfer mechanisms — the particle view supports the kinetic model but doesn't distinguish the three.</li>
+      <li><b>Mechanical work and efficiency (Topic 1):</b> &Delta;U&nbsp;=&nbsp;Q&nbsp;+&nbsp;W and &eta;&nbsp;=&nbsp;(output/input)&nbsp;&times;&nbsp;100% — worked examples (a heat engine, a kettle) work better here than a simulation.</li>
+      <li><b>Strong nuclear force and stability (Topic 2):</b> why the strong force wins over proton&ndash;proton repulsion at nuclear distances, and how neutron:proton ratio relates to stability — the simulation's isotopes (e.g. contrasting a stable choice with U-238) make good discussion prompts once introduced.</li>
+      <li><b>Artificial transmutation vs natural decay (Topic 2):</b> implicit in the simulation (Module 1&nbsp;=&nbsp;spontaneous; Module 3's fission/fusion must be induced) but not labelled — worth drawing out explicitly.</li>
+      <li><b>Binding energy per nucleon (Topic 2):</b> a one-step calculation from the simulation's own numbers — divide the displayed E by the total nucleon count. The worksheet uses this to let students discover for themselves why fusion releases more energy per nucleon than fission.</li>
+    </ul>
+    <p class="note">Both simulations note their own simplifications in-page (no energy loss to surroundings, illustrative field-deflection curvature) — worth pointing out as a live example of how physics models trade realism for tractability.</p>
+  </section>
+
+  <footer class="note">A matching Student Worksheet is available alongside this guide, with numbered tasks referencing the same module names used above.</footer>
+</div>
+
+<script>
+  document.getElementById('themeToggle').addEventListener('click', function (e) {
+    var btn = e.target.closest('button'); if (!btn) return;
+    document.documentElement.setAttribute('data-theme', btn.getAttribute('data-theme'));
+    Array.prototype.forEach.call(document.querySelectorAll('.theme-toggle button'), function (b) { b.classList.toggle('active', b === btn); });
+  });
+
+  (function () {
+    var STEPS = [90, 100, 112, 125, 140, 160];
+    var DEFAULT_INDEX = 2; // 112% — a more legible default than the browser baseline
+    var STORE_KEY = 'qcaa-sim-textsize';
+    var toggle = document.getElementById('textSizeToggle');
+    var label = document.getElementById('textSizeLabel');
+    var decBtn = toggle.querySelector('[data-action="dec"]');
+    var incBtn = toggle.querySelector('[data-action="inc"]');
+    var idx = DEFAULT_INDEX;
+    try {
+      var saved = parseInt(localStorage.getItem(STORE_KEY), 10);
+      var savedIdx = STEPS.indexOf(saved);
+      if (savedIdx !== -1) idx = savedIdx;
+    } catch (e) {}
+
+    function apply() {
+      var pct = STEPS[idx];
+      document.body.style.zoom = pct / 100;
+      label.textContent = pct + '%';
+      decBtn.disabled = idx === 0;
+      incBtn.disabled = idx === STEPS.length - 1;
+      try { localStorage.setItem(STORE_KEY, String(pct)); } catch (e) {}
+    }
+    toggle.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn || btn.disabled) return;
+      if (btn.getAttribute('data-action') === 'inc' && idx < STEPS.length - 1) idx++;
+      if (btn.getAttribute('data-action') === 'dec' && idx > 0) idx--;
+      apply();
+    });
+    apply();
+  })();
+</script>
+
+</body>
+</html>

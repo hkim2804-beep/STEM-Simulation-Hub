@@ -88,19 +88,23 @@
 
   footer.note { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--text-faint); font-size: 11.5px; }
   .savehint { font-size: 10.5px; color: var(--text-faint); }
+  .print-links { display: none; }
 
   @media print {
     body { background: #fff; color: #000; font-size: 12px; }
-    .toolbar, .theme-toggle, .text-size-toggle, .linkbar, footer.note { display: none !important; }
+    .toolbar, .theme-toggle, .text-size-toggle, .linkbar, .savehint, footer.note { display: none !important; }
+    .print-links { display: block; font-size: 10.5px; color: #444; margin: 4px 0 14px; }
     body { zoom: 1 !important; }
     .q textarea { border: 1px solid #999; color: #000; background: #fff; min-height: 40px; }
     .module-head { background: #f0f0f0; border-color: #ccc; }
-    h2.part { break-before: page; }
+    h2.part:not(:first-of-type) { break-before: page; } /* Part A starts right under the title block; only Part B forces a fresh page */
     a { color: #000; text-decoration: underline; }
   }
 </style>
 </head>
 <body>
+
+
 <div class="wrap">
   <header class="top">
     <div>
@@ -129,10 +133,11 @@
   </div>
 
   <div class="linkbar">
-    <a href="../simulations/heating-processes.html" target="_blank" rel="noopener"><b>Heating Processes</b>Open Topic 1 simulation &rarr;</a>
-    <a href="../simulations/ionising-radiation-and-nuclear-reactions.html" target="_blank" rel="noopener"><b>Ionising Radiation &amp; Nuclear Reactions</b>Open Topic 2 simulation &rarr;</a>
+    <a href="https://claude.ai/code/artifact/d4b52c71-7b49-472e-b0bb-1252d2de17f9" target="_blank" rel="noopener"><b>Heating Processes</b>Open Topic 1 simulation &rarr;</a>
+    <a href="https://claude.ai/code/artifact/75c883c6-9b91-44ab-aea3-db4240254992" target="_blank" rel="noopener"><b>Ionising Radiation &amp; Nuclear Reactions</b>Open Topic 2 simulation &rarr;</a>
   </div>
   <p class="savehint">Your answers save automatically in this browser as you type (nothing is uploaded). Use Print for a paper copy.</p>
+  <p class="print-links">Heating Processes: claude.ai/code/artifact/d4b52c71-7b49-472e-b0bb-1252d2de17f9 &nbsp;&nbsp; Ionising Radiation &amp; Nuclear Reactions: claude.ai/code/artifact/75c883c6-9b91-44ab-aea3-db4240254992</p>
 
   <!-- ============ PART A ============ -->
   <h2 class="part">Part A — Heating Processes</h2>
@@ -143,30 +148,35 @@
   <div class="q" data-id="q2"><div class="qhead"><span class="qnum">Q2.</span><span class="qtext">Scrub to the moment melting ends. Record the elapsed time and energy supplied at that instant. Calculate by hand the energy needed to melt 0.50 kg of ice using Q = mL (Lƒ = 334 kJ/kg for water). Does your calculation agree with the simulation's reading?</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
   <div class="q" data-id="q3"><div class="qhead"><span class="qnum">Q3.</span><span class="qtext">Switch to Custom substance: melting point 200 °C, boiling point 300 °C, mass 1.00 kg, power 800 W. Before pressing Play, predict which phase will take longest to heat through. Test your prediction, then explain using Q = mcΔT.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
   <div class="q" data-id="q4"><div class="qhead"><span class="qnum">Q4.</span><span class="qtext">Using the particle view, explain why temperature does not rise during the melting or boiling plateaus even though energy is still being supplied.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q5"><div class="qhead"><span class="qnum">Q5.</span><span class="qtext">Scrub to partway through the melting plateau and record the temperature. Now decrease the heater power (e.g. from 500 W to 250 W) and record the temperature again. Using Q = Pt, explain why the temperature doesn't change even though less power is now being delivered — what quantity has the simulation kept fixed when you adjusted the power?</span><span class="marks">[2]</span></div><textarea rows="3"></textarea></div>
 
   <div class="module-head"><b>A2. Thermal Equilibrium</b><span>Heating Processes · Module 2</span></div>
   <p class="setup">Body A: <b>Copper</b>, 0.20 kg, 95 °C. Body B: <b>Water</b>, 0.50 kg, 20 °C. (c<sub>copper</sub> = 385 J/kg·K, c<sub>water</sub> = 4186 J/kg·K)</p>
-  <div class="q" data-id="q5"><div class="qhead"><span class="qnum">Q5.</span><span class="qtext">Before clicking “Bring into contact”, calculate the predicted final temperature using m₁c₁(Tf − T₁) = −m₂c₂(Tf − T₂). Show your working, then compare to the simulation's answer.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
-  <div class="q" data-id="q6"><div class="qhead"><span class="qnum">Q6.</span><span class="qtext">Using the zeroth law of thermodynamics, explain why the two bodies stop exchanging net energy once they reach the same temperature.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
-  <div class="q" data-id="q7"><div class="qhead"><span class="qnum">Q7.</span><span class="qtext">Without calculating, predict what happens to the final temperature if Body A's mass is made much larger than Body B's. Test this and describe what you see.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q6"><div class="qhead"><span class="qnum">Q6.</span><span class="qtext">Before clicking “Bring into contact”, calculate the predicted final temperature using m₁c₁(Tf − T₁) = −m₂c₂(Tf − T₂). Show your working, then compare to the simulation's answer.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
+  <div class="q" data-id="q7"><div class="qhead"><span class="qnum">Q7.</span><span class="qtext">Using the zeroth law of thermodynamics, explain why the two bodies stop exchanging net energy once they reach the same temperature.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q8"><div class="qhead"><span class="qnum">Q8.</span><span class="qtext">Without calculating, predict what happens to the final temperature if Body A's mass is made much larger than Body B's. Test this and describe what you see.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
 
   <div class="module-head"><b>A3. Black-Body Radiation</b><span>Heating Processes · Module 3</span></div>
   <p class="setup">Extension module — not part of this topic's official subject matter.</p>
-  <div class="q" data-id="q8"><div class="qhead"><span class="qnum">Q8.</span><span class="qtext">Set temperature to 310 K (body temperature), then 5778 K (the Sun). Record the peak wavelength for each and name the EM spectrum region each falls in.</span><span class="marks">[2]</span></div><div class="flag">Extension — for students who finish early</div><textarea rows="2"></textarea></div>
-  <div class="q" data-id="q9"><div class="qhead"><span class="qnum">Q9.</span><span class="qtext">Using Wien's Law, explain in one sentence why very hot objects glow blue-white while cooler ones glow red.</span><span class="marks">[1]</span></div><div class="flag">Extension — for students who finish early</div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q9"><div class="qhead"><span class="qnum">Q9.</span><span class="qtext">Set temperature to 310 K (body temperature), then 5778 K (the Sun). Record the peak wavelength for each and name the EM spectrum region each falls in.</span><span class="marks">[2]</span></div><div class="flag">Extension — for students who finish early</div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q10"><div class="qhead"><span class="qnum">Q10.</span><span class="qtext">Using Wien's Law, explain in one sentence why very hot objects glow blue-white while cooler ones glow red.</span><span class="marks">[1]</span></div><div class="flag">Extension — for students who finish early</div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q11"><div class="qhead"><span class="qnum">Q11.</span><span class="qtext">Set surface area A = 1 m² and record the “Radiated power” shown next to the spectrum. Increase A to 5 m² (5×) and record it again — has it scaled by the same factor? Now check the peak wavelength at both areas. Using P = σAT⁴ and Wien's Law, explain why increasing surface area changes total power but not the object's colour or the shape of its spectrum.</span><span class="marks">[3]</span></div><div class="flag">Extension — for students who finish early</div><textarea rows="4"></textarea></div>
 
-  <div class="module-head"><b>A4. Mechanical work and efficiency</b><span>not in the simulation</span></div>
-  <div class="q" data-id="q10"><div class="qhead"><span class="qnum">Q10.</span><span class="qtext">Define efficiency, and give one everyday example where not all input energy becomes useful output — state where the “lost” energy goes.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
-  <div class="q" data-id="q11"><div class="qhead"><span class="qnum">Q11.</span><span class="qtext">A heater supplies 800 J to a room, but only 650 J actually warms the air. Calculate the efficiency of this energy transfer.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="2"></textarea></div>
+  <div class="module-head"><b>A4. Heat transfer mechanisms</b><span>not in the simulation</span></div>
+  <div class="q" data-id="q12"><div class="qhead"><span class="qnum">Q12.</span><span class="qtext">The syllabus describes three mechanisms of heat transfer: conduction, convection and radiation. Give a one-sentence definition and one everyday example of each. Which one can transfer heat through the vacuum of space, and how do you know?</span><span class="marks">[3]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="4"></textarea></div>
+
+  <div class="module-head"><b>A5. Mechanical work and efficiency</b><span>not in the simulation</span></div>
+  <div class="q" data-id="q13"><div class="qhead"><span class="qnum">Q13.</span><span class="qtext">Define efficiency, and give one everyday example where not all input energy becomes useful output — state where the “lost” energy goes.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q14"><div class="qhead"><span class="qnum">Q14.</span><span class="qtext">A heater supplies 800 J to a room, but only 650 J actually warms the air. Calculate the efficiency of this energy transfer.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="2"></textarea></div>
 
   <!-- ============ PART B ============ -->
   <h2 class="part">Part B — Ionising Radiation &amp; Nuclear Reactions</h2>
 
   <div class="module-head"><b>B1. Radioactive Decay</b><span>Ionising Radiation · Module 1</span></div>
   <p class="setup">Select <b>Iodine-131</b> (T&#189; = 8.02 days).</p>
-  <div class="q" data-id="q12"><div class="qhead"><span class="qnum">Q12.</span><span class="qtext">Using N = N₀(½)ⁿ, calculate by hand what fraction remains after 3 whole half-lives. Scrub to 3.00 half-lives and check the “Fraction remaining” reading matches.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
-  <div class="q" data-id="q13"><div class="qhead"><span class="qnum">Q13.</span><span class="qtext">Explain why the sample line (actual, random) doesn't exactly follow the smooth theoretical curve, and why the two would match more closely with a much larger sample.</span><span class="marks">[2]</span></div><textarea rows="3"></textarea></div>
-  <div class="q" data-id="q14"><div class="qhead"><span class="qnum">Q14.</span><span class="qtext">Estimate from the graph how many half-lives it takes for the sample to fall below 10% remaining. Convert this to real time for iodine-131.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q15"><div class="qhead"><span class="qnum">Q15.</span><span class="qtext">Using N = N₀(½)ⁿ, calculate by hand what fraction remains after 3 whole half-lives. Scrub to 3.00 half-lives and check the “Fraction remaining” reading matches.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q16"><div class="qhead"><span class="qnum">Q16.</span><span class="qtext">Explain why the sample line (actual, random) doesn't exactly follow the smooth theoretical curve, and why the two would match more closely with a much larger sample.</span><span class="marks">[2]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q17"><div class="qhead"><span class="qnum">Q17.</span><span class="qtext">Estimate from the graph how many half-lives it takes for the sample to fall below 10% remaining. Convert this to real time for iodine-131.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
 
   <div class="module-head"><b>B2. Radiation &amp; Matter</b><span>Ionising Radiation · Module 2</span></div>
   <p class="setup">Use the reference table in the simulation to complete this table:</p>
@@ -178,19 +188,20 @@
       <tr><td>Gamma (&gamma;)</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
     </tbody>
   </table>
-  <div class="q" data-id="q15"><div class="qhead"><span class="qnum">Q15.</span><span class="qtext">Switch to Penetration view. Test each shielding material (paper, aluminium, lead) for all three radiation types and record which are stopped and which pass through.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
-  <div class="q" data-id="q16"><div class="qhead"><span class="qnum">Q16.</span><span class="qtext">Switch to Fields view, turn on the magnetic field. Using the charges above, explain why alpha and beta deflect in opposite directions, and why gamma travels straight.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
-  <div class="q" data-id="q17"><div class="qhead"><span class="qnum">Q17.</span><span class="qtext">Which particle curves more sharply — alpha or beta? Using the charge and mass values above, explain why in terms of charge-to-mass ratio.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q18"><div class="qhead"><span class="qnum">Q18.</span><span class="qtext">Switch to Penetration view. Test each shielding material (paper, aluminium, lead) for all three radiation types and record which are stopped and which pass through.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q19"><div class="qhead"><span class="qnum">Q19.</span><span class="qtext">Switch to Fields view, turn on the magnetic field. Using the charges above, explain why alpha and beta deflect in opposite directions, and why gamma travels straight.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q20"><div class="qhead"><span class="qnum">Q20.</span><span class="qtext">Which particle curves more sharply — alpha or beta? Using the charge and mass values above, explain why in terms of charge-to-mass ratio.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
 
   <div class="module-head"><b>B3. Nuclear Reactions</b><span>Ionising Radiation · Module 3</span></div>
   <p class="setup">Select <b>“Uranium-238 — alpha (α) decay”</b>.</p>
-  <div class="q" data-id="q18"><div class="qhead"><span class="qnum">Q18.</span><span class="qtext">Write out the balanced nuclear equation shown. Add up mass numbers and atomic numbers on each side to confirm both are conserved.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
-  <div class="q" data-id="q19"><div class="qhead"><span class="qnum">Q19.</span><span class="qtext">Switch to “Carbon-14 — beta-minus (β⁻) decay”. Record Δm and E shown. Using the footer's conversions, show the working for E = Δmc² from Δm through to Joules and MeV.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
-  <div class="q" data-id="q20"><div class="qhead"><span class="qnum">Q20.</span><span class="qtext">Switch to Fission &amp; Fusion. Compare the energy released by one U-235 fission event to one deuterium–tritium fusion event.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q21"><div class="qhead"><span class="qnum">Q21.</span><span class="qtext">Write out the balanced nuclear equation shown. Add up mass numbers and atomic numbers on each side to confirm both are conserved.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q22"><div class="qhead"><span class="qnum">Q22.</span><span class="qtext">Switch to “Carbon-14 — beta-minus (β⁻) decay”. Record Δm and E shown. Using the footer's conversions, show the working for E = Δmc² from Δm through to Joules and MeV.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
+  <div class="q" data-id="q23"><div class="qhead"><span class="qnum">Q23.</span><span class="qtext">Switch to Fission &amp; Fusion. Record the energy released for all six reactions shown (U-235 fission, Pu-239 fission, D–T fusion, He-3+He-3 fusion, p+¹¹B fusion, and the p-p chain). Which single reaction releases the most energy per event? Which releases the least?</span><span class="marks">[3]</span></div><textarea rows="4"></textarea></div>
+  <div class="q" data-id="q24"><div class="qhead"><span class="qnum">Q24.</span><span class="qtext">Two of the reactions above — He-3+He-3 and p+¹¹B — are described as “aneutronic”, meaning no free neutron is produced at any stage. Compare their equations to the D–T fusion equation and identify what's different. Suggest one practical reason a reactor designer might prefer an aneutronic reaction, even though it needs a much higher temperature to ignite.</span><span class="marks">[2]</span></div><textarea rows="4"></textarea></div>
   <p class="setup">Binding energy per nucleon (not directly labelled in the simulation): divide E by the total nucleon count — 5 for D + T, 236 for U-235 + n.</p>
-  <div class="q" data-id="q21"><div class="qhead"><span class="qnum">Q21.</span><span class="qtext">Calculate the energy released per nucleon for D–T fusion and for U-235 fission. Which releases more per nucleon? This is why the syllabus describes fusion as releasing “more energy per nucleon”.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
-  <div class="q" data-id="q22"><div class="qhead"><span class="qnum">Q22.</span><span class="qtext">U-238 is radioactive; iron-56 is one of the most stable nuclides known. Using the strong nuclear force and the proton:neutron ratio, suggest one reason very large nuclei like U-238 tend to be unstable.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
-  <div class="q" data-id="q23"><div class="qhead"><span class="qnum">Q23.</span><span class="qtext">Fission and fusion here must be deliberately induced, unlike the spontaneous decays in Module 1. Explain the difference between natural radioactive decay and artificial transmutation, using one example of each from the simulation.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q25"><div class="qhead"><span class="qnum">Q25.</span><span class="qtext">Calculate the energy released per nucleon for D–T fusion and for U-235 fission. Which releases more per nucleon? This is why the syllabus describes fusion as releasing “more energy per nucleon” than fission.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
+  <div class="q" data-id="q26"><div class="qhead"><span class="qnum">Q26.</span><span class="qtext">U-238 is radioactive; iron-56 is one of the most stable nuclides known. Using the strong nuclear force and the proton:neutron ratio, suggest one reason very large nuclei like U-238 tend to be unstable.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q27"><div class="qhead"><span class="qnum">Q27.</span><span class="qtext">Fission and fusion here must be deliberately induced, unlike the spontaneous decays in Module 1. Explain the difference between natural radioactive decay and artificial transmutation, using one example of each from the simulation.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
 
   <footer class="note">A matching Teacher &amp; Student Guide is available alongside this worksheet, with full syllabus alignment notes.</footer>
 </div>
@@ -198,7 +209,7 @@
 <script>
 (function () {
   "use strict";
-  var STORE_KEY = 'qcaa-u1-worksheet-v1';
+  var STORE_KEY = 'qcaa-u1-worksheet-v2'; // bumped: question numbering changed in this rewrite
   function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch (e) { return {}; } }
   function save(data) { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) {} }
   var data = load();
@@ -269,5 +280,6 @@
   })();
 })();
 </script>
+
 </body>
 </html>
