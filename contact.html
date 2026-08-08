@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Contact - STEM Simulation Hub</title>
+  <style>
+    :root{--p:#126c5a;--s:#1fb79d;--bg:#f4fcfa;--card:#ffffff;--ink:#0f2720;--muted:#4a655f;--line:#dcece7;--radius:18px;--shadow:0 18px 40px rgba(15,39,32,.08)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Helvetica,Arial,sans-serif;background:radial-gradient(circle at top left,rgba(31,183,157,.18) 0,transparent 36%),var(--bg);color:var(--ink);line-height:1.6}
+    header{background:linear-gradient(120deg,var(--p) 0%,var(--s) 72%,#55d0b2 100%);color:#fff;padding:18px 20px;position:sticky;top:0;z-index:10;box-shadow:0 8px 20px -12px rgba(0,0,0,.2)}
+    .top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px;max-width:1200px;margin:0 auto}
+    .top h1{margin:0;font-size:1.4rem;font-weight:800}
+    .top-links{display:flex;flex-wrap:wrap;gap:8px}
+    .top-links a{color:#fff;text-decoration:none;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.12);padding:10px 14px;border-radius:999px;font-weight:700;transition:background .2s ease}
+    .top-links a:hover{background:rgba(255,255,255,.25)}
+    main{max-width:980px;margin:32px auto 44px;padding:0 20px}
+    .panel{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);padding:32px}
+    h2{margin-top:0;color:var(--p)}
+    p{margin:0 0 18px}
+    .note{background:#f0fbf8;border:1px solid #d3f3ea;color:var(--muted);padding:16px 18px;border-radius:14px;margin-bottom:24px}
+    label{display:block;margin-bottom:16px;font-weight:600}
+    input,textarea{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:14px;font:inherit;color:var(--ink);background:#fbfdfb}
+    textarea{min-height:180px;resize:vertical}
+    .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+    .actions button{background:var(--p);color:#fff;border:none;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+    .actions button:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(15,39,32,.14)}
+    .actions .mailto{color:var(--p);font-weight:700;text-decoration:none}
+    footer{max-width:980px;margin:0 auto 32px;padding:0 20px;color:var(--muted);font-size:.92rem}
+    @media(max-width:720px){.top{flex-direction:column;align-items:flex-start}.top-links{width:100%;justify-content:flex-start}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="top">
+      <h1>Contact</h1>
+      <nav class="top-links" aria-label="Site navigation">
+        <a href="index.html">Years 7–10 hub</a>
+        <a href="senior.html">Senior syllabus</a>
+        <a href="topics.html">Browse by topic</a>
+        <a href="contact.html">Contact</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <section class="panel">
+      <h2>Send feedback</h2>
+      <p>If you have feedback, questions or suggestions about the STEM Simulation Hub, use the form below to open an email to hjkim0@eq.edu.au.</p>
+      <div class="note">
+        This is a static website. The form opens your email app and prepares a message to send to hjkim0@eq.edu.au.
+      </div>
+      <form id="contactForm">
+        <label>
+          Your name
+          <input type="text" id="name" name="name" placeholder="Optional" autocomplete="name">
+        </label>
+        <label>
+          Your email address
+          <input type="email" id="email" name="email" placeholder="Optional" autocomplete="email">
+        </label>
+        <label>
+          Subject
+          <input type="text" id="subject" name="subject" placeholder="Feedback about the site" required>
+        </label>
+        <label>
+          Message
+          <textarea id="message" name="message" placeholder="Write your feedback here" required></textarea>
+        </label>
+        <div class="actions">
+          <button type="submit">Send feedback</button>
+          <a class="mailto" href="mailto:hjkim0@eq.edu.au?subject=stem-sim-hub%20Feedback">Or send directly by email</a>
+        </div>
+      </form>
+    </section>
+  </main>
+  <footer>All resources are AI-assisted and should be taken with a grain of salt. Educators should confirm suitability before use.</footer>
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', function(event) {
+      event.preventDefault();
+      const name = document.getElementById('name').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const subject = document.getElementById('subject').value.trim() || 'Feedback for STEM Simulation Hub';
+      const message = document.getElementById('message').value.trim();
+      const lines = [];
+      if (name) lines.push('Name: ' + name);
+      if (email) lines.push('Email: ' + email);
+      lines.push('');
+      lines.push(message);
+      const body = encodeURIComponent(lines.join('\n'));
+      const mailSubject = 'stem-sim-hub: ' + subject;
+      window.location.href = 'mailto:hjkim0@eq.edu.au?subject=' + encodeURIComponent(mailSubject) + '&body=' + body;
+    });
+  </script>
+</body>
+</html>
