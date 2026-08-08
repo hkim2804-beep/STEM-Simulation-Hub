@@ -1591,6 +1591,7 @@
     if(!hit) return;
     canvas.setPointerCapture(e.pointerId);
     canvasFrame.classList.add("dragging");
+    if(state.mode==="forms") canvasFrame.style.cursor="grabbing";
     if(hit.kind==="anchor"){
       state.drag={kind:"anchor", key:hit.key};
     } else if(hit.kind==="formsPoint"){
@@ -1605,9 +1606,13 @@
     const px=e.clientX-rect.left, py=e.clientY-rect.top;
     const w=pxToWorld(px,py);
 
-    // Hover readout on the forms parabola — only while not dragging, so it doesn't
-    // fight with the point being dragged (which sits exactly on the curve anyway).
     if(state.mode==="forms" && !state.drag){
+      // Crosshair over the plane by default; a grab hand only right on one of
+      // the three manipulable points.
+      const hit=hitTest(px,py);
+      canvasFrame.style.cursor = (hit && hit.kind==="formsPoint") ? "grab" : "crosshair";
+      // Hover readout on the parabola — only while not dragging, so it doesn't
+      // fight with the point being dragged (which sits exactly on the curve anyway).
       state.formsHoverX = computeFormsHover(px, py, w.x);
     }
 
@@ -1627,6 +1632,7 @@
     if(!state.drag) return;
     state.drag=null;
     canvasFrame.classList.remove("dragging");
+    if(state.mode==="forms") canvasFrame.style.cursor="crosshair";
   }
   canvas.addEventListener("pointerup", endDrag);
   canvas.addEventListener("pointercancel", endDrag);
@@ -1695,7 +1701,8 @@
     els.formsNote.style.display = m==="forms" ? "" : "none";
 
     if(m==="challenge"){ setRevealed(false); }
-    if(m==="forms"){ syncFormsInputs(); }
+    if(m==="forms"){ syncFormsInputs(); canvasFrame.style.cursor="crosshair"; }
+    else{ canvasFrame.style.cursor=""; } // fall back to the CSS default (grab) for chain modes
   }
 
   const FORMS_INPUTS=[[els.p1x,0,"x"],[els.p1y,0,"y"],[els.p2x,1,"x"],[els.p2y,1,"y"],[els.p3x,2,"x"],[els.p3y,2,"y"]];
