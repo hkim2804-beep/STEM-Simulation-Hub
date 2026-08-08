@@ -1,0 +1,1301 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>Chain &amp; Curve Lab</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  :root{
+    --paper:#E7EEF0;
+    --panel:#FDFEFE;
+    --ink:#17252D;
+    --ink-soft:#4B6069;
+    --brass:#A6742A;
+    --brass-strong:#7E5A20;
+    --teal:#1C6E67;
+    --plum:#8B4B6B;
+    --line:#B9CCD1;
+    --line-strong:#87A2A9;
+    --danger:#A23B3B;
+    --focus:#2E7FB8;
+    --screen-bg:#0C1712;
+    --screen-fg:#7BE0A8;
+    --serif:"Iowan Old Style","Palatino Linotype","URW Palladio","P052",Georgia,serif;
+    --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --mono:"Cascadia Code","SF Mono","JetBrains Mono",Consolas,"Liberation Mono",monospace;
+    --radius:10px;
+    --shadow:0 1px 2px rgba(23,37,45,.06), 0 6px 16px rgba(23,37,45,.08);
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E161C;
+    --panel:#141F26;
+    --ink:#DCE7EA;
+    --ink-soft:#93AAB2;
+    --brass:#E0A34F;
+    --brass-strong:#F0BB70;
+    --teal:#4FC0B6;
+    --plum:#D68CAE;
+    --line:rgba(224,163,79,.14);
+    --line-strong:rgba(224,163,79,.32);
+    --danger:#E08080;
+    --focus:#6BB6E8;
+    --screen-bg:#040A06;
+    --screen-fg:#7BE0A8;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 22px rgba(0,0,0,.4);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --paper:#0E161C;
+      --panel:#141F26;
+      --ink:#DCE7EA;
+      --ink-soft:#93AAB2;
+      --brass:#E0A34F;
+      --brass-strong:#F0BB70;
+      --teal:#4FC0B6;
+      --plum:#D68CAE;
+      --line:rgba(224,163,79,.14);
+      --line-strong:rgba(224,163,79,.32);
+      --danger:#E08080;
+      --focus:#6BB6E8;
+      --screen-bg:#040A06;
+      --screen-fg:#7BE0A8;
+      --shadow:0 1px 2px rgba(0,0,0,.3), 0 8px 22px rgba(0,0,0,.4);
+    }
+  }
+
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--sans);
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{
+    max-width:1320px;
+    margin:0 auto;
+    padding:22px 22px 48px;
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:20px;
+    flex-wrap:wrap;
+    border-bottom:1px solid var(--line);
+    padding-bottom:14px;
+  }
+  header h1{
+    font-family:var(--serif);
+    font-weight:600;
+    font-size:clamp(1.5rem,2.6vw,2.1rem);
+    margin:0 0 4px;
+    letter-spacing:.2px;
+    text-wrap:balance;
+  }
+  header .kicker{
+    font-family:var(--mono);
+    font-size:.72rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--brass-strong);
+    margin:0 0 6px;
+  }
+  header p{
+    margin:0;
+    color:var(--ink-soft);
+    max-width:56ch;
+    font-size:.95rem;
+    line-height:1.5;
+  }
+  .mode-switch{
+    display:flex;
+    align-items:center;
+    gap:0;
+    background:var(--panel);
+    border:1px solid var(--line-strong);
+    border-radius:999px;
+    padding:3px;
+    box-shadow:var(--shadow);
+    flex-shrink:0;
+  }
+  .mode-switch button{
+    font-family:var(--sans);
+    font-size:.82rem;
+    font-weight:600;
+    letter-spacing:.02em;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    padding:8px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:background .15s ease, color .15s ease;
+  }
+  .mode-switch button.active{
+    background:var(--brass);
+    color:#1B1204;
+  }
+  :root[data-theme="dark"] .mode-switch button.active,
+  @media (prefers-color-scheme: dark){}
+  .mode-switch button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  /* ---------- Layout ---------- */
+  .stage{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) 340px;
+    gap:18px;
+    align-items:start;
+  }
+  @media (max-width:900px){
+    .stage{grid-template-columns:minmax(0,1fr);}
+  }
+
+  .sheet{
+    background:var(--panel);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:12px;
+    position:relative;
+    min-width:0;
+  }
+  .sheet-corner{
+    position:absolute;
+    width:14px;height:14px;
+    border-color:var(--brass);
+    opacity:.6;
+  }
+  .sheet-corner.tl{top:8px;left:8px;border-top:2px solid;border-left:2px solid;}
+  .sheet-corner.tr{top:8px;right:8px;border-top:2px solid;border-right:2px solid;}
+  .sheet-corner.bl{bottom:8px;left:8px;border-bottom:2px solid;border-left:2px solid;}
+  .sheet-corner.br{bottom:8px;right:8px;border-bottom:2px solid;border-right:2px solid;}
+
+  .canvas-toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    padding:2px 6px 10px;
+    flex-wrap:wrap;
+  }
+  .canvas-toolbar .legend{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    font-size:.78rem;
+    color:var(--ink-soft);
+  }
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .swatch{width:14px;height:3px;border-radius:2px;display:inline-block;}
+  .canvas-toolbar .btns{display:flex;gap:8px;}
+  .icon-btn{
+    font-family:var(--sans);
+    font-size:.78rem;
+    font-weight:600;
+    background:var(--paper);
+    border:1px solid var(--line-strong);
+    color:var(--ink);
+    padding:6px 11px;
+    border-radius:7px;
+    cursor:pointer;
+  }
+  .icon-btn:hover{border-color:var(--brass);}
+  .icon-btn:focus-visible{outline:2px solid var(--focus); outline-offset:1px;}
+
+  .canvas-frame{
+    width:100%;
+    min-width:0;
+    aspect-ratio:4/3;
+    border-radius:7px;
+    overflow:hidden;
+    background:var(--paper);
+    border:1px solid var(--line);
+    cursor:grab;
+  }
+  .canvas-frame.dragging{cursor:grabbing;}
+  canvas{display:block;width:100%;height:100%;touch-action:none;}
+
+  .note{
+    margin:10px 4px 2px;
+    font-size:.82rem;
+    line-height:1.5;
+    color:var(--ink-soft);
+    padding:9px 12px;
+    background:var(--paper);
+    border:1px dashed var(--line-strong);
+    border-radius:7px;
+  }
+  .note b{color:var(--ink);}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{display:flex;flex-direction:column;gap:14px;}
+  .card{
+    background:var(--panel);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:14px 15px 16px;
+  }
+  .card h2{
+    font-family:var(--sans);
+    font-size:.72rem;
+    font-weight:700;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    color:var(--brass-strong);
+    margin:0 0 11px;
+  }
+
+  /* screen readout */
+  .screen{
+    background:var(--screen-bg);
+    border-radius:8px;
+    padding:13px 14px;
+    box-shadow:inset 0 0 0 1px rgba(123,224,168,.15), inset 0 2px 10px rgba(0,0,0,.5);
+    position:relative;
+  }
+  .screen::before{
+    content:"";
+    position:absolute;inset:0;
+    border-radius:8px;
+    box-shadow:0 0 18px rgba(123,224,168,.06);
+    pointer-events:none;
+  }
+  .screen .label{
+    font-family:var(--mono);
+    font-size:.62rem;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:rgba(123,224,168,.55);
+    margin:0 0 6px;
+  }
+  .screen .eq{
+    font-family:var(--mono);
+    font-size:.92rem;
+    color:var(--screen-fg);
+    line-height:1.55;
+    min-height:2.6em;
+    text-shadow:0 0 6px rgba(123,224,168,.35);
+    word-break:break-word;
+  }
+  .screen .eq .dim{opacity:.55;}
+  .screen .stats{
+    display:flex;
+    gap:16px;
+    margin-top:8px;
+    font-family:var(--mono);
+    font-size:.68rem;
+    color:rgba(123,224,168,.75);
+  }
+
+  .field{margin-bottom:13px;}
+  .field:last-child{margin-bottom:0;}
+  .field-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    margin-bottom:5px;
+  }
+  .field-row label{
+    font-size:.82rem;
+    color:var(--ink);
+    font-weight:600;
+  }
+  .field-row .val{
+    font-family:var(--mono);
+    font-size:.78rem;
+    color:var(--ink-soft);
+    font-variant-numeric:tabular-nums;
+  }
+  input[type=range]{
+    -webkit-appearance:none;
+    width:100%;
+    height:4px;
+    border-radius:2px;
+    background:var(--line-strong);
+    outline:none;
+  }
+  input[type=range]::-webkit-slider-thumb{
+    -webkit-appearance:none;
+    width:15px;height:15px;
+    border-radius:50%;
+    background:var(--brass);
+    border:2px solid var(--panel);
+    box-shadow:0 0 0 1px var(--brass-strong);
+    cursor:pointer;
+    margin-top:-1px;
+  }
+  input[type=range]::-moz-range-thumb{
+    width:13px;height:13px;
+    border-radius:50%;
+    background:var(--brass);
+    border:2px solid var(--panel);
+    box-shadow:0 0 0 1px var(--brass-strong);
+    cursor:pointer;
+  }
+  input[type=range]:focus-visible{outline:2px solid var(--focus); outline-offset:3px;}
+
+  .checkline{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:.82rem;
+    color:var(--ink);
+    margin-bottom:10px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .checkline:last-child{margin-bottom:0;}
+  .checkline input{width:15px;height:15px;accent-color:var(--brass);cursor:pointer;}
+  .checkline .dot{width:10px;height:3px;border-radius:2px;flex-shrink:0;}
+
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;}
+  .btn{
+    font-family:var(--sans);
+    font-size:.8rem;
+    font-weight:600;
+    padding:8px 13px;
+    border-radius:7px;
+    border:1px solid var(--line-strong);
+    background:var(--paper);
+    color:var(--ink);
+    cursor:pointer;
+    flex:1;
+    min-width:0;
+  }
+  .btn:hover{border-color:var(--brass);}
+  .btn.primary{background:var(--brass);border-color:var(--brass-strong);color:#1B1204;}
+  .btn:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+
+  .target-switch{
+    display:flex;
+    background:var(--paper);
+    border:1px solid var(--line-strong);
+    border-radius:8px;
+    padding:3px;
+    margin-bottom:8px;
+    gap:3px;
+  }
+  .target-switch button{
+    flex:1;
+    font-family:var(--sans);
+    font-size:.76rem;
+    font-weight:600;
+    border:none;
+    background:transparent;
+    color:var(--ink-soft);
+    padding:6px 8px;
+    border-radius:6px;
+    cursor:pointer;
+  }
+  .target-switch button.active{
+    background:var(--panel);
+    color:var(--ink);
+    box-shadow:0 1px 2px rgba(23,37,45,.12);
+  }
+  .target-switch button:focus-visible{outline:2px solid var(--focus); outline-offset:2px;}
+  .target-hint{
+    font-size:.78rem;
+    color:var(--ink-soft);
+    line-height:1.5;
+    margin:0 0 10px;
+  }
+  .target-hint code{font-family:var(--mono);background:var(--paper);padding:1px 5px;border-radius:4px;color:var(--ink);}
+
+  .formula-input{
+    width:100%;
+    font-family:var(--mono);
+    font-size:.85rem;
+    padding:9px 10px;
+    border-radius:7px;
+    border:1px solid var(--line-strong);
+    background:var(--paper);
+    color:var(--ink);
+    margin-bottom:8px;
+  }
+  .formula-input:focus-visible{outline:2px solid var(--focus); outline-offset:1px;}
+  .param-grid{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:6px;
+    margin-bottom:10px;
+  }
+  .param-cell{display:flex;flex-direction:column;gap:3px;align-items:center;}
+  .param-cell label{font-family:var(--mono);font-size:.72rem;color:var(--brass-strong);font-weight:700;}
+  .param-cell input{
+    width:100%;
+    font-family:var(--mono);
+    font-size:.76rem;
+    text-align:center;
+    padding:4px 2px;
+    border-radius:5px;
+    border:1px solid var(--line-strong);
+    background:var(--panel);
+    color:var(--ink);
+  }
+  .formula-msg{font-size:.78rem;min-height:1.2em;margin-bottom:8px;}
+  .formula-msg.err{color:var(--danger);}
+  .formula-msg.ok{color:var(--teal);}
+
+  .meter{
+    height:9px;
+    border-radius:5px;
+    background:var(--paper);
+    border:1px solid var(--line-strong);
+    overflow:hidden;
+    margin-bottom:6px;
+  }
+  .meter-fill{height:100%;background:linear-gradient(90deg,var(--danger),var(--brass) 55%,var(--teal));width:0%;transition:width .2s ease;}
+  .meter-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.72rem;color:var(--ink-soft);}
+
+  details.explain{
+    background:var(--panel);
+    border:1px solid var(--line-strong);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:2px 15px;
+  }
+  details.explain summary{
+    padding:12px 0;
+    font-size:.8rem;
+    font-weight:700;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--brass-strong);
+    cursor:pointer;
+    list-style:none;
+  }
+  details.explain summary::-webkit-details-marker{display:none;}
+  details.explain summary::before{content:"+ "; }
+  details.explain[open] summary::before{content:"– ";}
+  .explain-body{padding-bottom:14px;font-size:.9rem;line-height:1.65;color:var(--ink-soft);}
+  .explain-body p{margin:0 0 10px;}
+  .explain-body code{font-family:var(--mono);background:var(--paper);padding:1px 5px;border-radius:4px;color:var(--ink);}
+
+  ::selection{background:var(--brass);color:#1B1204;}
+  @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <p class="kicker">Maths Methods &middot; Modelling Lab</p>
+      <h1>Chain &amp; Curve Lab</h1>
+      <p>Hang a real, physically simulated chain between two pegs, then watch the equation that describes its shape. Switch to Challenge mode to guess the function yourself.</p>
+    </div>
+    <div class="mode-switch" role="tablist" aria-label="Mode">
+      <button id="modeDiscoverBtn" class="active" role="tab" aria-selected="true">Discover</button>
+      <button id="modeChallengeBtn" role="tab" aria-selected="false">Challenge</button>
+    </div>
+  </header>
+
+  <div class="stage">
+    <!-- CANVAS -->
+    <div class="sheet">
+      <span class="sheet-corner tl"></span><span class="sheet-corner tr"></span>
+      <span class="sheet-corner bl"></span><span class="sheet-corner br"></span>
+      <div class="canvas-toolbar">
+        <div class="legend" id="legend">
+          <span><i class="swatch" style="background:var(--brass)"></i>chain</span>
+          <span id="legendCat"><i class="swatch" style="background:var(--teal)"></i>catenary fit</span>
+          <span id="legendPar"><i class="swatch" style="background:var(--plum)"></i>parabola fit</span>
+        </div>
+        <div class="btns">
+          <button class="icon-btn" id="playBtn">Pause</button>
+          <button class="icon-btn" id="resetBtn">Reset chain</button>
+        </div>
+      </div>
+      <div class="canvas-frame" id="canvasFrame">
+        <canvas id="cv"></canvas>
+      </div>
+      <p class="note" id="physicsNote"><b>Physics note —</b> drag either peg to reposition it. The chain settles into equilibrium under gravity; try changing the Gravity slider and watch that it changes <i>how fast</i> the chain settles, but not the final shape.</p>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+      <div class="card" id="screenCard">
+        <h2>Equation readout</h2>
+        <div class="screen">
+          <p class="label">y = f(x)</p>
+          <div class="eq" id="eqMain">—</div>
+          <div class="stats" id="eqStats"></div>
+        </div>
+      </div>
+
+      <div class="card" id="discoverCard">
+        <h2>Fitted models</h2>
+        <label class="checkline"><input type="checkbox" id="showCat" checked><span class="dot" style="background:var(--teal)"></span>Catenary&nbsp;<span style="color:var(--ink-soft);font-weight:400;">y = a&middot;cosh((x−h)/a)+k</span></label>
+        <label class="checkline"><input type="checkbox" id="showPar"><span class="dot" style="background:var(--plum)"></span>Parabola&nbsp;<span style="color:var(--ink-soft);font-weight:400;">y = Ax²+Bx+C</span> (least-squares)</label>
+      </div>
+
+      <div class="card" id="challengeCard" style="display:none;">
+        <h2>Your guess</h2>
+        <div class="target-switch" role="tablist" aria-label="Challenge target">
+          <button id="targetCatBtn" class="active" role="tab" aria-selected="true">Catenary</button>
+          <button id="targetParBtn" role="tab" aria-selected="false">Parabola</button>
+        </div>
+        <p class="target-hint" id="targetHint">Match the true hanging-chain curve. Try <code>a*cosh((x-h)/a)+k</code>.</p>
+        <input type="text" class="formula-input" id="formulaInput" value="a*cosh((x-h)/a)+k" spellcheck="false" />
+        <div class="param-grid">
+          <div class="param-cell"><label>a</label><input type="number" id="pa" value="2" step="0.1"></div>
+          <div class="param-cell"><label>b</label><input type="number" id="pb" value="0" step="0.1"></div>
+          <div class="param-cell"><label>c</label><input type="number" id="pc" value="0" step="0.1"></div>
+          <div class="param-cell"><label>h</label><input type="number" id="ph" value="0" step="0.1"></div>
+          <div class="param-cell"><label>k</label><input type="number" id="pk" value="0" step="0.1"></div>
+        </div>
+        <p class="formula-msg" id="formulaMsg"></p>
+        <div class="meter-label"><span>Match score</span><span id="scoreVal">0%</span></div>
+        <div class="meter"><div class="meter-fill" id="scoreFill"></div></div>
+        <div class="btn-row" style="margin-top:10px;">
+          <button class="btn primary" id="revealBtn">Reveal exact fit</button>
+        </div>
+        <p class="note" id="revealNote" style="display:none;"></p>
+        <p style="font-size:.74rem;color:var(--ink-soft);margin:10px 0 0;">Functions: cosh sinh tanh sin cos sqrt abs exp ln &middot; constants pi, e &middot; variable x</p>
+      </div>
+
+      <div class="card">
+        <h2>Chain physics</h2>
+        <div class="field">
+          <div class="field-row"><label for="gravity">Gravity</label><span class="val" id="gravityVal">1.0</span></div>
+          <input type="range" id="gravity" min="0.2" max="3" step="0.1" value="1">
+        </div>
+        <div class="field">
+          <div class="field-row"><label for="slack">Slack length</label><span class="val" id="slackVal">30%</span></div>
+          <input type="range" id="slack" min="0" max="120" step="1" value="30">
+        </div>
+        <div class="field">
+          <div class="field-row"><label for="links">Number of links</label><span class="val" id="linksVal">24</span></div>
+          <input type="range" id="links" min="8" max="50" step="1" value="24">
+        </div>
+        <div class="field">
+          <div class="field-row"><label for="stiff">Stiffness</label><span class="val" id="stiffVal">20</span></div>
+          <input type="range" id="stiff" min="4" max="40" step="1" value="20">
+        </div>
+        <div class="field">
+          <div class="field-row"><label for="damping">Damping</label><span class="val" id="dampingVal">0.980</span></div>
+          <input type="range" id="damping" min="0.90" max="0.999" step="0.001" value="0.98">
+        </div>
+        <label class="checkline" style="margin-top:2px;"><input type="checkbox" id="centerLoad"><span class="dot" style="background:var(--danger)"></span>Add weight at centre link</label>
+      </div>
+
+      <div class="card">
+        <h2>View</h2>
+        <div class="field" style="margin-bottom:0;">
+          <div class="field-row"><label for="zoom">Zoom</label><span class="val" id="zoomVal">34 px/unit</span></div>
+          <input type="range" id="zoom" min="16" max="60" step="1" value="34">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <details class="explain">
+    <summary>Why this matters (teacher notes)</summary>
+    <div class="explain-body">
+      <p>A chain or cable hanging freely under its own weight settles into a <b>catenary</b>: <code>y = a&middot;cosh((x−h)/a) + k</code>. Because <code>cosh(u) = (e^u + e^(−u)) / 2</code>, this is really just a combination of two exponential functions — a direct link to the exponential functions taught in Maths Methods, dressed up as a real physical shape students can pull on.</p>
+      <p>For a shallow sag, a parabola <code>y = Ax² + Bx + C</code> is a close approximation — the app fits both models and reports each one's root-mean-square error against the simulated chain, so students can see numerically when the parabola stops being a good model, not just visually. This mirrors the common misconception that hanging cables are parabolas (they're only <i>approximately</i> parabolic, whereas a projectile's flight path actually is one).</p>
+      <p>Notice that changing <b>Gravity</b> changes how quickly the chain settles but not its resting shape — the equilibrium curve is fixed entirely by the anchor points and the chain's length. Turning on <b>centre weight</b> breaks this: a point load makes the true shape deviate from a catenary, and the fit error will visibly rise. That's a good prompt for discussing the assumptions built into any mathematical model.</p>
+      <p>In <b>Challenge mode</b>, students type their own candidate function and adjust <code>a, b, c, h, k</code> to chase the live chain shape before revealing the exact analytic fit — useful for a parameter-transformation lesson (shifts, stretches) using <code>h</code> and <code>k</code> as horizontal/vertical translations.</p>
+    </div>
+  </details>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================= Expression parser ============================= */
+  const FUNCS = {
+    sin:Math.sin, cos:Math.cos, tan:Math.tan,
+    sinh:Math.sinh, cosh:Math.cosh, tanh:Math.tanh,
+    asinh:Math.asinh, acosh:Math.acosh, atanh:Math.atanh,
+    sqrt:Math.sqrt, abs:Math.abs, exp:Math.exp,
+    ln:Math.log, log:Math.log10
+  };
+  const CONSTS = { pi:Math.PI, e:Math.E };
+
+  function tokenize(src){
+    const toks=[]; let i=0;
+    while(i<src.length){
+      const c=src[i];
+      if(/\s/.test(c)){ i++; continue; }
+      if(/[0-9.]/.test(c)){
+        let j=i+1; while(j<src.length && /[0-9.]/.test(src[j])) j++;
+        toks.push({t:"num", v:parseFloat(src.slice(i,j))}); i=j; continue;
+      }
+      if(/[a-zA-Z_]/.test(c)){
+        let j=i+1; while(j<src.length && /[a-zA-Z0-9_]/.test(src[j])) j++;
+        toks.push({t:"id", v:src.slice(i,j)}); i=j; continue;
+      }
+      if("+-*/^(),".includes(c)){ toks.push({t:c}); i++; continue; }
+      throw new Error("Unexpected character '"+c+"'");
+    }
+    return toks;
+  }
+
+  function parseExpr(src){
+    const toks = tokenize(src);
+    let pos = 0;
+    function peek(){ return toks[pos]; }
+    function next(){ return toks[pos++]; }
+    function expect(t){ const tok=next(); if(!tok||tok.t!==t) throw new Error("Expected '"+t+"'"); return tok; }
+
+    function parseAdd(){
+      let node = parseMul();
+      while(peek() && (peek().t==="+"||peek().t==="-")){
+        const op=next().t; const rhs=parseMul();
+        node = {op, l:node, r:rhs};
+      }
+      return node;
+    }
+    function parseMul(){
+      let node = parsePow();
+      while(peek() && (peek().t==="*"||peek().t==="/")){
+        const op=next().t; const rhs=parsePow();
+        node = {op, l:node, r:rhs};
+      }
+      return node;
+    }
+    function parsePow(){
+      let node = parseUnary();
+      if(peek() && peek().t==="^"){
+        next(); const rhs = parsePow();
+        node = {op:"^", l:node, r:rhs};
+      }
+      return node;
+    }
+    function parseUnary(){
+      if(peek() && (peek().t==="-"||peek().t==="+")){
+        const op = next().t;
+        const node = parseUnary();
+        return op==="-" ? {op:"neg", a:node} : node;
+      }
+      return parsePrimary();
+    }
+    function parsePrimary(){
+      const tok = peek();
+      if(!tok) throw new Error("Unexpected end of formula");
+      if(tok.t==="num"){ next(); return {op:"num", v:tok.v}; }
+      if(tok.t==="("){ next(); const n=parseAdd(); expect(")"); return n; }
+      if(tok.t==="id"){
+        next();
+        if(peek() && peek().t==="("){
+          next();
+          const args=[parseAdd()];
+          while(peek() && peek().t===","){ next(); args.push(parseAdd()); }
+          expect(")");
+          if(!FUNCS[tok.v]) throw new Error("Unknown function '"+tok.v+"'");
+          return {op:"call", name:tok.v, args};
+        }
+        return {op:"var", name:tok.v};
+      }
+      throw new Error("Unexpected token");
+    }
+
+    const ast = parseAdd();
+    if(pos !== toks.length) throw new Error("Unexpected trailing input");
+    return ast;
+  }
+
+  function evalAst(node, env){
+    switch(node.op){
+      case "num": return node.v;
+      case "neg": return -evalAst(node.a, env);
+      case "+": return evalAst(node.l,env) + evalAst(node.r,env);
+      case "-": return evalAst(node.l,env) - evalAst(node.r,env);
+      case "*": return evalAst(node.l,env) * evalAst(node.r,env);
+      case "/": return evalAst(node.l,env) / evalAst(node.r,env);
+      case "^": return Math.pow(evalAst(node.l,env), evalAst(node.r,env));
+      case "call": return FUNCS[node.name](...node.args.map(a=>evalAst(a,env)));
+      case "var": {
+        if(node.name in env) return env[node.name];
+        if(node.name in CONSTS) return CONSTS[node.name];
+        throw new Error("Unknown symbol '"+node.name+"'");
+      }
+    }
+    throw new Error("Bad node");
+  }
+
+  /* ============================= Curve fitting ============================= */
+  // Exact catenary through (xA,yA)-(xB,yB) with arc length L. Returns {a,h,k} or null.
+  function fitCatenary(xA,yA,xB,yB,L){
+    const d = xB-xA, vd = yB-yA;
+    const straight = Math.hypot(d,vd);
+    if(L <= straight*1.0005) return null; // no slack
+    const S = Math.sqrt(Math.max(L*L - vd*vd, 1e-9));
+    if(d < 1e-6) return null;
+    // g(a) = 2a*sinh(d/2a), decreasing from +Inf (a->0) to d (a->Inf). Solve g(a)=S.
+    function g(a){ return 2*a*Math.sinh(d/(2*a)); }
+    let lo=1e-4, hi=1;
+    let tries=0;
+    while(g(hi) > S && tries < 200){ hi*=2; tries++; }
+    // now g(hi) <= S <= g(lo) hopefully; ensure g(lo) >= S
+    tries=0;
+    while(g(lo) < S && tries < 60){ lo/=2; tries++; }
+    for(let it=0; it<80; it++){
+      const mid=(lo+hi)/2;
+      if(g(mid) > S) lo=mid; else hi=mid;
+    }
+    const a=(lo+hi)/2;
+    const P = Math.atanh(Math.max(-0.999999, Math.min(0.999999, vd/L)));
+    const Q = d/(2*a);
+    const p = P-Q;
+    const h = xA - a*p;
+    const k = yA - a*Math.cosh(p);
+    return {a,h,k};
+  }
+
+  // Least-squares quadratic y = A x^2 + B x + C through points.
+  function fitQuadratic(pts){
+    let S0=0,S1=0,S2=0,S3=0,S4=0,Y0=0,Y1=0,Y2=0;
+    for(const p of pts){
+      const x=p.x, y=p.y, x2=x*x;
+      S0++; S1+=x; S2+=x2; S3+=x2*x; S4+=x2*x2;
+      Y0+=y; Y1+=x*y; Y2+=x2*y;
+    }
+    // Solve [[S4,S3,S2],[S3,S2,S1],[S2,S1,S0]] [A,B,C]^T = [Y2,Y1,Y0]^T
+    const M=[[S4,S3,S2,Y2],[S3,S2,S1,Y1],[S2,S1,S0,Y0]];
+    for(let col=0; col<3; col++){
+      let piv=col;
+      for(let r=col+1;r<3;r++) if(Math.abs(M[r][col])>Math.abs(M[piv][col])) piv=r;
+      [M[col],M[piv]]=[M[piv],M[col]];
+      if(Math.abs(M[col][col])<1e-12) return null;
+      for(let r=0;r<3;r++){
+        if(r===col) continue;
+        const f=M[r][col]/M[col][col];
+        for(let cc=col; cc<4; cc++) M[r][cc]-=f*M[col][cc];
+      }
+    }
+    return { A:M[0][3]/M[0][0], B:M[1][3]/M[1][1], C:M[2][3]/M[2][2] };
+  }
+
+  function rmse(pts, f){
+    let s=0;
+    for(const p of pts){ const e=f(p.x)-p.y; s+=e*e; }
+    return Math.sqrt(s/pts.length);
+  }
+
+  /* ============================= DOM refs ============================= */
+  const $=id=>document.getElementById(id);
+  const canvas=$("cv"), ctx=canvas.getContext("2d");
+  const canvasFrame=$("canvasFrame");
+
+  const els={
+    gravity:$("gravity"), slack:$("slack"), links:$("links"), stiff:$("stiff"),
+    damping:$("damping"), zoom:$("zoom"), centerLoad:$("centerLoad"),
+    gravityVal:$("gravityVal"), slackVal:$("slackVal"), linksVal:$("linksVal"),
+    stiffVal:$("stiffVal"), dampingVal:$("dampingVal"), zoomVal:$("zoomVal"),
+    showCat:$("showCat"), showPar:$("showPar"),
+    playBtn:$("playBtn"), resetBtn:$("resetBtn"),
+    eqMain:$("eqMain"), eqStats:$("eqStats"), physicsNote:$("physicsNote"),
+    modeDiscoverBtn:$("modeDiscoverBtn"), modeChallengeBtn:$("modeChallengeBtn"),
+    discoverCard:$("discoverCard"), challengeCard:$("challengeCard"),
+    formulaInput:$("formulaInput"), formulaMsg:$("formulaMsg"),
+    pa:$("pa"), pb:$("pb"), pc:$("pc"), ph:$("ph"), pk:$("pk"),
+    scoreVal:$("scoreVal"), scoreFill:$("scoreFill"),
+    revealBtn:$("revealBtn"), revealNote:$("revealNote"),
+    legendCat:$("legendCat"), legendPar:$("legendPar"),
+    targetCatBtn:$("targetCatBtn"), targetParBtn:$("targetParBtn"), targetHint:$("targetHint")
+  };
+
+  const TARGET_PRESETS={
+    catenary:{ formula:"a*cosh((x-h)/a)+k", hint:'Match the true hanging-chain curve. Try <code>a*cosh((x-h)/a)+k</code>.' },
+    parabola:{ formula:"a*x^2+b*x+c", hint:'Match the parabola that best approximates the chain. Try <code>a*x^2+b*x+c</code>.' }
+  };
+
+  /* ============================= State ============================= */
+  const state={
+    mode:"discover",
+    challengeTarget:"catenary",
+    anchors:{ A:{x:-4.2,y:2.4}, B:{x:4.2,y:2.4} },
+    gravity:1, slack:30, numLinks:24, stiffness:20, damping:0.98,
+    centerLoad:false, zoom:34,
+    showCat:true, showPar:false,
+    playing:true,
+    drag:null, // {kind:'anchor'|'point', key or index, offset}
+    particles:[], prevParticles:[],
+    formula:{ast:null, error:null, fn:null},
+    revealed:false
+  };
+
+  function chainLength(){
+    const {A,B}=state.anchors;
+    const straight=Math.hypot(B.x-A.x, B.y-A.y);
+    return straight*(1+state.slack/100);
+  }
+
+  function rebuildParticles(){
+    const n=state.numLinks;
+    const {A,B}=state.anchors;
+    const L=chainLength();
+    const straight=Math.hypot(B.x-A.x,B.y-A.y);
+    const sagGuess = Math.max(0, (L-straight))*0.6 + 0.15;
+    const pts=[];
+    for(let i=0;i<=n;i++){
+      const t=i/n;
+      const x=A.x+(B.x-A.x)*t;
+      const yLin=A.y+(B.y-A.y)*t;
+      const y=yLin - sagGuess*4*t*(1-t);
+      pts.push({x,y});
+    }
+    state.particles=pts;
+    state.prevParticles=pts.map(p=>({x:p.x,y:p.y}));
+  }
+  rebuildParticles();
+
+  /* ============================= Physics (Verlet) ============================= */
+  const DT=1/60, SUBSTEPS=2;
+
+  function stepPhysics(dt){
+    const n=state.numLinks;
+    const pts=state.particles, prev=state.prevParticles;
+    const g=state.gravity;
+    const centerIdx = Math.round(n/2);
+
+    // Integrate free particles
+    for(let i=1;i<n;i++){
+      if(state.drag && state.drag.kind==="point" && state.drag.index===i) continue;
+      const gx=0, gy=-g*(state.centerLoad && Math.abs(i-centerIdx)<=1 ? 4.2 : 1);
+      const vx=(pts[i].x-prev[i].x)*state.damping;
+      const vy=(pts[i].y-prev[i].y)*state.damping;
+      const nx=pts[i].x+vx+gx*dt*dt;
+      const ny=pts[i].y+vy+gy*dt*dt;
+      prev[i].x=pts[i].x; prev[i].y=pts[i].y;
+      pts[i].x=nx; pts[i].y=ny;
+    }
+
+    // Pin endpoints to anchors
+    pts[0].x=state.anchors.A.x; pts[0].y=state.anchors.A.y;
+    pts[n].x=state.anchors.B.x; pts[n].y=state.anchors.B.y;
+    prev[0].x=pts[0].x; prev[0].y=pts[0].y;
+    prev[n].x=pts[n].x; prev[n].y=pts[n].y;
+
+    // If a mid-point is grabbed, pin it to the drag position
+    if(state.drag && state.drag.kind==="point"){
+      const i=state.drag.index;
+      pts[i].x=state.drag.worldX; pts[i].y=state.drag.worldY;
+    }
+
+    const segLen=chainLength()/n;
+    for(let iter=0; iter<state.stiffness; iter++){
+      for(let i=0;i<n;i++){
+        const p1=pts[i], p2=pts[i+1];
+        let dx=p2.x-p1.x, dy=p2.y-p1.y;
+        let dist=Math.hypot(dx,dy)||1e-6;
+        const diff=(dist-segLen)/dist;
+        const pin1 = (i===0) || (state.drag && state.drag.kind==="point" && state.drag.index===i);
+        const pin2 = (i+1===n) || (state.drag && state.drag.kind==="point" && state.drag.index===i+1);
+        if(pin1 && pin2) continue;
+        if(pin1){ p2.x-=dx*diff; p2.y-=dy*diff; }
+        else if(pin2){ p1.x+=dx*diff; p1.y+=dy*diff; }
+        else { p1.x+=dx*diff*0.5; p1.y+=dy*diff*0.5; p2.x-=dx*diff*0.5; p2.y-=dy*diff*0.5; }
+      }
+      pts[0].x=state.anchors.A.x; pts[0].y=state.anchors.A.y;
+      pts[n].x=state.anchors.B.x; pts[n].y=state.anchors.B.y;
+      if(state.drag && state.drag.kind==="point"){
+        const i=state.drag.index;
+        pts[i].x=state.drag.worldX; pts[i].y=state.drag.worldY;
+      }
+    }
+  }
+
+  /* ============================= Coordinate transform ============================= */
+  let cw=0, ch=0, dpr=1;
+  function resizeCanvas(){
+    const rect=canvasFrame.getBoundingClientRect();
+    dpr=window.devicePixelRatio||1;
+    cw=Math.max(200,Math.round(rect.width));
+    ch=Math.max(150,Math.round(rect.height));
+    canvas.width=cw*dpr; canvas.height=ch*dpr;
+    canvas.style.width=cw+"px"; canvas.style.height=ch+"px";
+    ctx.setTransform(dpr,0,0,dpr,0,0);
+  }
+  const ro=new ResizeObserver(resizeCanvas);
+  ro.observe(canvasFrame);
+
+  function ppu(){ return state.zoom; }
+  function worldToPx(x,y){
+    return { x: cw/2 + x*ppu(), y: ch/2 - y*ppu() };
+  }
+  function pxToWorld(px,py){
+    return { x:(px-cw/2)/ppu(), y:(ch/2-py)/ppu() };
+  }
+
+  /* ============================= Rendering ============================= */
+  function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+  function drawGrid(){
+    const ink=cssVar("--ink-soft"), line=cssVar("--line"), lineStrong=cssVar("--line-strong");
+    ctx.clearRect(0,0,cw,ch);
+    const unit=ppu();
+    const halfW=cw/2/unit, halfH=ch/2/unit;
+    const minX=Math.floor(-halfW)-1, maxX=Math.ceil(halfW)+1;
+    const minY=Math.floor(-halfH)-1, maxY=Math.ceil(halfH)+1;
+
+    ctx.lineWidth=1;
+    for(let x=minX;x<=maxX;x++){
+      const p=worldToPx(x,0);
+      ctx.strokeStyle = (x===0)? lineStrong : line;
+      ctx.beginPath(); ctx.moveTo(p.x+0.5,0); ctx.lineTo(p.x+0.5,ch); ctx.stroke();
+    }
+    for(let y=minY;y<=maxY;y++){
+      const p=worldToPx(0,y);
+      ctx.strokeStyle = (y===0)? lineStrong : line;
+      ctx.beginPath(); ctx.moveTo(0,p.y+0.5); ctx.lineTo(cw,p.y+0.5); ctx.stroke();
+    }
+    // axis labels
+    ctx.fillStyle=ink;
+    ctx.font="11px "+cssVar("--mono").split(",")[0]||"monospace";
+    ctx.font="11px monospace";
+    for(let x=minX;x<=maxX;x++){
+      if(x===0) continue;
+      if(x%1!==0) continue;
+      const p=worldToPx(x,0);
+      if(p.x<10||p.x>cw-10) continue;
+      ctx.fillText(String(x), p.x-4, ch/2+13);
+    }
+    for(let y=minY;y<=maxY;y++){
+      if(y===0) continue;
+      const p=worldToPx(0,y);
+      if(p.y<10||p.y>ch-10) continue;
+      ctx.fillText(String(y), cw/2+6, p.y+4);
+    }
+    ctx.fillText("0", cw/2+6, ch/2+13);
+  }
+
+  function drawCurve(fn, color, xMin, xMax){
+    ctx.strokeStyle=color;
+    ctx.lineWidth=2;
+    ctx.setLineDash([6,5]);
+    ctx.beginPath();
+    let started=false;
+    const steps=140;
+    for(let i=0;i<=steps;i++){
+      const x=xMin+(xMax-xMin)*i/steps;
+      let y;
+      try{ y=fn(x); }catch(e){ y=NaN; }
+      if(!isFinite(y)){ started=false; continue; }
+      const p=worldToPx(x,y);
+      if(!started){ ctx.moveTo(p.x,p.y); started=true; } else ctx.lineTo(p.x,p.y);
+    }
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function drawChain(){
+    const pts=state.particles;
+    const brass=cssVar("--brass"), brassStrong=cssVar("--brass-strong");
+    ctx.lineCap="round";
+    ctx.strokeStyle=brassStrong;
+    ctx.lineWidth=5.5;
+    ctx.beginPath();
+    pts.forEach((p,i)=>{ const px=worldToPx(p.x,p.y); if(i===0) ctx.moveTo(px.x,px.y); else ctx.lineTo(px.x,px.y); });
+    ctx.stroke();
+    ctx.strokeStyle=brass;
+    ctx.lineWidth=2.4;
+    ctx.beginPath();
+    pts.forEach((p,i)=>{ const px=worldToPx(p.x,p.y); if(i===0) ctx.moveTo(px.x,px.y); else ctx.lineTo(px.x,px.y); });
+    ctx.stroke();
+    // link joints
+    ctx.fillStyle=brassStrong;
+    for(let i=1;i<pts.length-1;i+=1){
+      const px=worldToPx(pts[i].x,pts[i].y);
+      ctx.beginPath(); ctx.arc(px.x,px.y,2.1,0,Math.PI*2); ctx.fill();
+    }
+    // anchors
+    [state.anchors.A, state.anchors.B].forEach(a=>{
+      const px=worldToPx(a.x,a.y);
+      ctx.fillStyle=cssVar("--panel");
+      ctx.strokeStyle=brassStrong;
+      ctx.lineWidth=2.5;
+      ctx.beginPath(); ctx.arc(px.x,px.y,7,0,Math.PI*2); ctx.fill(); ctx.stroke();
+      ctx.fillStyle=brassStrong;
+      ctx.beginPath(); ctx.arc(px.x,px.y,2.5,0,Math.PI*2); ctx.fill();
+    });
+  }
+
+  let lastFit={cat:null, quad:null, catRmse:null, quadRmse:null};
+
+  function computeFits(){
+    const {A,B}=state.anchors;
+    const xMin=Math.min(A.x,B.x), xMax=Math.max(A.x,B.x);
+    const cat = fitCatenary(A.x,A.y,B.x,B.y,chainLength());
+    const quad = fitQuadratic(state.particles);
+    let catRmse=null, quadRmse=null;
+    if(cat){ catRmse = rmse(state.particles, x=>cat.a*Math.cosh((x-cat.h)/cat.a)+cat.k); }
+    if(quad){ quadRmse = rmse(state.particles, x=>quad.A*x*x+quad.B*x+quad.C); }
+    lastFit={cat,quad,catRmse,quadRmse,xMin,xMax};
+    return lastFit;
+  }
+
+  function render(){
+    drawGrid();
+    const fit=computeFits();
+
+    if(state.mode==="discover"){
+      if(state.showCat && fit.cat){
+        drawCurve(x=>fit.cat.a*Math.cosh((x-fit.cat.h)/fit.cat.a)+fit.cat.k, cssVar("--teal"), fit.xMin-0.4, fit.xMax+0.4);
+      }
+      if(state.showPar && fit.quad){
+        drawCurve(x=>fit.quad.A*x*x+fit.quad.B*x+fit.quad.C, cssVar("--plum"), fit.xMin-0.4, fit.xMax+0.4);
+      }
+    } else {
+      if(state.formula.fn){
+        drawCurve(x=>state.formula.fn(x, paramEnv()), cssVar("--plum"), fit.xMin-1.5, fit.xMax+1.5);
+      }
+      if(state.revealed){
+        if(state.challengeTarget==="catenary" && fit.cat){
+          drawCurve(x=>fit.cat.a*Math.cosh((x-fit.cat.h)/fit.cat.a)+fit.cat.k, cssVar("--teal"), fit.xMin-0.4, fit.xMax+0.4);
+        } else if(state.challengeTarget==="parabola" && fit.quad){
+          drawCurve(x=>fit.quad.A*x*x+fit.quad.B*x+fit.quad.C, cssVar("--teal"), fit.xMin-0.4, fit.xMax+0.4);
+        }
+      }
+    }
+
+    drawChain();
+    updateReadout(fit);
+  }
+
+  function fmt(n){ return (Math.abs(n)<0.005?0:n).toFixed(2); }
+
+  function updateReadout(fit){
+    if(state.mode==="discover"){
+      let html="";
+      if(state.showCat && fit.cat){
+        const c=fit.cat;
+        html += `y = ${fmt(c.a)}&middot;cosh((x&nbsp;&minus;&nbsp;${fmt(c.h)})/${fmt(c.a)})&nbsp;+&nbsp;${fmt(c.k)}`;
+      }
+      if(state.showPar && fit.quad){
+        if(html) html += `<br><span class="dim">— or approximately —</span><br>`;
+        const q=fit.quad;
+        html += `y = ${fmt(q.A)}x&sup2; + ${fmt(q.B)}x + ${fmt(q.C)}`;
+      }
+      if(!html) html="Enable a model below to see its equation.";
+      els.eqMain.innerHTML=html;
+      let stats="";
+      if(fit.catRmse!=null) stats += `<span>catenary RMSE ${fit.catRmse.toFixed(3)}</span>`;
+      if(fit.quadRmse!=null) stats += `<span>parabola RMSE ${fit.quadRmse.toFixed(3)}</span>`;
+      els.eqStats.innerHTML=stats;
+    } else {
+      const f=state.formula;
+      els.eqMain.innerHTML = f.error ? `<span class="dim">invalid formula</span>` : (state.formulaText||"—");
+      const target = state.challengeTarget==="parabola" ? fit.quad : fit.cat;
+      const targetFn = state.challengeTarget==="parabola"
+        ? (target && (x=>target.A*x*x+target.B*x+target.C))
+        : (target && (x=>target.a*Math.cosh((x-target.h)/target.a)+target.k));
+      if(!f.error && f.fn && targetFn){
+        const refPts=[];
+        const steps=60;
+        for(let i=0;i<=steps;i++){
+          const x=fit.xMin+(fit.xMax-fit.xMin)*i/steps;
+          refPts.push({x, y:targetFn(x)});
+        }
+        const err=rmse(refPts, x=>f.fn(x, paramEnv()));
+        const sagSpan = Math.max(0.3, Math.max(...state.particles.map(p=>p.y)) - Math.min(...state.particles.map(p=>p.y)));
+        const score = Math.max(0, Math.min(100, 100*(1-err/sagSpan)));
+        els.scoreVal.textContent=Math.round(score)+"%";
+        els.scoreFill.style.width=score+"%";
+        els.eqStats.innerHTML=`<span>RMSE ${err.toFixed(3)}</span>`;
+      } else {
+        els.scoreVal.textContent="—";
+        els.scoreFill.style.width="0%";
+        els.eqStats.innerHTML="";
+      }
+    }
+  }
+
+  function paramEnv(){
+    return {
+      a:parseFloat(els.pa.value)||0.0001,
+      b:parseFloat(els.pb.value)||0,
+      c:parseFloat(els.pc.value)||0,
+      h:parseFloat(els.ph.value)||0,
+      k:parseFloat(els.pk.value)||0
+    };
+  }
+
+  /* ============================= Main loop ============================= */
+  function loop(){
+    if(state.playing){
+      for(let s=0;s<SUBSTEPS;s++) stepPhysics(DT/SUBSTEPS);
+    }
+    render();
+    requestAnimationFrame(loop);
+  }
+
+  /* ============================= Interaction ============================= */
+  function hitTest(px,py){
+    const w=pxToWorld(px,py);
+    const HIT_ANCHOR=0.35, HIT_POINT=0.28;
+    const dA=Math.hypot(w.x-state.anchors.A.x, w.y-state.anchors.A.y);
+    const dB=Math.hypot(w.x-state.anchors.B.x, w.y-state.anchors.B.y);
+    if(dA<HIT_ANCHOR) return {kind:"anchor", key:"A"};
+    if(dB<HIT_ANCHOR) return {kind:"anchor", key:"B"};
+    let best=-1, bestD=HIT_POINT;
+    for(let i=1;i<state.particles.length-1;i++){
+      const p=state.particles[i];
+      const d=Math.hypot(w.x-p.x, w.y-p.y);
+      if(d<bestD){ bestD=d; best=i; }
+    }
+    if(best>=0) return {kind:"point", index:best};
+    return null;
+  }
+
+  function clampAnchor(p){
+    p.x=Math.max(-9,Math.min(9,p.x));
+    p.y=Math.max(-6,Math.min(7,p.y));
+  }
+
+  canvas.addEventListener("pointerdown", e=>{
+    const rect=canvas.getBoundingClientRect();
+    const px=e.clientX-rect.left, py=e.clientY-rect.top;
+    const hit=hitTest(px,py);
+    if(!hit) return;
+    canvas.setPointerCapture(e.pointerId);
+    canvasFrame.classList.add("dragging");
+    if(hit.kind==="anchor"){
+      state.drag={kind:"anchor", key:hit.key};
+    } else {
+      const w=pxToWorld(px,py);
+      state.drag={kind:"point", index:hit.index, worldX:w.x, worldY:w.y};
+    }
+  });
+  canvas.addEventListener("pointermove", e=>{
+    if(!state.drag) return;
+    const rect=canvas.getBoundingClientRect();
+    const px=e.clientX-rect.left, py=e.clientY-rect.top;
+    const w=pxToWorld(px,py);
+    if(state.drag.kind==="anchor"){
+      const a=state.anchors[state.drag.key];
+      a.x=w.x; a.y=w.y; clampAnchor(a);
+    } else {
+      state.drag.worldX=w.x; state.drag.worldY=w.y;
+    }
+  });
+  function endDrag(e){
+    if(!state.drag) return;
+    state.drag=null;
+    canvasFrame.classList.remove("dragging");
+  }
+  canvas.addEventListener("pointerup", endDrag);
+  canvas.addEventListener("pointercancel", endDrag);
+  canvas.addEventListener("pointerleave", e=>{ if(e.buttons===0) endDrag(e); });
+
+  /* ============================= Controls wiring ============================= */
+  function syncSliders(){
+    els.gravityVal.textContent=state.gravity.toFixed(1);
+    els.slackVal.textContent=state.slack+"%";
+    els.linksVal.textContent=state.numLinks;
+    els.stiffVal.textContent=state.stiffness;
+    els.dampingVal.textContent=state.damping.toFixed(3);
+    els.zoomVal.textContent=state.zoom+" px/unit";
+  }
+  syncSliders();
+
+  els.gravity.addEventListener("input", e=>{ state.gravity=parseFloat(e.target.value); syncSliders(); });
+  els.slack.addEventListener("input", e=>{ state.slack=parseFloat(e.target.value); syncSliders(); });
+  els.links.addEventListener("input", e=>{ state.numLinks=parseInt(e.target.value,10); syncSliders(); rebuildParticles(); });
+  els.stiff.addEventListener("input", e=>{ state.stiffness=parseInt(e.target.value,10); syncSliders(); });
+  els.damping.addEventListener("input", e=>{ state.damping=parseFloat(e.target.value); syncSliders(); });
+  els.zoom.addEventListener("input", e=>{ state.zoom=parseFloat(e.target.value); syncSliders(); });
+  els.centerLoad.addEventListener("change", e=>{
+    state.centerLoad=e.target.checked;
+    els.physicsNote.innerHTML = state.centerLoad
+      ? "<b>Physics note —</b> a weight at the centre pulls that link down harder than the rest. The true shape is no longer a catenary — watch the fitted curve's error rise."
+      : "<b>Physics note —</b> drag either peg to reposition it. The chain settles into equilibrium under gravity; try changing the Gravity slider and watch that it changes <i>how fast</i> the chain settles, but not the final shape.";
+  });
+  els.showCat.addEventListener("change", e=>{ state.showCat=e.target.checked; els.legendCat.style.display=state.showCat?"":"none"; });
+  els.showPar.addEventListener("change", e=>{ state.showPar=e.target.checked; els.legendPar.style.display=state.showPar?"":"none"; });
+  els.legendPar.style.display="none";
+
+  els.playBtn.addEventListener("click", ()=>{
+    state.playing=!state.playing;
+    els.playBtn.textContent=state.playing?"Pause":"Play";
+  });
+  els.resetBtn.addEventListener("click", ()=>{
+    state.anchors.A={x:-4.2,y:2.4}; state.anchors.B={x:4.2,y:2.4};
+    rebuildParticles();
+  });
+
+  els.modeDiscoverBtn.addEventListener("click", ()=>setMode("discover"));
+  els.modeChallengeBtn.addEventListener("click", ()=>setMode("challenge"));
+  function setMode(m){
+    state.mode=m;
+    els.modeDiscoverBtn.classList.toggle("active", m==="discover");
+    els.modeChallengeBtn.classList.toggle("active", m==="challenge");
+    els.modeDiscoverBtn.setAttribute("aria-selected", m==="discover");
+    els.modeChallengeBtn.setAttribute("aria-selected", m==="challenge");
+    els.discoverCard.style.display = m==="discover" ? "" : "none";
+    els.challengeCard.style.display = m==="challenge" ? "" : "none";
+    if(m==="challenge"){ state.revealed=false; els.revealNote.style.display="none"; }
+  }
+
+  els.targetCatBtn.addEventListener("click", ()=>setChallengeTarget("catenary"));
+  els.targetParBtn.addEventListener("click", ()=>setChallengeTarget("parabola"));
+  function setChallengeTarget(target){
+    const prevPreset=TARGET_PRESETS[state.challengeTarget].formula;
+    state.challengeTarget=target;
+    els.targetCatBtn.classList.toggle("active", target==="catenary");
+    els.targetParBtn.classList.toggle("active", target==="parabola");
+    els.targetCatBtn.setAttribute("aria-selected", target==="catenary");
+    els.targetParBtn.setAttribute("aria-selected", target==="parabola");
+    els.targetHint.innerHTML=TARGET_PRESETS[target].hint;
+    // only swap the formula field if the student hasn't customised it away from the previous preset
+    if(els.formulaInput.value.trim()===prevPreset){
+      els.formulaInput.value=TARGET_PRESETS[target].formula;
+      parseFormula();
+    }
+    state.revealed=false;
+    els.revealNote.style.display="none";
+  }
+
+  function parseFormula(){
+    const src=els.formulaInput.value.trim();
+    state.formulaText = "y = " + src;
+    try{
+      const ast=parseExpr(src);
+      // dry run
+      evalAst(ast, Object.assign({x:1}, paramEnv()));
+      state.formula={ast, error:null, fn:(x,params)=>evalAst(ast, Object.assign({x}, params))};
+      els.formulaMsg.textContent="";
+      els.formulaMsg.className="formula-msg";
+    }catch(err){
+      state.formula={ast:null, error:err.message, fn:null};
+      els.formulaMsg.textContent=err.message;
+      els.formulaMsg.className="formula-msg err";
+    }
+  }
+  els.formulaInput.addEventListener("input", parseFormula);
+  [els.pa,els.pb,els.pc,els.ph,els.pk].forEach(inp=>inp.addEventListener("input", ()=>{}));
+  parseFormula();
+
+  els.revealBtn.addEventListener("click", ()=>{
+    state.revealed=true;
+    const fit=lastFit;
+    if(state.challengeTarget==="parabola" && fit.quad){
+      els.revealNote.style.display="";
+      els.revealNote.innerHTML = `<b>Best-fit parabola —</b> y = ${fmt(fit.quad.A)}x&sup2; + ${fmt(fit.quad.B)}x + ${fmt(fit.quad.C)}. Your formula's RMSE was shown above — try nudging a, b and c to close the gap. Note a parabola can only ever approximate the true hanging-chain shape.`;
+    } else if(fit.cat){
+      els.revealNote.style.display="";
+      els.revealNote.innerHTML = `<b>Exact fit —</b> y = ${fmt(fit.cat.a)}&middot;cosh((x−${fmt(fit.cat.h)})/${fmt(fit.cat.a)})+${fmt(fit.cat.k)}. Your formula's RMSE was shown above — try nudging a, h and k to close the gap.`;
+    }
+  });
+
+  /* ============================= Theme toggle sync (host may set data-theme) ============================= */
+  // No local control needed; the host page toggles :root[data-theme].
+
+  /* ============================= Boot ============================= */
+  resizeCanvas();
+  requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

@@ -98,7 +98,7 @@ footer{max-width:1100px;margin:32px auto 0;padding:0 20px;color:var(--muted);fon
 'use strict';
 const $=id=>document.getElementById(id);
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function thumbUrl(url,w,h){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(url)+'?w='+w+'&h='+h}
+function thumbUrl(url,w,h){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(new URL(url,location.href).href)+'?w='+w+'&h='+h}
 function placeholderThumb(name){const h=[...name].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,0)%360,ini=name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="440"><rect width="800" height="440" fill="hsl('+h+',55%,38%)"/><text x="400" y="240" font-family="Segoe UI,Arial,sans-serif" font-size="120" fill="#ffffff" text-anchor="middle" font-weight="700">'+ini+'</text></svg>')}
 function loadCustom(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return[]}}
 function norm(u){return String(u||'').trim().toLowerCase()}

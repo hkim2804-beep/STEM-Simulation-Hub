@@ -71,11 +71,11 @@ const CATEGORY_SUBJECT={
 };
 const CATEGORY_ORDER=['Algebra & Functions','Geometry & Measurement','Number, Ratios & Financial Maths','Statistics & Probability','Calculators & Graphing Tools','Physics','Chemistry','Biology','Earth & Space Science','Psychology'];
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function thumbUrl(r){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(r.url)+'?w=400&h=240'}
+function thumbUrl(r){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(new URL(r.url,location.href).href)+'?w=400&h=240'}
 function placeholderThumb(name){const h=[...name].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,0)%360,ini=name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240"><rect width="400" height="240" fill="hsl('+h+',55%,38%)"/><text x="200" y="135" font-family="Segoe UI,Arial,sans-serif" font-size="70" fill="#ffffff" text-anchor="middle" font-weight="700">'+ini+'</text></svg>')}
 function loadCustom(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return[]}}
 const ROOT_URL_ALLOWLIST=['www.solarsystemscope.com','solarsystemscope.com'];
-function isDirectSimulation(r){try{const u=new URL(r.url),p=u.pathname.replace(/\/$/,'');const blocked=['','/en/simulations','/simulations','/classroom-resources','/welcome-to-simbucket','/vlabs','/eyes','/osp/index.cfm'];return !blocked.includes(p)||!!u.search||ROOT_URL_ALLOWLIST.includes(u.hostname)}catch{return false}}
+function isDirectSimulation(r){try{const u=new URL(r.url,location.href),p=u.pathname.replace(/\/$/,'');if(u.origin===location.origin)return true;const blocked=['','/en/simulations','/simulations','/classroom-resources','/welcome-to-simbucket','/vlabs','/eyes','/osp/index.cfm'];return !blocked.includes(p)||!!u.search||ROOT_URL_ALLOWLIST.includes(u.hostname)}catch{return false}}
 function buildCatalogue(){
   const sources=[
     ...(typeof RESOURCES_JUNIOR!=='undefined'?RESOURCES_JUNIOR:[]),
