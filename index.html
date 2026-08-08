@@ -1,0 +1,174 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>AC9 STEM Simulation Hub</title><style>
+:root{--p:#005792;--p-dark:#013f68;--s:#0078d4;--s-light:#e9f3fc;--bg:#eef3f9;--card:#fff;--ink:#101a2b;--muted:#5b6577;--line:#dbe3ee;--line-soft:#eef2f8;--gold:#f5a623;--gold-deep:#c9820a;--radius-sm:8px;--radius-md:14px;--radius-lg:20px;--shadow-sm:0 1px 2px rgba(16,26,43,.06),0 1px 1px rgba(16,26,43,.04);--shadow-md:0 10px 24px -8px rgba(16,26,43,.16),0 2px 8px rgba(16,26,43,.06);--shadow-lg:0 24px 48px -14px rgba(16,26,43,.28),0 4px 14px rgba(16,26,43,.08);--focus:0 0 0 3px rgba(0,120,212,.35)}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,"Segoe UI","Segoe UI Variable",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1100px 480px at 105% -12%,#dcecfa 0%,transparent 60%),radial-gradient(900px 420px at -10% 0%,#eef6fd 0%,transparent 55%),var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
+header{background:linear-gradient(120deg,var(--p) 0%,var(--s) 72%,#23a3e2 100%);color:#fff;padding:18px 20px 20px;position:sticky;top:0;z-index:5;box-shadow:0 8px 24px -12px rgba(0,60,110,.5)}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center;max-width:1500px;margin:0 auto}
+.top h1{flex:1 1 100%;font-size:1.45rem;font-weight:800;letter-spacing:-.01em;margin:0}
+.title{border:1px solid transparent;background:transparent;color:#fff;font:inherit;font-weight:800;cursor:pointer;padding:6px 8px;margin:-6px -8px;border-radius:var(--radius-sm);transition:background .15s ease,transform .1s ease;text-align:left}
+.title:hover{background:rgba(255,255,255,.16)}
+.title:active{transform:translateY(1px)}
+.header-links{display:flex;flex-wrap:wrap;gap:8px}
+.header-links a,.header-links button{color:#fff;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);border-radius:var(--radius-sm);padding:9px 14px;text-decoration:none;font-weight:700;font-size:.92rem;cursor:pointer;transition:background .15s ease,box-shadow .15s ease,transform .1s ease}
+.header-links a:hover,.header-links button:hover{background:rgba(255,255,255,.26);box-shadow:var(--shadow-sm)}
+.header-links a:active,.header-links button:active{transform:translateY(1px)}
+.header-links a:focus-visible,.header-links button:focus-visible,.title:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.filters{display:grid;grid-template-columns:repeat(4,minmax(145px,1fr)) minmax(220px,1.2fr);gap:10px;margin-top:16px;max-width:1500px;margin-left:auto;margin-right:auto}
+select,input{font:inherit;padding:11px 12px;border:1px solid transparent;border-radius:var(--radius-sm);min-width:0;background:rgba(255,255,255,.96);color:var(--ink);box-shadow:var(--shadow-sm);transition:box-shadow .15s ease}
+select:hover,input:hover{box-shadow:var(--shadow-md)}
+select:focus-visible,input:focus-visible{outline:none;border-color:var(--s);box-shadow:var(--focus)}
+input::placeholder{color:#8894a3}
+main{max-width:1500px;margin:auto;padding:20px;display:grid;grid-template-columns:1.25fr .75fr;gap:20px}
+.panel{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);overflow:hidden;border:1px solid var(--line-soft)}
+.head,.body{padding:18px 20px}
+.head{display:flex;justify-content:space-between;align-items:center;gap:10px;background:linear-gradient(180deg,#fbfdff,#f6f9fd);border-bottom:1px solid var(--line)}
+.head h2,.body h2{color:var(--p);margin:0;font-size:1.15rem;font-weight:800;letter-spacing:-.01em}
+.badge{background:var(--s-light);color:var(--p);padding:6px 11px;border-radius:999px;font-weight:800;font-size:.82rem}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:12px 20px;border-bottom:1px solid var(--line);background:#fcfdff}
+.toolbar label{color:var(--muted);font-size:.86rem;font-weight:600;display:flex;align-items:center;gap:6px}
+.toolbar select{border:1px solid var(--line);border-radius:var(--radius-sm);box-shadow:none;padding:6px 8px}
+#status{color:var(--muted);font-size:.86rem;font-weight:600}
+.resources{display:grid;gap:14px;padding:20px}
+.resource{display:flex;gap:16px;border:1px solid var(--line);border-radius:var(--radius-md);padding:16px;text-decoration:none;color:inherit;background:#fff;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+.resource:hover{transform:translateY(-3px);border-color:var(--s);box-shadow:var(--shadow-lg)}
+.resource:focus-visible{outline:none;box-shadow:var(--focus),var(--shadow-lg)}
+.resource strong{color:var(--p);font-size:1.05rem;font-weight:800;letter-spacing:-.01em}
+.resource-body{flex:1;min-width:0}
+.thumb-wrap{flex:0 0 168px;aspect-ratio:16/10;background:linear-gradient(135deg,#dbe9f7,#eef3f9);border-radius:var(--radius-sm);overflow:hidden;border:1px solid var(--line-soft);box-shadow:var(--shadow-sm)}
+.thumb{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
+.resource:hover .thumb{transform:scale(1.06)}
+.meta{color:var(--muted);font-size:.87rem;margin-top:4px;font-weight:500}
+.stars{color:var(--gold);margin-top:9px;font-size:.95rem;letter-spacing:1px}
+.open{color:var(--s);font-weight:800;margin-top:10px;font-size:.92rem}
+.tag-group{margin-top:11px}
+.tag-label{display:block;color:var(--muted);font-size:.72rem;font-weight:800;margin-bottom:6px;text-transform:uppercase;letter-spacing:.07em}
+.keywords,.cds{display:flex;flex-wrap:wrap;gap:6px}
+.cd-chip{border:1px solid var(--line);background:#f8fafc;color:#334155;padding:5px 10px;border-radius:999px;font-size:.75rem;font-weight:600;cursor:pointer;transition:background .15s ease,color .15s ease,transform .1s ease}
+.cd-chip:hover,.cd-chip:focus-visible,.cd-chip.active{background:#334155;color:#fff}
+.cd-chip:active{transform:scale(.96)}
+.cd-chip:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.cd-tooltip{position:fixed;z-index:120;display:none;max-width:min(480px,calc(100vw - 24px));background:#101a2b;color:#fff;padding:11px 14px;border-radius:10px;box-shadow:var(--shadow-lg);font-size:.86rem;line-height:1.45;pointer-events:none}
+.cd-tooltip.show{display:block}
+.keyword{border:1px solid #bcdcf3;background:var(--s-light);color:var(--p);padding:5px 10px;border-radius:999px;font-size:.75rem;font-weight:600;cursor:pointer;transition:background .15s ease,color .15s ease,transform .1s ease}
+.keyword:hover,.keyword.active{background:var(--p);color:#fff}
+.keyword:active{transform:scale(.96)}
+.keyword:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.glossary{display:grid;grid-template-columns:1fr auto;gap:8px;max-height:610px;overflow:auto;scrollbar-width:thin;scrollbar-color:var(--line) transparent}
+.glossary::-webkit-scrollbar{width:8px}
+.glossary::-webkit-scrollbar-thumb{background:var(--line);border-radius:99px}
+.glossary button{display:contents}
+.glossary-term,.glossary-count{padding:10px 11px;border-bottom:1px solid var(--line-soft);cursor:pointer;transition:background .15s ease}
+.glossary-term{text-align:left;color:var(--p);font-weight:700}
+.glossary-count{text-align:center;background:var(--s-light);color:var(--p);border-radius:999px;margin:6px;min-width:40px;font-weight:800;font-size:.82rem}
+.glossary button:hover .glossary-term,.glossary button.active .glossary-term{background:var(--s-light)}
+.glossary-search{width:100%;border:1px solid var(--line);margin:14px 0;border-radius:var(--radius-sm);box-shadow:none;padding:10px 12px}
+.active-filter{background:#fff7e2;border-left:4px solid var(--gold);padding:11px 12px;margin-bottom:12px;border-radius:0 8px 8px 0;font-size:.9rem}
+.pagination{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:4px 20px 20px}
+.pagination button{padding:9px 13px;border:1px solid var(--line);background:#fff;border-radius:var(--radius-sm);cursor:pointer;font-weight:700;color:var(--ink);transition:border-color .15s ease,box-shadow .15s ease}
+.pagination button:hover{border-color:var(--s);box-shadow:var(--shadow-sm)}
+.pagination button.active{background:var(--p);border-color:var(--p);color:#fff;box-shadow:var(--shadow-sm)}
+.overlay{position:fixed;inset:0;background:rgba(10,16,28,.55);backdrop-filter:blur(3px);z-index:100;display:flex;align-items:center;justify-content:center;padding:18px}
+.overlay[hidden]{display:none}
+.dialog{width:min(720px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:var(--radius-lg);padding:26px;box-shadow:var(--shadow-lg)}
+.dialog h2{margin-top:0;color:var(--p)}
+.dialog button{background:var(--p);color:#fff;border:0;border-radius:var(--radius-sm);padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;transition:background .15s ease}
+.dialog button:hover{background:var(--p-dark)}
+.notice{background:#fff7e2;border-left:5px solid var(--gold);padding:13px 14px;border-radius:0 10px 10px 0}
+.empty{color:var(--muted);font-style:italic}
+.skip-link{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden;background:#fff;color:#111;padding:10px 14px;border-radius:var(--radius-sm);z-index:200;box-shadow:var(--shadow-md)}
+.skip-link:focus{left:12px;top:12px;width:auto;height:auto;overflow:visible}
+.backtop{text-align:center;padding:4px 20px 22px}
+.backtop button{background:#fff;border:1px solid var(--line);border-radius:999px;padding:9px 18px;cursor:pointer;color:var(--p);font-weight:700;box-shadow:var(--shadow-sm);transition:box-shadow .15s ease,transform .15s ease}
+.backtop button:hover{box-shadow:var(--shadow-md);transform:translateY(-1px)}
+@media(max-width:900px){main{grid-template-columns:1fr}.filters{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.filters{grid-template-columns:1fr}.top{align-items:flex-start;flex-direction:column}.resource{flex-direction:column}.thumb-wrap{flex-basis:auto;width:100%}}
+.admin-dialog form label{display:block;margin-bottom:10px;font-weight:600;font-size:.88rem;color:var(--muted)}
+.admin-dialog input,.admin-dialog select{display:block;width:100%;margin-top:4px}
+.admin-fieldset{border:1px solid var(--line);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px}
+.admin-check{display:inline-flex;align-items:center;gap:6px;font-weight:500;margin-right:14px}
+.admin-addtag{display:flex;gap:8px;margin-top:4px}
+.admin-actions{display:flex;gap:10px;margin-top:14px}
+.admin-actions button[type="submit"]{background:var(--p);color:#fff;border:0;border-radius:var(--radius-sm);padding:10px 18px;font:inherit;font-weight:700;cursor:pointer}
+.admin-actions button[type="button"]{background:#fff;border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 18px;font:inherit;font-weight:700;cursor:pointer;color:var(--ink)}
+.admin-list{list-style:none;padding:0;margin:10px 0}
+.admin-list li{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line-soft);font-size:.9rem}
+.admin-remove{background:none;border:1px solid var(--line);border-radius:var(--radius-sm);padding:4px 10px;font-size:.78rem;cursor:pointer;flex:0 0 auto}
+.admin-export{width:100%;min-height:120px;margin-top:8px;font-family:ui-monospace,Consolas,monospace;font-size:.8rem;padding:10px;border:1px solid var(--line);border-radius:var(--radius-sm)}
+</style></head><body><a class="skip-link" href="#resources">Skip to simulation results</a><header><div class="top"><h1><button id="reset" class="title">AC9 STEM Simulation Hub</button></h1><nav class="header-links" aria-label="Site"><a href="senior.html">Senior syllabus</a><a href="topics.html">Browse by topic</a><button id="clearFilters" type="button">Reset filters</button><button id="help" type="button">About & Help</button></nav></div><div class="filters"><select id="subject" aria-label="Filter by subject"><option value="">All subjects</option></select><select id="year" aria-label="Filter by year level"><option value="">All years</option></select><select id="strand" aria-label="Filter by strand"><option value="">All strands</option></select><select id="descriptor" aria-label="Filter by curriculum descriptor"><option value="">All CDs</option></select><input id="search" type="search" aria-label="Search simulations, curriculum or tags" placeholder="Search direct simulations, curriculum or tags"></div></header><main><section class="panel"><div class="head"><h2>Direct simulation resources</h2><span id="count" class="badge">0 results</span></div><div class="toolbar"><label>Items per page <select id="pageSize"><option>6</option><option selected>12</option><option>24</option><option value="all">All</option></select></label><span id="status" aria-live="polite">Page 1 of 1</span></div><div id="resources" class="resources"></div><nav id="pagination" class="pagination" aria-label="Result pages"></nav><div class="backtop"><button id="backtop" type="button">↑ Back to top</button></div></section><aside><section class="panel"><div class="body"><h2>Syllabus keyword glossary</h2><p>Select a keyword to filter simulations. The number beside each keyword shows how many simulations match it.</p><input id="glossarySearch" class="glossary-search" aria-label="Find a keyword in the glossary" placeholder="Find a keyword"><div id="activeKeyword"></div><div id="glossary" class="glossary"></div></div></section></aside></main><div id="helpModal" class="overlay" hidden><div class="dialog"><h2>About & Help</h2><p>Use curriculum filters or the keyword glossary to narrow simulations. Select a keyword on a simulation card to pivot to related resources. Select the site title to reset.</p><div class="notice"><strong>AI-generated, vibe-coded resource:</strong> Results, ratings, links and mappings may vary, contain errors or become outdated. Educators must review curriculum fit, accessibility, privacy, safety and suitability before use.</div><p><button id="closeHelp">Close</button></p></div></div><div id="cdTooltip" class="cd-tooltip" role="tooltip"></div><script src="ac9-curriculum-data.js"></script><script src="resources-junior.js"></script><script>
+'use strict';
+const resources=RESOURCES_JUNIOR;
+const $=id=>document.getElementById(id);let keyword='',page=1;const data=typeof curriculumData==='undefined'?[]:curriculumData;
+const CUSTOM_KEY='stemhub_custom_resources_index';
+function loadCustomResources(){try{return JSON.parse(localStorage.getItem(CUSTOM_KEY)||'[]')}catch{return[]}}
+function saveCustomResources(list){try{localStorage.setItem(CUSTOM_KEY,JSON.stringify(list))}catch{}}
+let customResources=loadCustomResources();
+function activeResources(){return resources.concat(customResources)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function thumbUrl(r){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(r.url)+'?w=400&h=240'}
+function placeholderThumb(name){const h=[...name].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,0)%360,ini=name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="400" height="240"><rect width="400" height="240" fill="hsl('+h+',55%,42%)"/><text x="200" y="135" font-family="Segoe UI,Arial,sans-serif" font-size="70" fill="#ffffff" text-anchor="middle" font-weight="700">'+ini+'</text></svg>')}
+function unique(a){return [...new Set(a.filter(Boolean))].sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}))}function fill(el,vals,label){const old=el.value;el.innerHTML='<option value="">'+label+'</option>';vals.forEach(v=>el.add(new Option(v,v)));if(vals.includes(old))el.value=old}
+function updateFilters(){const s=$('subject').value,y=$('year').value,t=$('strand').value;fill($('subject'),unique(data.map(d=>d.subject)),'All subjects');fill($('year'),unique(data.filter(d=>!s||d.subject===s).map(d=>d.year)),'All years');fill($('strand'),unique(data.filter(d=>(!s||d.subject===s)&&(!y||d.year===y)).map(d=>d.strand)),'All strands');const ds=data.filter(d=>(!s||d.subject===s)&&(!y||d.year===y)&&(!t||d.strand===t));const old=$('descriptor').value;$('descriptor').innerHTML='<option value="">All CDs</option>';ds.forEach(d=>{const o=new Option(d.id,d.id);o.title=d.description||'';$('descriptor').add(o)});if(ds.some(d=>d.id===old))$('descriptor').value=old}
+function topicKeywords(){const s=$('subject').value,y=$('year').value,t=$('strand').value,d=data.find(x=>x.id===$('descriptor').value);if(d)return d.keywords||[];return [...new Set(data.filter(x=>(!s||x.subject===s)&&(!y||x.year===y)&&(!t||x.strand===t)).flatMap(x=>x.keywords||[]))]}
+function matchesText(r,q){return [r.name,r.provider,...r.keywords].join(' ').toLowerCase().split(' ').some(w=>q.includes(w))||q.split(/\s+/).some(w=>[r.name,r.provider,...r.keywords].join(' ').toLowerCase().includes(w))}
+const ROOT_URL_ALLOWLIST=['www.solarsystemscope.com','solarsystemscope.com'];
+function isDirectSimulation(r){try{const u=new URL(r.url),p=u.pathname.replace(/\/$/,'');const blocked=['','/en/simulations','/simulations','/classroom-resources','/welcome-to-simbucket','/vlabs'];return !blocked.includes(p)||!!u.search||ROOT_URL_ALLOWLIST.includes(u.hostname)}catch{return false}}function filtered(){const area=$('subject').value;let list=activeResources().filter(isDirectSimulation).filter(r=>(!area||r.areas.some(a=>a.toLowerCase().includes(area.toLowerCase())))&&(!keyword||r.keywords.includes(keyword)));const tk=topicKeywords();if(tk.length){const narrowed=list.filter(r=>r.keywords.some(k=>tk.includes(k)));if(narrowed.length)list=narrowed}const sq=$('search').value.trim().toLowerCase();if(sq)list=list.filter(r=>matchesText(r,sq));return list.sort((a,b)=>b.score-a.score||a.name.localeCompare(b.name))}
+function selectKeyword(k){keyword=keyword===k?'':k;page=1;render()}
+function relevantDescriptors(r){
+ const rkw=new Set(r.keywords.map(k=>k.toLowerCase()));
+ return data.map(d=>({d,score:(d.keywords||[]).filter(k=>rkw.has(k.toLowerCase())).length}))
+  .filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.d.id.localeCompare(b.d.id,undefined,{numeric:true})).slice(0,10).map(x=>x.d)
+}
+function showCdTooltip(event,d){const tip=$('cdTooltip');tip.textContent=d.description||'No description available.';tip.classList.add('show');const rect=event.currentTarget.getBoundingClientRect(),width=Math.min(480,window.innerWidth-24);tip.style.width=width+'px';tip.style.left=Math.min(Math.max(12,rect.left),window.innerWidth-width-12)+'px';tip.style.top=Math.min(window.innerHeight-100,rect.bottom+8)+'px';requestAnimationFrame(()=>{const tr=tip.getBoundingClientRect();if(tr.bottom>window.innerHeight-12)tip.style.top=Math.max(12,rect.top-tr.height-8)+'px'})}
+function hideCdTooltip(){$('cdTooltip').classList.remove('show')}
+function selectCd(event,id){event.preventDefault();event.stopPropagation();const d=data.find(x=>x.id===id);if(!d)return;$('subject').value=d.subject;updateFilters();$('year').value=d.year;updateFilters();$('strand').value=d.strand;updateFilters();$('descriptor').value=d.id;keyword='';page=1;hideCdTooltip();render();window.scrollTo({top:0,behavior:'smooth'})}
+function wireCdChips(card){card.querySelectorAll('.cd-chip').forEach(chip=>{const d=data.find(x=>x.id===chip.dataset.cd);if(!d)return;chip.setAttribute('aria-label',d.id+': '+(d.description||'No description available.')+'. Select to filter.');chip.onmouseenter=e=>showCdTooltip(e,d);chip.onmouseleave=hideCdTooltip;chip.onfocus=e=>showCdTooltip(e,d);chip.onblur=hideCdTooltip;chip.onclick=e=>selectCd(e,d.id);chip.onkeydown=e=>{if(e.key==='Enter'||e.key===' ')selectCd(e,d.id)}})}
+function makeCard(r){const a=document.createElement('a');a.className='resource';a.href='simulation.html?url='+encodeURIComponent(r.url);const cds=relevantDescriptors(r);a.innerHTML='<div class="thumb-wrap"><img class="thumb" src="'+thumbUrl(r)+'" alt="Preview of '+esc(r.name)+'" loading="lazy" width="400" height="240"></div><div class="resource-body"><strong>'+r.name+'</strong><div class="meta">'+r.provider+'</div><div class="stars">'+'★'.repeat(r.score)+'☆'.repeat(5-r.score)+'</div><div class="tag-group"><span class="tag-label">Keywords</span><div class="keywords">'+r.keywords.map(k=>'<button type="button" class="keyword '+(keyword===k?'active':'')+'" data-keyword="'+k+'">'+k+'</button>').join('')+'</div></div><div class="tag-group"><span class="tag-label">Relevant CDs</span><div class="cds">'+(cds.length?cds.map(d=>'<button type="button" class="cd-chip '+($('descriptor').value===d.id?'active':'')+'" data-cd="'+d.id+'">'+d.id+'</button>').join(''):'<span class="meta">No precise CD match</span>')+'</div></div><div class="open">Open resource ↗</div></div>';const img=a.querySelector('.thumb');img.addEventListener('error',()=>{img.src=placeholderThumb(r.name)},{once:true});a.querySelectorAll('.keyword').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();selectKeyword(b.dataset.keyword)});wireCdChips(a);return a}
+function renderGlossary(items){const counts={};items.forEach(r=>r.keywords.forEach(k=>counts[k]=(counts[k]||0)+1));const q=$('glossarySearch').value.toLowerCase(),box=$('glossary');box.innerHTML='';Object.entries(counts).filter(([k])=>k.toLowerCase().includes(q)).sort((a,b)=>a[0].localeCompare(b[0])).forEach(([k,c])=>{const b=document.createElement('button');b.className=keyword===k?'active':'';b.innerHTML='<span class="glossary-term">'+k+'</span><span class="glossary-count">'+c+'</span>';b.onclick=()=>selectKeyword(k);box.appendChild(b)});$('activeKeyword').innerHTML=keyword?'<div class="active-filter">Filtering by <strong>'+keyword+'</strong> · select again to clear</div>':''}
+function render(){const all=filtered(),raw=$('pageSize').value,size=raw==='all'?Math.max(all.length,1):Number(raw),pages=Math.max(1,Math.ceil(all.length/size));page=Math.min(page,pages);const start=(page-1)*size,end=Math.min(start+size,all.length),box=$('resources');box.innerHTML='';all.slice(start,end).forEach(r=>box.appendChild(makeCard(r)));if(!all.length)box.innerHTML='<p class="empty">No simulations match the current filters.</p>';$('count').textContent=all.length+' results';$('status').textContent=all.length?'Showing '+(start+1)+'–'+end+' of '+all.length+' · Page '+page+' of '+pages:'No results';const nav=$('pagination');nav.innerHTML='';if(raw!=='all')for(let p=1;p<=pages;p++){const b=document.createElement('button');b.textContent=p;b.className=p===page?'active':'';b.onclick=()=>{page=p;render()};nav.appendChild(b)}renderGlossary(activeResources().filter(r=>!$('subject').value||r.areas.some(a=>a.toLowerCase().includes($('subject').value.toLowerCase()))))}
+function reset(){keyword='';page=1;['subject','year','strand','descriptor','search','glossarySearch'].forEach(id=>$(id).value='');updateFilters();render()}['subject','year','strand'].forEach(id=>$(id).onchange=()=>{updateFilters();page=1;render()});$('descriptor').onchange=$('search').oninput=()=>{page=1;render()};$('pageSize').onchange=()=>{page=1;render()};$('glossarySearch').oninput=()=>renderGlossary(activeResources());$('reset').onclick=reset;$('clearFilters').onclick=reset;$('backtop').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});const modal=$('helpModal');$('help').onclick=()=>modal.hidden=false;$('closeHelp').onclick=()=>modal.hidden=true;modal.onclick=e=>{if(e.target===modal)modal.hidden=true};updateFilters();render();
+const initCd=new URLSearchParams(location.search).get('cd');if(initCd){const d=data.find(x=>x.id===initCd);if(d){$('subject').value=d.subject;updateFilters();$('year').value=d.year;updateFilters();$('strand').value=d.strand;updateFilters();$('descriptor').value=d.id;render();window.scrollTo({top:0,behavior:'smooth'})}}
+function initAdmin(){
+  if(new URLSearchParams(location.search).get('admin')!=='1')return;
+  const vocab=[...new Set(data.flatMap(d=>d.keywords||[]))].sort((a,b)=>a.localeCompare(b));
+  let tags=[];
+  const btn=document.createElement('button');
+  btn.type='button';btn.id='admTrigger';btn.textContent='+ Add simulation';
+  $('help').insertAdjacentElement('beforebegin',btn);
+  const modal=document.createElement('div');
+  modal.id='adminModal';modal.className='overlay';modal.hidden=true;
+  modal.innerHTML='<div class="dialog admin-dialog"><h2>Add a simulation</h2><p class="meta">Visible only via <code>?admin=1</code> in the URL. New entries save to this browser only — use Export to make them permanent in the site files.</p><form id="admForm"><label>Name<input id="admName" required></label><label>Provider<input id="admProvider"></label><label>URL<input id="admUrl" type="url" required placeholder="https://"></label><label>Score<select id="admScore"><option value="5">5 stars</option><option value="4">4 stars</option><option value="3">3 stars</option><option value="2">2 stars</option><option value="1">1 star</option></select></label><label>Topic category (used on the Browse by Topic page)<select id="admCategory"><optgroup label="Mathematics"><option>Algebra & Functions</option><option>Geometry & Measurement</option><option>Number, Ratios & Financial Maths</option><option>Statistics & Probability</option><option>Calculators & Graphing Tools</option></optgroup><optgroup label="Science"><option>Physics</option><option>Chemistry</option><option>Biology</option><option>Earth & Space Science</option><option>Psychology</option></optgroup></select></label><fieldset class="admin-fieldset"><legend>Subject area</legend><label class="admin-check"><input type="checkbox" id="admMath" value="Mathematics"> Mathematics</label><label class="admin-check"><input type="checkbox" id="admSci" value="Science"> Science</label></fieldset><div class="tag-group"><span class="tag-label">Suggested keyword tags (select to remove)</span><div id="admTags" class="keywords"></div></div><label>Add another tag<div class="admin-addtag"><select id="admVocabAdd"><option value="">Pick from existing tags…</option></select><input id="admCustomTag" placeholder="or type a new tag, press Enter"></div></label><p id="admPreview" class="meta"></p><div class="admin-actions"><button type="submit">Add simulation</button><button type="button" id="admCancel">Cancel</button></div></form><hr><h3>Your additions (<span id="admCount">0</span>)</h3><ul id="admList" class="admin-list"></ul><p><button type="button" id="admExportBtn">Export as code</button></p><textarea id="admExportOut" class="admin-export" readonly hidden></textarea><p><button type="button" id="closeAdmin">Close</button></p></div>';
+  document.body.appendChild(modal);
+  const nameEl=$('admName'),provEl=$('admProvider'),urlEl=$('admUrl'),tagsBox=$('admTags'),vocabSel=$('admVocabAdd'),customTagEl=$('admCustomTag'),preview=$('admPreview');
+  function fillVocabSelect(){vocabSel.innerHTML='<option value="">Pick from existing tags…</option>';vocab.filter(v=>!tags.includes(v)).forEach(v=>vocabSel.add(new Option(v,v)))}
+  function renderTags(){tagsBox.innerHTML=tags.map(t=>'<button type="button" class="keyword active" data-tag="'+esc(t)+'">'+esc(t)+' ×</button>').join('');tagsBox.querySelectorAll('button').forEach(b=>b.onclick=()=>{tags=tags.filter(t=>t!==b.dataset.tag);renderTags()});fillVocabSelect();updatePreview()}
+  function addTag(t){t=t.trim();if(t&&!tags.includes(t)){tags.push(t);renderTags()}}
+  function suggest(){const text=(nameEl.value+' '+provEl.value+' '+urlEl.value).toLowerCase();const textWords=text.split(/[^a-z0-9]+/).filter(w=>w.length>=3);const found=vocab.filter(v=>{const lv=v.toLowerCase();if(text.includes(lv))return true;return lv.split(/\s+/).some(vw=>vw.length>=4&&(text.includes(vw)||textWords.some(tw=>tw.length>=4&&(vw.includes(tw)||tw.includes(vw)))))});tags=[...new Set(found)];renderTags()}
+  function updatePreview(){const n=data.filter(d=>(d.keywords||[]).some(k=>tags.includes(k))).length;preview.textContent=tags.length?('Would match '+n+' Years 7–10 curriculum descriptor'+(n===1?'':'s')+'.'):'Type a name/URL to get suggested tags, or add tags manually.'}
+  [nameEl,provEl,urlEl].forEach(el=>el.addEventListener('input',suggest));
+  vocabSel.onchange=()=>{if(vocabSel.value)addTag(vocabSel.value)};
+  customTagEl.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addTag(customTagEl.value);customTagEl.value=''}});
+  function renderList(){const list=$('admList');$('admCount').textContent=customResources.length;list.innerHTML=customResources.length?customResources.map((r,i)=>'<li>'+esc(r.name)+' <span class="meta">('+esc(r.provider||'—')+')</span><button type="button" data-i="'+i+'" class="admin-remove">Remove</button></li>').join(''):'<li class="meta">None yet.</li>';list.querySelectorAll('.admin-remove').forEach(b=>b.onclick=()=>{customResources.splice(Number(b.dataset.i),1);saveCustomResources(customResources);renderList();page=1;render()})}
+  $('admForm').onsubmit=e=>{
+    e.preventDefault();
+    const areas=[];if($('admMath').checked)areas.push('Mathematics','Senior Mathematics');if($('admSci').checked)areas.push('Science','Senior Science');
+    if(!areas.length){alert('Select at least one subject area.');return}
+    let url;try{url=new URL(urlEl.value).toString()}catch{alert('Enter a valid URL.');return}
+    customResources.push({name:nameEl.value.trim(),provider:provEl.value.trim()||'—',url,areas,keywords:tags.slice(),score:Number($('admScore').value),category:$('admCategory').value});
+    saveCustomResources(customResources);
+    $('admForm').reset();tags=[];renderTags();renderList();page=1;render();
+  };
+  $('admExportBtn').onclick=()=>{
+    const out=$('admExportOut');
+    out.hidden=false;
+    out.value=customResources.map(r=>'{name:'+JSON.stringify(r.name)+',provider:'+JSON.stringify(r.provider)+',url:'+JSON.stringify(r.url)+',areas:'+JSON.stringify(r.areas)+',keywords:'+JSON.stringify(r.keywords)+',score:'+r.score+',category:'+JSON.stringify(r.category)+'},').join('\n');
+    out.select();
+    try{navigator.clipboard.writeText(out.value)}catch{}
+  };
+  btn.onclick=()=>{modal.hidden=false;renderList();fillVocabSelect()};
+  $('admCancel').onclick=()=>modal.hidden=true;
+  $('closeAdmin').onclick=()=>modal.hidden=true;
+  modal.onclick=e=>{if(e.target===modal)modal.hidden=true};
+}
+initAdmin();
+</script></body></html>

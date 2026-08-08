@@ -1,0 +1,221 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simulation — STEM Simulation Hub</title><style>
+:root{--p:#0f6e63;--p-dark:#0b544c;--s:#14b8a6;--s-light:#e4f7f4;--bg:#eef8f6;--card:#fff;--ink:#0f1b19;--muted:#5b6b68;--line:#d7ebe7;--line-soft:#eaf6f4;--gold:#f5a623;--gold-deep:#c9820a;--radius-sm:8px;--radius-md:14px;--radius-lg:20px;--shadow-sm:0 1px 2px rgba(15,27,25,.06),0 1px 1px rgba(15,27,25,.04);--shadow-md:0 10px 24px -8px rgba(15,27,25,.16),0 2px 8px rgba(15,27,25,.06);--shadow-lg:0 24px 48px -14px rgba(15,27,25,.28),0 4px 14px rgba(15,27,25,.08);--focus:0 0 0 3px rgba(20,184,166,.35);--worksheet:#8a5a2b;--worksheet-light:#f7ecdd}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:-apple-system,"Segoe UI","Segoe UI Variable",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1100px 480px at 105% -12%,#d9f3ee 0%,transparent 60%),radial-gradient(900px 420px at -10% 0%,#eaf9f6 0%,transparent 55%),var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
+header{background:linear-gradient(120deg,var(--p) 0%,var(--s) 72%,#5eead4 100%);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:10;box-shadow:0 8px 24px -12px rgba(11,84,76,.5)}
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center;max-width:1100px;margin:0 auto}
+.top a.brand{color:#fff;font-weight:800;text-decoration:none;font-size:1.05rem}
+.top-links{display:flex;flex-wrap:wrap;gap:8px}
+.top-links a{color:#fff;border:1px solid rgba(255,255,255,.35);background:rgba(255,255,255,.14);border-radius:var(--radius-sm);padding:8px 13px;text-decoration:none;font-weight:700;font-size:.86rem;cursor:pointer;transition:background .15s ease,box-shadow .15s ease}
+.top-links a:hover{background:rgba(255,255,255,.26);box-shadow:var(--shadow-sm)}
+.top-links a:focus-visible{outline:2px solid #fff;outline-offset:2px}
+main{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
+.back{display:inline-flex;align-items:center;gap:6px;color:var(--p);text-decoration:none;font-weight:700;font-size:.88rem;margin-bottom:16px}
+.back:hover{text-decoration:underline}
+.hero{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border:1px solid var(--line-soft);overflow:hidden;display:grid;grid-template-columns:1.1fr 1fr}
+.hero-shot{background:linear-gradient(135deg,#d3f0ea,#eaf9f6);position:relative;min-height:280px}
+.hero-shot img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-body{padding:26px 28px;display:flex;flex-direction:column;gap:10px}
+.eyebrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.badge-cat{background:var(--s-light);color:var(--p);padding:6px 12px;border-radius:999px;font-weight:800;font-size:.78rem;text-decoration:none}
+.badge-cat:hover{background:var(--p);color:#fff}
+.badge-subj{color:var(--muted);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+h1{font-size:1.6rem;margin:2px 0 0;letter-spacing:-.01em;font-weight:800}
+.provider{color:var(--muted);font-size:.94rem;margin:0}
+.stars{color:var(--gold);font-size:1rem;letter-spacing:1px;margin:2px 0}
+.open-btn{margin-top:6px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--p);color:#fff;font-weight:800;text-decoration:none;padding:13px 20px;border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);transition:background .15s ease,transform .1s ease;width:fit-content}
+.open-btn:hover{background:var(--p-dark)}
+.open-btn:active{transform:translateY(1px)}
+
+section.block{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border:1px solid var(--line-soft);padding:22px 26px;margin-top:20px}
+section.block h2{margin:0 0 10px;font-size:1.05rem;color:var(--p);font-weight:800}
+section.block p{margin:0;color:var(--ink)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+
+.worksheet-card{background:var(--worksheet-light);border:1px solid #e6d2b3;border-radius:var(--radius-md);padding:16px 18px;margin-top:20px}
+.worksheet-head{display:flex;align-items:center;gap:14px}
+.worksheet-icon{flex:0 0 auto;width:42px;height:42px;border-radius:10px;background:var(--worksheet);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:.72rem}
+.worksheet-text{flex:1;min-width:0}
+.worksheet-text strong{display:block;color:#5c3c17;font-size:.95rem}
+.worksheet-text span{color:#7a5a30;font-size:.84rem}
+.worksheet-actions{flex:0 0 auto;display:flex;gap:8px}
+.worksheet-card a.dl{background:var(--worksheet);color:#fff;text-decoration:none;font-weight:700;font-size:.84rem;padding:9px 16px;border-radius:var(--radius-sm);white-space:nowrap}
+.worksheet-card a.dl:hover{background:#6f4720}
+.worksheet-card button.preview-toggle{background:#fff;color:var(--worksheet);border:1px solid var(--worksheet);font-weight:700;font-size:.84rem;padding:9px 16px;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap}
+.worksheet-card button.preview-toggle:hover{background:var(--worksheet-light)}
+.worksheet-preview{margin-top:14px}
+.worksheet-preview iframe{width:100%;height:70vh;max-height:640px;border:1px solid #e6d2b3;border-radius:var(--radius-sm);background:#fff;display:block}
+.worksheet-preview .preview-fallback{margin:8px 0 0;font-size:.8rem;color:#7a5a30}
+.worksheet-preview .preview-fallback a{color:var(--worksheet);font-weight:700}
+.worksheet-warn{display:flex;gap:8px;align-items:flex-start;margin-top:12px;padding:10px 12px;background:#fdf1de;border:1px solid #e3ac52;border-radius:var(--radius-sm);color:#6b4a12;font-size:.8rem;line-height:1.45}
+.worksheet-warn strong{font-weight:800}
+.worksheet-group{margin-top:20px;display:flex;flex-direction:column;gap:14px}
+.worksheet-group .worksheet-card{margin-top:0}
+.worksheet-card.secondary{background:#f4f2ef;border-color:#e2ddd4}
+.worksheet-card.secondary .worksheet-icon{background:#7a7264}
+.worksheet-card.secondary .worksheet-text strong{color:#4a453c}
+.worksheet-card.secondary .worksheet-text span{color:#726a5b}
+.worksheet-card.secondary button.preview-toggle{color:#5c5545;border-color:#5c5545}
+.worksheet-card.secondary button.preview-toggle:hover{background:#e9e5dd}
+.worksheet-card.secondary a.dl{background:#5c5545}
+.worksheet-card.secondary a.dl:hover{background:#443f34}
+.worksheet-badge{display:inline-block;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:2px 8px;border-radius:999px;margin-left:8px;vertical-align:middle}
+.worksheet-badge.primary{background:#dff3ec;color:var(--p-dark)}
+.worksheet-badge.secondary{background:#e9e5dd;color:#5c5545}
+@media(max-width:600px){.worksheet-head{flex-wrap:wrap}.worksheet-actions{width:100%}.worksheet-actions a,.worksheet-actions button{flex:1}}
+
+.tag-label{display:block;color:var(--muted);font-size:.72rem;font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em}
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{border:1px solid #a9ded4;background:var(--s-light);color:var(--p);padding:5px 11px;border-radius:999px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer}
+.chip:hover{background:var(--p);color:#fff}
+.chip.cd{position:relative}
+.chip-empty{color:var(--muted);font-size:.85rem;font-style:italic}
+
+.notfound{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border:1px solid var(--line-soft);padding:40px 30px;text-align:center;margin-top:20px}
+.notfound h1{margin-top:0}
+
+footer{max-width:1100px;margin:32px auto 0;padding:0 20px;color:var(--muted);font-size:.78rem}
+
+@media(max-width:760px){
+  .hero{grid-template-columns:1fr}
+  .hero-shot{min-height:200px}
+  .grid2{grid-template-columns:1fr}
+}
+</style></head><body>
+<header><div class="top"><a class="brand" href="topics.html">STEM Simulation Hub</a><nav class="top-links" aria-label="Site"><a href="index.html">Years 7–10 hub</a><a href="senior.html">Senior syllabus</a><a href="topics.html">Browse by topic</a></nav></div></header>
+<main id="main">
+<a class="back" href="#" id="backLink">← Back</a>
+<div id="content"></div>
+</main>
+<footer>Simulation pages are generated from the hub's own curriculum and topic data — always confirm suitability, accessibility and safety before classroom use.</footer>
+<script src="ac9-curriculum-data.js"></script>
+<script src="resources-junior.js"></script>
+<script src="resources-senior.js"></script>
+<script src="syllabus-senior.js"></script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function thumbUrl(url,w,h){return 'https://s.wordpress.com/mshots/v1/'+encodeURIComponent(url)+'?w='+w+'&h='+h}
+function placeholderThumb(name){const h=[...name].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,0)%360,ini=name.split(/\s+/).filter(Boolean).slice(0,2).map(w=>w[0]).join('').toUpperCase();return 'data:image/svg+xml;utf8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="800" height="440"><rect width="800" height="440" fill="hsl('+h+',55%,38%)"/><text x="400" y="240" font-family="Segoe UI,Arial,sans-serif" font-size="120" fill="#ffffff" text-anchor="middle" font-weight="700">'+ini+'</text></svg>')}
+function loadCustom(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}catch{return[]}}
+function norm(u){return String(u||'').trim().toLowerCase()}
+function normalizeText(value){return String(value||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,' ')}
+function tokenize(value){return normalizeText(value).split(/\s+/).filter(Boolean)}
+function matchesTopicKeyword(term,keyword){const nt=normalizeText(term),nk=normalizeText(keyword);if(!nt||!nk)return false;if(nt===nk)return true;const tt=tokenize(term),kt=tokenize(keyword);if(!tt.length||!kt.length)return false;if(tt.length===1&&kt.length===1)return tt[0]===kt[0];return tt.some(t=>kt.includes(t))||kt.some(t=>tt.includes(t))}
+
+const data=typeof curriculumData==='undefined'?[]:curriculumData;
+const syllabus=typeof SYLLABUS_SENIOR==='undefined'?[]:SYLLABUS_SENIOR;
+const juniorAll=[...(typeof RESOURCES_JUNIOR!=='undefined'?RESOURCES_JUNIOR:[]),...loadCustom('stemhub_custom_resources_index')];
+const seniorAll=[...(typeof RESOURCES_SENIOR!=='undefined'?RESOURCES_SENIOR:[]),...loadCustom('stemhub_custom_resources_senior')];
+
+const targetUrl=new URLSearchParams(location.search).get('url')||'';
+const juniorMatch=juniorAll.find(r=>norm(r.url)===norm(targetUrl));
+const seniorMatch=seniorAll.find(r=>norm(r.url)===norm(targetUrl));
+
+function relevantDescriptors(keywords){
+  const kw=new Set(keywords.map(k=>k.toLowerCase()));
+  return data.map(d=>({d,score:(d.keywords||[]).filter(k=>kw.has(k.toLowerCase())).length}))
+    .filter(x=>x.score>0).sort((a,b)=>b.score-a.score||a.d.id.localeCompare(b.d.id,undefined,{numeric:true})).slice(0,12).map(x=>x.d)
+}
+function worksheetCardHtml(ws,opts){
+  const badge=opts.badge?'<span class="worksheet-badge '+(opts.secondary?'secondary':'primary')+'">'+esc(opts.badge)+'</span>':'';
+  return '<div class="worksheet-card'+(opts.secondary?' secondary':'')+'"><div class="worksheet-head"><div class="worksheet-icon">PDF</div><div class="worksheet-text"><strong>'+esc(opts.title)+badge+'</strong><span>'+esc(ws.label||'Companion worksheet')+'</span></div><div class="worksheet-actions"><button type="button" class="preview-toggle" id="'+opts.prefix+'Toggle">Preview ▾</button><a class="dl" href="'+esc(ws.url)+'" target="_blank" rel="noopener noreferrer">Download ↓</a></div></div>'+
+    (opts.warn?'<div class="worksheet-warn">⚠️ <span><strong>AI-generated worksheet.</strong> This task sheet was drafted automatically from the hub\'s curriculum-mapping data and has not been checked by a human. Review it for accuracy, safety and suitability before giving it to students.</span></div>':'')+
+    '<div class="worksheet-preview" id="'+opts.prefix+'Preview" hidden></div></div>'
+}
+function wireWorksheetCard(prefix,ws){
+  const toggle=$(prefix+'Toggle'),prev=$(prefix+'Preview');
+  if(!toggle||!prev)return;
+  let loaded=false;
+  toggle.onclick=()=>{
+    const opening=prev.hidden;
+    prev.hidden=!opening;
+    toggle.textContent=opening?'Hide preview ▴':'Preview ▾';
+    if(opening&&!loaded){
+      loaded=true;
+      prev.innerHTML='<iframe src="'+esc(ws.url)+'" title="Preview of '+esc(ws.label||'worksheet')+'" loading="lazy"></iframe><p class="preview-fallback">If the preview doesn\'t display, <a href="'+esc(ws.url)+'" target="_blank" rel="noopener noreferrer">open the worksheet in a new tab</a> instead.</p>';
+    }
+    if(opening)prev.scrollIntoView({behavior:'smooth',block:'nearest'})
+  };
+}
+function relevantTopics(keywords){
+  const all=[...new Set(syllabus.flatMap(x=>x.units.flatMap(u=>u[2])))];
+  return all.filter(t=>keywords.some(k=>matchesTopicKeyword(t,k)))
+}
+
+function render(){
+  const box=$('content');
+  if(!juniorMatch&&!seniorMatch){
+    box.innerHTML='<div class="notfound"><h1>Simulation not found</h1><p>We couldn’t find a matching entry for this link. It may have been removed, or the link is out of date.</p><p style="margin-top:14px"><a class="open-btn" href="topics.html">Browse all simulations</a></p></div>';
+    document.title='Not found — STEM Simulation Hub';
+    return
+  }
+  const base=juniorMatch||seniorMatch;
+  const keywords=[...new Set([...(juniorMatch?.keywords||[]),...(seniorMatch?.keywords||[])])];
+  const description=(juniorMatch&&juniorMatch.description)||(seniorMatch&&seniorMatch.description)||'';
+  const howToUse=(juniorMatch&&juniorMatch.howToUse)||(seniorMatch&&seniorMatch.howToUse)||'';
+  const realWorksheet=(juniorMatch&&juniorMatch.worksheet)||(seniorMatch&&seniorMatch.worksheet)||null;
+  const aiWorksheet=(juniorMatch&&juniorMatch.aiWorksheet)||(seniorMatch&&seniorMatch.aiWorksheet)||null;
+  const category=(juniorMatch&&juniorMatch.category)||(seniorMatch&&seniorMatch.category)||'';
+  const name=base.name,provider=base.provider,score=base.score||0,url=base.url;
+  document.title=name+' — STEM Simulation Hub';
+
+  const cds=relevantDescriptors(keywords);
+  const topics=relevantTopics(keywords);
+
+  const subjectLine=[juniorMatch?'Years 7–10 hub':null,seniorMatch?'QCAA Senior syllabus':null].filter(Boolean).join(' · ');
+
+  box.innerHTML=
+    '<div class="hero">'+
+      '<div class="hero-shot"><img src="'+thumbUrl(url,800,600)+'" alt="Preview of '+esc(name)+'" loading="lazy" width="800" height="600"></div>'+
+      '<div class="hero-body">'+
+        '<div class="eyebrow">'+(category?'<a class="badge-cat" href="topics.html?category='+encodeURIComponent(category)+'">'+esc(category)+'</a>':'')+'</div>'+
+        (subjectLine?'<div class="badge-subj">'+esc(subjectLine)+'</div>':'')+
+        '<h1>'+esc(name)+'</h1>'+
+        '<p class="provider">'+esc(provider||'')+'</p>'+
+        '<div class="stars">'+'★'.repeat(score)+'☆'.repeat(5-score)+'</div>'+
+        '<a class="open-btn" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">Open simulation ↗</a>'+
+      '</div>'+
+    '</div>'+
+    '<div class="grid2">'+
+      '<section class="block"><h2>What it is</h2><p>'+esc(description||'No description available yet.')+'</p></section>'+
+      '<section class="block"><h2>How to use it</h2><p>'+esc(howToUse||'No usage notes available yet.')+'</p></section>'+
+    '</div>'+
+    ((realWorksheet||aiWorksheet)?
+      '<div class="worksheet-group">'+
+      (realWorksheet?worksheetCardHtml(realWorksheet,{prefix:'wsReal',secondary:false,title:'Recommended worksheet',badge:'Primary'}):'')+
+      (aiWorksheet?worksheetCardHtml(aiWorksheet,{prefix:'wsAi',secondary:true,title:realWorksheet?'Alternative: AI-generated worksheet':'AI-generated worksheet',badge:realWorksheet?'Secondary':null,warn:true}):'')+
+      '</div>'
+      :'')+
+    '<section class="block" style="margin-top:20px"><h2>Keywords</h2><div class="chips">'+
+      (keywords.length?keywords.map(k=>'<a class="chip" href="topics.html?search='+encodeURIComponent(k)+'">'+esc(k)+'</a>').join(''):'<span class="chip-empty">No keywords recorded</span>')+
+    '</div></section>'+
+    '<section class="block"><h2>Relevant AC9 curriculum descriptors (Years 7–10)</h2><div class="chips">'+
+      (cds.length?cds.map(d=>'<a class="chip cd" href="index.html?cd='+encodeURIComponent(d.id)+'" title="'+esc(d.description||'')+'">'+esc(d.id)+'</a>').join(''):'<span class="chip-empty">No precise AC9 match</span>')+
+    '</div></section>'+
+    '<section class="block"><h2>Matched QCAA senior syllabus topics</h2><div class="chips">'+
+      (topics.length?topics.map(t=>'<a class="chip" href="senior.html?topic='+encodeURIComponent(t)+'">'+esc(t)+'</a>').join(''):'<span class="chip-empty">No precise QCAA topic match</span>')+
+    '</div></section>';
+
+  const img=box.querySelector('.hero-shot img');
+  img.addEventListener('error',()=>{img.src=placeholderThumb(name)},{once:true});
+
+  if(realWorksheet)wireWorksheetCard('wsReal',realWorksheet);
+  if(aiWorksheet)wireWorksheetCard('wsAi',aiWorksheet);
+}
+
+function setBack(){
+  const ref=document.referrer;
+  const link=$('backLink');
+  if(ref && /\/(index|senior|topics)\.html/.test(ref)){
+    link.href=ref;
+  } else {
+    link.href='topics.html';
+  }
+}
+setBack();
+render();
+</script>
+</body></html>
