@@ -1,6 +1,3 @@
-<!doctype html>
-<html lang="en">
-<head>
 <meta charset="utf-8" />
 <title>Chain &amp; Curve Lab</title>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -23,6 +20,7 @@
     --serif:"Iowan Old Style","Palatino Linotype","URW Palladio","P052",Georgia,serif;
     --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --mono:"Cascadia Code","SF Mono","JetBrains Mono",Consolas,"Liberation Mono",monospace;
+    --mathfont:"Cambria Math","STIX Two Text","Latin Modern Math",Cambria,"Times New Roman",var(--serif);
     --radius:10px;
     --shadow:0 1px 2px rgba(23,37,45,.06), 0 6px 16px rgba(23,37,45,.08);
   }
@@ -276,15 +274,15 @@
     margin:0 0 6px;
   }
   .screen .eq{
-    font-family:var(--mono);
-    font-size:.92rem;
+    font-family:var(--mathfont);
+    font-size:1.18rem;
     color:var(--screen-fg);
-    line-height:1.55;
+    line-height:2.1;
     min-height:2.6em;
     text-shadow:0 0 6px rgba(123,224,168,.35);
     word-break:break-word;
   }
-  .screen .eq .dim{opacity:.55;}
+  .screen .eq .dim{opacity:.55; font-family:var(--sans); font-size:.78rem;}
   .screen .stats{
     display:flex;
     gap:16px;
@@ -292,6 +290,42 @@
     font-family:var(--mono);
     font-size:.68rem;
     color:rgba(123,224,168,.75);
+  }
+
+  /* ---------- Mathematical typesetting ---------- */
+  .math{
+    font-family:var(--mathfont);
+    font-style:normal;
+    font-variant-ligatures:none;
+  }
+  .math .mvar{ font-style:italic; }
+  .math .mfn{ font-style:normal; }
+  .math sup{
+    font-size:.66em;
+    line-height:0;
+    position:relative;
+    top:-.62em;
+    margin-left:.02em;
+  }
+  .math .mfrac{
+    display:inline-block;
+    vertical-align:middle;
+    text-align:center;
+    margin:0 .18em;
+    font-size:.88em;
+    line-height:1.3;
+  }
+  .math .mfrac .mf-num,
+  .math .mfrac .mf-den{
+    display:block;
+    padding:0 .2em;
+  }
+  .math .mfrac .mf-num{
+    border-bottom:1.2px solid currentColor;
+    padding-bottom:.1em;
+  }
+  .math .mfrac .mf-den{
+    padding-top:.1em;
   }
 
   .field{margin-bottom:13px;}
@@ -427,7 +461,7 @@
     margin-bottom:10px;
   }
   .param-cell{display:flex;flex-direction:column;gap:3px;align-items:center;}
-  .param-cell label{font-family:var(--mono);font-size:.72rem;color:var(--brass-strong);font-weight:700;}
+  .param-cell label{font-family:var(--mathfont);font-style:italic;font-size:.82rem;color:var(--brass-strong);font-weight:700;}
   .param-cell input{
     width:100%;
     font-family:var(--mono);
@@ -477,12 +511,12 @@
   .explain-body{padding-bottom:14px;font-size:.9rem;line-height:1.65;color:var(--ink-soft);}
   .explain-body p{margin:0 0 10px;}
   .explain-body code{font-family:var(--mono);background:var(--paper);padding:1px 5px;border-radius:4px;color:var(--ink);}
+  .explain-body .math{color:var(--ink);}
 
   ::selection{background:var(--brass);color:#1B1204;}
   @media (prefers-reduced-motion:reduce){*{transition:none !important;}}
 </style>
-</head>
-<body>
+
 <div class="wrap">
   <header>
     <div>
@@ -532,8 +566,8 @@
 
       <div class="card" id="discoverCard">
         <h2>Fitted models</h2>
-        <label class="checkline"><input type="checkbox" id="showCat" checked><span class="dot" style="background:var(--teal)"></span>Catenary&nbsp;<span style="color:var(--ink-soft);font-weight:400;">y = a&middot;cosh((x−h)/a)+k</span></label>
-        <label class="checkline"><input type="checkbox" id="showPar"><span class="dot" style="background:var(--plum)"></span>Parabola&nbsp;<span style="color:var(--ink-soft);font-weight:400;">y = Ax²+Bx+C</span> (least-squares)</label>
+        <label class="checkline"><input type="checkbox" id="showCat" checked><span class="dot" style="background:var(--teal)"></span>Catenary&nbsp;<span class="math" style="color:var(--ink-soft);font-weight:400;"><span class="mvar">y</span> = <span class="mvar">a</span> <span class="mfn">cosh</span>((<span class="mvar">x</span> − <span class="mvar">h</span>)/<span class="mvar">a</span>) + <span class="mvar">k</span></span></label>
+        <label class="checkline"><input type="checkbox" id="showPar"><span class="dot" style="background:var(--plum)"></span>Parabola&nbsp;<span class="math" style="color:var(--ink-soft);font-weight:400;"><span class="mvar">y</span> = <span class="mvar">A</span><span class="mvar">x</span><sup>2</sup> + <span class="mvar">B</span><span class="mvar">x</span> + <span class="mvar">C</span></span> (least-squares)</label>
       </div>
 
       <div class="card" id="challengeCard" style="display:none;">
@@ -545,11 +579,11 @@
         <p class="target-hint" id="targetHint">Match the true hanging-chain curve. Try <code>a*cosh((x-h)/a)+k</code>.</p>
         <input type="text" class="formula-input" id="formulaInput" value="a*cosh((x-h)/a)+k" spellcheck="false" />
         <div class="param-grid">
-          <div class="param-cell"><label>a</label><input type="number" id="pa" value="2" step="0.1"></div>
-          <div class="param-cell"><label>b</label><input type="number" id="pb" value="0" step="0.1"></div>
-          <div class="param-cell"><label>c</label><input type="number" id="pc" value="0" step="0.1"></div>
-          <div class="param-cell"><label>h</label><input type="number" id="ph" value="0" step="0.1"></div>
-          <div class="param-cell"><label>k</label><input type="number" id="pk" value="0" step="0.1"></div>
+          <div class="param-cell" id="cellA"><label>a</label><input type="number" id="pa" value="2" step="0.1"></div>
+          <div class="param-cell" id="cellB"><label>b</label><input type="number" id="pb" value="0" step="0.1"></div>
+          <div class="param-cell" id="cellC"><label>c</label><input type="number" id="pc" value="0" step="0.1"></div>
+          <div class="param-cell" id="cellH"><label>h</label><input type="number" id="ph" value="0" step="0.1"></div>
+          <div class="param-cell" id="cellK"><label>k</label><input type="number" id="pk" value="0" step="0.1"></div>
         </div>
         <p class="formula-msg" id="formulaMsg"></p>
         <div class="meter-label"><span>Match score</span><span id="scoreVal">0%</span></div>
@@ -600,10 +634,10 @@
   <details class="explain">
     <summary>Why this matters (teacher notes)</summary>
     <div class="explain-body">
-      <p>A chain or cable hanging freely under its own weight settles into a <b>catenary</b>: <code>y = a&middot;cosh((x−h)/a) + k</code>. Because <code>cosh(u) = (e^u + e^(−u)) / 2</code>, this is really just a combination of two exponential functions — a direct link to the exponential functions taught in Maths Methods, dressed up as a real physical shape students can pull on.</p>
-      <p>For a shallow sag, a parabola <code>y = Ax² + Bx + C</code> is a close approximation — the app fits both models and reports each one's root-mean-square error against the simulated chain, so students can see numerically when the parabola stops being a good model, not just visually. This mirrors the common misconception that hanging cables are parabolas (they're only <i>approximately</i> parabolic, whereas a projectile's flight path actually is one).</p>
+      <p>A chain or cable hanging freely under its own weight settles into a <b>catenary</b>: <span class="math"><span class="mvar">y</span> = <span class="mvar">a</span> <span class="mfn">cosh</span>((<span class="mvar">x</span> − <span class="mvar">h</span>)/<span class="mvar">a</span>) + <span class="mvar">k</span></span>. Because <span class="math"><span class="mfn">cosh</span>(<span class="mvar">u</span>) = (<span class="mfn">e</span><sup><span class="mvar">u</span></sup> + <span class="mfn">e</span><sup>−<span class="mvar">u</span></sup>)/2</span>, this is really just a combination of two exponential functions — a direct link to the exponential functions taught in Maths Methods, dressed up as a real physical shape students can pull on.</p>
+      <p>For a shallow sag, a parabola <span class="math"><span class="mvar">y</span> = <span class="mvar">A</span><span class="mvar">x</span><sup>2</sup> + <span class="mvar">B</span><span class="mvar">x</span> + <span class="mvar">C</span></span> is a close approximation — the app fits both models and reports each one's root-mean-square error against the simulated chain, so students can see numerically when the parabola stops being a good model, not just visually. This mirrors the common misconception that hanging cables are parabolas (they're only <i>approximately</i> parabolic, whereas a projectile's flight path actually is one).</p>
       <p>Notice that changing <b>Gravity</b> changes how quickly the chain settles but not its resting shape — the equilibrium curve is fixed entirely by the anchor points and the chain's length. Turning on <b>centre weight</b> breaks this: a point load makes the true shape deviate from a catenary, and the fit error will visibly rise. That's a good prompt for discussing the assumptions built into any mathematical model.</p>
-      <p>In <b>Challenge mode</b>, students type their own candidate function and adjust <code>a, b, c, h, k</code> to chase the live chain shape before revealing the exact analytic fit — useful for a parameter-transformation lesson (shifts, stretches) using <code>h</code> and <code>k</code> as horizontal/vertical translations.</p>
+      <p>In <b>Challenge mode</b>, students type their own candidate function and adjust <span class="math"><span class="mvar">a</span>, <span class="mvar">b</span>, <span class="mvar">c</span>, <span class="mvar">h</span>, <span class="mvar">k</span></span> to chase the live chain shape before revealing the exact analytic fit — useful for a parameter-transformation lesson (shifts, stretches) using <span class="math"><span class="mvar">h</span></span> and <span class="math"><span class="mvar">k</span></span> as horizontal/vertical translations.</p>
     </div>
   </details>
 </div>
@@ -657,28 +691,30 @@
       return node;
     }
     function parseMul(){
-      let node = parsePow();
+      let node = parseUnary();
       while(peek() && (peek().t==="*"||peek().t==="/")){
-        const op=next().t; const rhs=parsePow();
+        const op=next().t; const rhs=parseUnary();
         node = {op, l:node, r:rhs};
       }
       return node;
     }
-    function parsePow(){
-      let node = parseUnary();
-      if(peek() && peek().t==="^"){
-        next(); const rhs = parsePow();
-        node = {op:"^", l:node, r:rhs};
-      }
-      return node;
-    }
+    // Unary minus binds looser than '^' (so -x^2 = -(x^2), matching standard convention),
+    // but a leading minus is still allowed inside an exponent (2^-1).
     function parseUnary(){
       if(peek() && (peek().t==="-"||peek().t==="+")){
         const op = next().t;
         const node = parseUnary();
         return op==="-" ? {op:"neg", a:node} : node;
       }
-      return parsePrimary();
+      return parsePow();
+    }
+    function parsePow(){
+      let node = parsePrimary();
+      if(peek() && peek().t==="^"){
+        next(); const rhs = parseUnary();
+        node = {op:"^", l:node, r:rhs};
+      }
+      return node;
     }
     function parsePrimary(){
       const tok = peek();
@@ -722,6 +758,68 @@
       }
     }
     throw new Error("Bad node");
+  }
+
+  /* ============================= Mathematical typesetting ============================= */
+  // Renders a parsed formula AST as properly typeset HTML: italic variables, upright
+  // function names, real superscripts and a stacked fraction for division — using the
+  // exact same tree that evalAst() computes with, so what's shown always matches what's scored.
+  const MATH_UPRIGHT = { pi:"&pi;", e:"e" };
+  function mIdent(name){
+    if(name in MATH_UPRIGHT) return '<span class="mfn">'+MATH_UPRIGHT[name]+'</span>';
+    return '<span class="mvar">'+name+'</span>';
+  }
+  // Precedence: atom/call/frac/pow=4, neg=3, mul=2, add/sub=1. A child is parenthesized
+  // when its own precedence is lower than the minimum its parent requires.
+  function renderMath(node, minPrec){
+    minPrec = minPrec||0;
+    let prec, html;
+    switch(node.op){
+      case "num": prec=4; html=String(node.v); break;
+      case "var": prec=4; html=mIdent(node.name); break;
+      case "call": {
+        prec=4;
+        const args = node.args.map(a=>renderMath(a,0)).join(', ');
+        html = '<span class="mfn">'+node.name+'</span>('+args+')';
+        break;
+      }
+      case "/": {
+        prec=4;
+        html = '<span class="mfrac"><span class="mf-num">'+renderMath(node.l,0)+'</span>'+
+               '<span class="mf-den">'+renderMath(node.r,0)+'</span></span>';
+        break;
+      }
+      case "^": {
+        prec=4;
+        const base = renderMath(node.l, 3.5); // parens unless base is already atomic
+        const exp = renderMath(node.r, 0);
+        html = base+'<sup>'+exp+'</sup>';
+        break;
+      }
+      case "neg": {
+        prec=3;
+        html = '−'+renderMath(node.a, 3);
+        break;
+      }
+      case "*": {
+        prec=2;
+        const leftStr = renderMath(node.l, 2);
+        const rightAmbiguous = node.r.op==="num" || node.r.op==="neg";
+        const rightStr = renderMath(node.r, 2);
+        html = leftStr + (rightAmbiguous ? ' &middot; ' : ' ') + rightStr;
+        break;
+      }
+      case "+": case "-": {
+        prec=1;
+        const leftStr = renderMath(node.l, 1);
+        const rightMin = node.op==="-" ? 1.5 : 1;
+        const rightStr = renderMath(node.r, rightMin);
+        html = leftStr + (node.op==="+" ? ' + ' : ' − ') + rightStr;
+        break;
+      }
+      default: throw new Error("Bad node");
+    }
+    return prec < minPrec ? '(' + html + ')' : html;
   }
 
   /* ============================= Curve fitting ============================= */
@@ -800,6 +898,7 @@
     discoverCard:$("discoverCard"), challengeCard:$("challengeCard"),
     formulaInput:$("formulaInput"), formulaMsg:$("formulaMsg"),
     pa:$("pa"), pb:$("pb"), pc:$("pc"), ph:$("ph"), pk:$("pk"),
+    cellA:$("cellA"), cellB:$("cellB"), cellC:$("cellC"), cellH:$("cellH"), cellK:$("cellK"),
     scoreVal:$("scoreVal"), scoreFill:$("scoreFill"),
     revealBtn:$("revealBtn"), revealNote:$("revealNote"),
     legendCat:$("legendCat"), legendPar:$("legendPar"),
@@ -807,8 +906,8 @@
   };
 
   const TARGET_PRESETS={
-    catenary:{ formula:"a*cosh((x-h)/a)+k", hint:'Match the true hanging-chain curve. Try <code>a*cosh((x-h)/a)+k</code>.' },
-    parabola:{ formula:"a*x^2+b*x+c", hint:'Match the parabola that best approximates the chain. Try <code>a*x^2+b*x+c</code>.' }
+    catenary:{ formula:"a*cosh((x-h)/a)+k", hint:'Match the true hanging-chain curve. Try <code>a*cosh((x-h)/a)+k</code>.', params:["a","h","k"] },
+    parabola:{ formula:"a*x^2+b*x+c", hint:'Match the parabola that best approximates the chain. Try <code>a*x^2+b*x+c</code>.', params:["a","b","c"] }
   };
 
   /* ============================= State ============================= */
@@ -1064,21 +1163,44 @@
     updateReadout(fit);
   }
 
-  function fmt(n){ return (Math.abs(n)<0.005?0:n).toFixed(2); }
+  function zsnap(n){ return Math.abs(n)<0.005 ? 0 : n; }
+  function fmt(n){ const v=zsnap(n); return (v<0?'−':'')+Math.abs(v).toFixed(2); }
+  // {op,mag} for a term already being joined onto a preceding "+"/"−" in a template.
+  function signedTerm(n){ const v=zsnap(n); return { op:v<0?'−':'+', mag:Math.abs(v).toFixed(2) }; }
+
+  // Appends " op mag<suffix>" onto html, or omits the term entirely when it snaps to zero
+  // (real typeset math drops "+0" terms rather than showing them).
+  function appendTerm(html, n, suffix){
+    const t=signedTerm(n);
+    if(t.mag==="0.00") return html;
+    return html+' '+t.op+' '+t.mag+(suffix||'');
+  }
+  function eqCatenaryHTML(a,h,k){
+    const numerator = appendTerm('<span class="mvar">x</span>', -h, '').trim();
+    let html = '<span class="math"><span class="mvar">y</span> = '+fmt(a)+' <span class="mfn">cosh</span>'+
+      '<span class="mfrac"><span class="mf-num">'+numerator+'</span>'+
+      '<span class="mf-den">'+fmt(a)+'</span></span>';
+    html = appendTerm(html, k, '');
+    return html+'</span>';
+  }
+  function eqParabolaHTML(A,B,C){
+    let html = '<span class="math"><span class="mvar">y</span> = '+fmt(A)+'<span class="mvar">x</span><sup>2</sup>';
+    html = appendTerm(html, B, '<span class="mvar">x</span>');
+    html = appendTerm(html, C, '');
+    return html+'</span>';
+  }
 
   function updateReadout(fit){
     if(state.mode==="discover"){
       let html="";
       if(state.showCat && fit.cat){
-        const c=fit.cat;
-        html += `y = ${fmt(c.a)}&middot;cosh((x&nbsp;&minus;&nbsp;${fmt(c.h)})/${fmt(c.a)})&nbsp;+&nbsp;${fmt(c.k)}`;
+        html += eqCatenaryHTML(fit.cat.a, fit.cat.h, fit.cat.k);
       }
       if(state.showPar && fit.quad){
         if(html) html += `<br><span class="dim">— or approximately —</span><br>`;
-        const q=fit.quad;
-        html += `y = ${fmt(q.A)}x&sup2; + ${fmt(q.B)}x + ${fmt(q.C)}`;
+        html += eqParabolaHTML(fit.quad.A, fit.quad.B, fit.quad.C);
       }
-      if(!html) html="Enable a model below to see its equation.";
+      if(!html) html='<span class="dim">Enable a model below to see its equation.</span>';
       els.eqMain.innerHTML=html;
       let stats="";
       if(fit.catRmse!=null) stats += `<span>catenary RMSE ${fit.catRmse.toFixed(3)}</span>`;
@@ -1086,7 +1208,11 @@
       els.eqStats.innerHTML=stats;
     } else {
       const f=state.formula;
-      els.eqMain.innerHTML = f.error ? `<span class="dim">invalid formula</span>` : (state.formulaText||"—");
+      if(f.error){
+        els.eqMain.innerHTML = '<span class="dim">invalid formula</span>';
+      } else {
+        els.eqMain.innerHTML = '<span class="math"><span class="mvar">y</span> = '+renderMath(f.ast,0)+'</span>';
+      }
       const target = state.challengeTarget==="parabola" ? fit.quad : fit.cat;
       const targetFn = state.challengeTarget==="parabola"
         ? (target && (x=>target.A*x*x+target.B*x+target.C))
@@ -1235,7 +1361,7 @@
     els.modeChallengeBtn.setAttribute("aria-selected", m==="challenge");
     els.discoverCard.style.display = m==="discover" ? "" : "none";
     els.challengeCard.style.display = m==="challenge" ? "" : "none";
-    if(m==="challenge"){ state.revealed=false; els.revealNote.style.display="none"; }
+    if(m==="challenge"){ setRevealed(false); }
   }
 
   els.targetCatBtn.addEventListener("click", ()=>setChallengeTarget("catenary"));
@@ -1253,13 +1379,16 @@
       els.formulaInput.value=TARGET_PRESETS[target].formula;
       parseFormula();
     }
-    state.revealed=false;
-    els.revealNote.style.display="none";
+    // only show the parameter boxes that preset's formula actually uses
+    const activeParams=TARGET_PRESETS[target].params;
+    [["a",els.cellA],["b",els.cellB],["c",els.cellC],["h",els.cellH],["k",els.cellK]].forEach(([letter,cell])=>{
+      cell.style.display = activeParams.includes(letter) ? "" : "none";
+    });
+    setRevealed(false);
   }
 
   function parseFormula(){
     const src=els.formulaInput.value.trim();
-    state.formulaText = "y = " + src;
     try{
       const ast=parseExpr(src);
       // dry run
@@ -1276,18 +1405,25 @@
   els.formulaInput.addEventListener("input", parseFormula);
   [els.pa,els.pb,els.pc,els.ph,els.pk].forEach(inp=>inp.addEventListener("input", ()=>{}));
   parseFormula();
+  setChallengeTarget(state.challengeTarget); // apply initial param-box visibility for the default target
 
-  els.revealBtn.addEventListener("click", ()=>{
-    state.revealed=true;
+  function setRevealed(show){
+    state.revealed=show;
+    els.revealBtn.textContent = show ? "Hide exact fit" : "Reveal exact fit";
+    if(!show){
+      els.revealNote.style.display="none";
+      return;
+    }
     const fit=lastFit;
     if(state.challengeTarget==="parabola" && fit.quad){
       els.revealNote.style.display="";
-      els.revealNote.innerHTML = `<b>Best-fit parabola —</b> y = ${fmt(fit.quad.A)}x&sup2; + ${fmt(fit.quad.B)}x + ${fmt(fit.quad.C)}. Your formula's RMSE was shown above — try nudging a, b and c to close the gap. Note a parabola can only ever approximate the true hanging-chain shape.`;
+      els.revealNote.innerHTML = `<b>Best-fit parabola —</b> ${eqParabolaHTML(fit.quad.A,fit.quad.B,fit.quad.C)}. Your formula's RMSE was shown above — try nudging a, b and c to close the gap. Note a parabola can only ever approximate the true hanging-chain shape.`;
     } else if(fit.cat){
       els.revealNote.style.display="";
-      els.revealNote.innerHTML = `<b>Exact fit —</b> y = ${fmt(fit.cat.a)}&middot;cosh((x−${fmt(fit.cat.h)})/${fmt(fit.cat.a)})+${fmt(fit.cat.k)}. Your formula's RMSE was shown above — try nudging a, h and k to close the gap.`;
+      els.revealNote.innerHTML = `<b>Exact fit —</b> ${eqCatenaryHTML(fit.cat.a,fit.cat.h,fit.cat.k)}. Your formula's RMSE was shown above — try nudging a, h and k to close the gap.`;
     }
-  });
+  }
+  els.revealBtn.addEventListener("click", ()=> setRevealed(!state.revealed));
 
   /* ============================= Theme toggle sync (host may set data-theme) ============================= */
   // No local control needed; the host page toggles :root[data-theme].
@@ -1297,5 +1433,3 @@
   requestAnimationFrame(loop);
 })();
 </script>
-</body>
-</html>
