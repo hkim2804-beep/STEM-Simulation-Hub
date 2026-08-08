@@ -1418,31 +1418,30 @@
   }
 
   // Given the raw mouse position, returns {x, snapped} to hover at, or null if the
-  // cursor isn't actually close to the curve at that x. Magnetic snapping: within
-  // FEATURE_SNAP_PX of the vertex or an x-intercept it locks on exactly; failing
-  // that, within INTEGER_SNAP_PX of a whole number it locks onto the grid; otherwise
-  // it reports the exact, unsnapped coordinate under the cursor.
-  const CURVE_PROXIMITY_PX=18, FEATURE_SNAP_PX=20, INTEGER_SNAP_PX=10;
+  // cursor isn't actually close to the curve at that x. Snapping only kicks in
+  // right on top of a drawn feature icon (the vertex diamond or an x-intercept
+  // dot) — measured as true on-screen distance to that icon, not just x-distance.
+  // Everywhere else on the curve reports the exact, unsnapped coordinate.
+  const CURVE_PROXIMITY_PX=18, ICON_SNAP_PX=14;
   function computeFormsHover(mousePx, mousePy, rawWorldX){
     const f=computeQuadForms();
     if(!f.valid) return null;
 
-    const curveFn=x=>f.a*x*x+f.b*x+f.c;
-    const rawCurvePx=worldToPx(rawWorldX, curveFn(rawWorldX));
-    if(Math.abs(rawCurvePx.y-mousePy) > CURVE_PROXIMITY_PX) return null;
-
-    const featureXs=[f.h, ...(f.roots||[])];
-    let bestX=null, bestPxDist=FEATURE_SNAP_PX;
-    featureXs.forEach(fx=>{
-      const d=Math.abs(worldToPx(fx,0).x - mousePx);
-      if(d<bestPxDist){ bestPxDist=d; bestX=fx; }
+    // Icon proximity is checked first and independently of curve steepness: near a
+    // root the curve can be steep enough that a point genuinely beside the icon
+    // would otherwise fail a generic "close to the curve at this x" check.
+    const iconPoints=[{x:f.h,y:f.k}, ...(f.roots||[]).map(r=>({x:r,y:0}))];
+    let bestX=null, bestDist=ICON_SNAP_PX;
+    iconPoints.forEach(pt=>{
+      const ppx=worldToPx(pt.x,pt.y);
+      const d=Math.hypot(ppx.x-mousePx, ppx.y-mousePy);
+      if(d<bestDist){ bestDist=d; bestX=pt.x; }
     });
     if(bestX!=null) return {x:bestX, snapped:true};
 
-    const nearestInt=Math.round(rawWorldX);
-    if(Math.abs(worldToPx(nearestInt,0).x - mousePx) < INTEGER_SNAP_PX){
-      return {x:nearestInt, snapped:true};
-    }
+    const curveFn=x=>f.a*x*x+f.b*x+f.c;
+    const rawCurvePx=worldToPx(rawWorldX, curveFn(rawWorldX));
+    if(Math.abs(rawCurvePx.y-mousePy) > CURVE_PROXIMITY_PX) return null;
     return {x:rawWorldX, snapped:false};
   }
 
