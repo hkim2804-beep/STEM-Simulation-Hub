@@ -43,6 +43,8 @@ main{max-width:1500px;margin:auto;padding:20px}
 .thumb{width:100%;height:100%;object-fit:cover;display:block;transition:transform .4s ease}
 .resource:hover .thumb{transform:scale(1.06)}
 .meta{color:var(--muted);font-size:.87rem;margin-top:4px;font-weight:500}
+.provider-link{font:inherit;color:var(--muted);background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;text-decoration-color:transparent;transition:color .15s ease,text-decoration-color .15s ease}
+.provider-link:hover,.provider-link:focus-visible{color:var(--p);text-decoration-color:currentColor}
 .stars{color:var(--gold);margin-top:9px;font-size:.95rem;letter-spacing:1px}
 .open{color:var(--s);font-weight:800;margin-top:10px;font-size:.92rem}
 .tag-group{margin-top:11px}
@@ -108,9 +110,10 @@ function fillCategorySelect(){
 function makeCard(r){
   const a=document.createElement('a');a.className='resource';a.href='simulation.html?url='+encodeURIComponent(r.url);
   const levels=(r.worksheetYears||[]).map(y=>LEVEL_LABEL[y]||y).join(' · ');
-  a.innerHTML='<div class="thumb-wrap"><img class="thumb" src="'+thumbUrl(r)+'" alt="Preview of '+esc(r.name)+'" loading="lazy" width="400" height="240"></div><div class="resource-body"><strong>'+esc(r.name)+'</strong><div class="meta">'+esc(r.provider||'')+'</div><div class="stars">'+'★'.repeat(r.score||0)+'☆'.repeat(5-(r.score||0))+'</div>'+(levels?'<div class="meta">Worksheet: '+esc(levels)+'</div>':'')+'<div class="tag-group"><span class="tag-label">Keywords</span><div class="keywords">'+(r.keywords||[]).map(k=>'<button type="button" class="keyword" data-k="'+esc(k)+'">'+esc(k)+'</button>').join('')+'</div></div><div class="open">Open resource ↗</div></div>';
+  a.innerHTML='<div class="thumb-wrap"><img class="thumb" src="'+thumbUrl(r)+'" alt="Preview of '+esc(r.name)+'" loading="lazy" width="400" height="240"></div><div class="resource-body"><strong>'+esc(r.name)+'</strong><div class="meta">'+(r.provider?'<button type="button" class="provider-link" data-provider="'+esc(r.provider)+'">'+esc(r.provider)+'</button>':'')+'</div><div class="stars">'+'★'.repeat(r.score||0)+'☆'.repeat(5-(r.score||0))+'</div>'+(levels?'<div class="meta">Worksheet: '+esc(levels)+'</div>':'')+'<div class="tag-group"><span class="tag-label">Keywords</span><div class="keywords">'+(r.keywords||[]).map(k=>'<button type="button" class="keyword" data-k="'+esc(k)+'">'+esc(k)+'</button>').join('')+'</div></div><div class="open">Open resource ↗</div></div>';
   const img=a.querySelector('.thumb');img.addEventListener('error',()=>{img.src=placeholderThumb(r.name)},{once:true});
   a.querySelectorAll('.keyword').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();$('search').value=b.dataset.k;render()});
+  a.querySelectorAll('.provider-link').forEach(b=>b.onclick=e=>{e.preventDefault();e.stopPropagation();$('search').value=b.dataset.provider;render();window.scrollTo({top:0,behavior:'smooth'})});
   return a
 }
 const LEVEL_LABEL={'7':'Year 7','8':'Year 8','9':'Year 9','10':'Year 10','11-12':'Senior 11–12'};

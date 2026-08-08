@@ -42,6 +42,8 @@ main{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
 .badge-subj{color:var(--muted);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 h1{font-family:var(--serif);font-size:1.7rem;margin:2px 0 0;letter-spacing:-.01em;font-weight:600}
 .provider{color:var(--muted);font-size:.94rem;margin:0}
+.provider a{color:inherit;text-decoration:underline;text-decoration-color:transparent;transition:color .15s ease,text-decoration-color .15s ease}
+.provider a:hover,.provider a:focus-visible{color:var(--p);text-decoration-color:currentColor}
 .stars{color:var(--gold);font-size:1rem;letter-spacing:1px;margin:2px 0}
 .open-btn{margin-top:6px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--fill);color:#fff;font-weight:800;text-decoration:none;padding:13px 20px;border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);transition:background .15s ease,transform .1s ease;width:fit-content}
 .open-btn:hover{background:var(--fill-dark)}
@@ -193,7 +195,7 @@ function render(){
         '<div class="eyebrow">'+(category?'<a class="badge-cat" href="topics.html?category='+encodeURIComponent(category)+'">'+esc(category)+'</a>':'')+'</div>'+
         (subjectLine?'<div class="badge-subj">'+esc(subjectLine)+'</div>':'')+
         '<h1>'+esc(name)+'</h1>'+
-        '<p class="provider">'+esc(provider||'')+'</p>'+
+        (provider?'<p class="provider"><a href="topics.html?search='+encodeURIComponent(provider)+'">'+esc(provider)+'</a></p>':'')+
         '<div class="stars">'+'★'.repeat(score)+'☆'.repeat(5-score)+'</div>'+
         '<a class="open-btn" href="'+esc(url)+'" target="_blank" rel="noopener noreferrer">Open simulation ↗</a>'+
       '</div>'+
