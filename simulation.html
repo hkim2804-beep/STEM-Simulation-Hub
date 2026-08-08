@@ -3,7 +3,8 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:-apple-system,"Segoe UI","Segoe UI Variable",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1100px 480px at 105% -12%,#d9f3ee 0%,transparent 60%),radial-gradient(900px 420px at -10% 0%,#eaf9f6 0%,transparent 55%),var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.55}
-header{background:linear-gradient(120deg,var(--p) 0%,var(--s) 72%,#5eead4 100%);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:10;box-shadow:0 8px 24px -12px rgba(11,84,76,.5)}
+header{background:linear-gradient(120deg,var(--p) 0%,var(--s) 72%,#5eead4 100%);color:#fff;padding:16px 20px;position:sticky;top:0;z-index:10;box-shadow:0 8px 24px -12px rgba(11,84,76,.5);transition:transform .25s ease}
+header.header-hidden{transform:translateY(-100%)}
 .top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center;max-width:1100px;margin:0 auto}
 .top a.brand{color:#fff;font-weight:800;text-decoration:none;font-size:1.05rem}
 .top-links{display:flex;flex-wrap:wrap;gap:8px}
@@ -217,6 +218,7 @@ function setBack(){
 }
 setBack();
 render();
+(function(){const header=document.querySelector('header');let lastY=window.scrollY,ticking=false;function onScroll(){const y=Math.max(window.scrollY,0);if(y<=80)header.classList.remove('header-hidden');else if(y>lastY)header.classList.add('header-hidden');else if(y<lastY)header.classList.remove('header-hidden');lastY=y;ticking=false}window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(onScroll);ticking=true}},{passive:true})})();
 </script>
 <footer style="max-width:1100px;margin:32px auto 0;padding:0 20px;color:#5b6b68;font-size:.88rem;text-align:center;">Contact <a href="contact.html">here</a>. Simulation pages are generated from the hub's own curriculum and topic data — always confirm suitability, accessibility and safety before classroom use.</footer>
 </body></html>

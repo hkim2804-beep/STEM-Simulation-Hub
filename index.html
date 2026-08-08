@@ -3,7 +3,8 @@
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;font-family:-apple-system,"Segoe UI","Segoe UI Variable",Roboto,Helvetica,Arial,sans-serif;background:radial-gradient(1100px 480px at 105% -12%,#dcecfa 0%,transparent 60%),radial-gradient(900px 420px at -10% 0%,#eef6fd 0%,transparent 55%),var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.5}
-header{background:linear-gradient(120deg,var(--p) 0%,var(--s) 72%,#23a3e2 100%);color:#fff;padding:18px 20px 20px;position:sticky;top:0;z-index:5;box-shadow:0 8px 24px -12px rgba(0,60,110,.5)}
+header{background:linear-gradient(120deg,var(--p) 0%,var(--s) 72%,#23a3e2 100%);color:#fff;padding:18px 20px 20px;position:sticky;top:0;z-index:5;box-shadow:0 8px 24px -12px rgba(0,60,110,.5);transition:transform .25s ease}
+header.header-hidden{transform:translateY(-100%)}
 .top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;align-items:center;max-width:1500px;margin:0 auto}
 .top h1{flex:1 1 100%;font-size:1.45rem;font-weight:800;letter-spacing:-.01em;margin:0}
 .title{border:1px solid transparent;background:transparent;color:#fff;font:inherit;font-weight:800;cursor:pointer;padding:6px 8px;margin:-6px -8px;border-radius:var(--radius-sm);transition:background .15s ease,transform .1s ease;text-align:left}
@@ -171,6 +172,7 @@ function initAdmin(){
   modal.onclick=e=>{if(e.target===modal)modal.hidden=true};
 }
 initAdmin();
+(function(){const header=document.querySelector('header');let lastY=window.scrollY,ticking=false;function onScroll(){const y=Math.max(window.scrollY,0);if(y<=80)header.classList.remove('header-hidden');else if(y>lastY)header.classList.add('header-hidden');else if(y<lastY)header.classList.remove('header-hidden');lastY=y;ticking=false}window.addEventListener('scroll',()=>{if(!ticking){requestAnimationFrame(onScroll);ticking=true}},{passive:true})})();
 </script>
 <footer style="max-width:1500px;margin:32px auto 0;padding:0 20px;color:#5b6b68;font-size:.88rem;text-align:center;">Contact <a href="contact.html">here</a>. All resources are AI-assisted and should be taken with a grain of salt.</footer>
 </body></html>
