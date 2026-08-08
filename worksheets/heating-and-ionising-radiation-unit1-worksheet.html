@@ -1,0 +1,273 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Unit 1 Student Worksheet — QCAA Physics</title>
+<style>
+  :root {
+    --bg: #10151a; --bg-2: #161d23; --panel: #1a2229; --panel-2: #202a32;
+    --border: #2a3540; --border-soft: #232d35; --text: #eaf0f4; --text-dim: #93a5b3; --text-faint: #5f7280;
+    --accent: #e2823f; --accent-soft: #f2a769; --accent-dim: #6b4a2e;
+    --mono: 'Consolas', 'SFMono-Regular', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+    --sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --display: 'Bahnschrift', 'Segoe UI Semibold', 'Segoe UI', system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f4; --bg-2: #e6ebee; --panel: #f8fafb; --panel-2: #eef2f4;
+    --border: #cdd7dd; --border-soft: #dbe2e6; --text: #162027; --text-dim: #4d616f; --text-faint: #8395a1;
+    --accent: #c9631f; --accent-soft: #a4501a; --accent-dim: #f1cba3; color-scheme: light;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #eef1f4; --bg-2: #e6ebee; --panel: #f8fafb; --panel-2: #eef2f4;
+      --border: #cdd7dd; --border-soft: #dbe2e6; --text: #162027; --text-dim: #4d616f; --text-faint: #8395a1;
+      --accent: #c9631f; --accent-soft: #a4501a; --accent-dim: #f1cba3; color-scheme: light;
+    }
+  }
+  * { box-sizing: border-box; min-width: 0; }
+  html, body { margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); font-size: 15px; line-height: 1.55; }
+  .wrap { max-width: 860px; margin: 0 auto; padding: 30px 22px 80px; }
+  header.top { border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 16px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 28px; margin: 0 0 4px; text-wrap: balance; }
+  .subtitle { color: var(--text-dim); font-size: 13.5px; }
+  .toolbar { display: flex; gap: 2px; flex-shrink: 0; }
+  .toolbar button { font-family: var(--mono); font-size: 11px; background: var(--panel); border: 1px solid var(--border); color: var(--text-dim); padding: 7px 11px; border-radius: 3px; cursor: pointer; }
+  .toolbar button.active { background: var(--panel-2); color: var(--accent); }
+  .toolbar button.print { color: var(--accent); }
+
+  .text-size-toggle {
+    display: flex; align-items: center; gap: 2px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 3px; padding: 2px; height: fit-content;
+  }
+  .text-size-toggle button {
+    font-family: var(--mono); font-size: 12px; font-weight: 700; background: transparent;
+    border: none; color: var(--text-dim); padding: 6px 9px; border-radius: 2px; cursor: pointer; line-height: 1;
+  }
+  .text-size-toggle button:hover:not(:disabled) { color: var(--accent); }
+  .text-size-toggle button:disabled { opacity: 0.35; cursor: default; }
+  .text-size-toggle .ts-label {
+    font-family: var(--mono); font-size: 10px; color: var(--text-faint); padding: 0 3px; min-width: 32px; text-align: center;
+  }
+
+  .idfields { display: flex; gap: 12px; flex-wrap: wrap; margin: 0 0 20px; }
+  .idfields label { flex: 1; min-width: 140px; display: flex; flex-direction: column; gap: 3px; font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-faint); }
+  .idfields input { background: var(--panel); border: 1px solid var(--border); border-radius: 3px; padding: 7px 9px; color: var(--text); font-family: var(--sans); font-size: 13px; }
+
+  .linkbar { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 24px; }
+  .linkbar a { flex: 1; min-width: 220px; background: var(--panel); border: 1px solid var(--border); border-radius: 4px; padding: 10px 13px; text-decoration: none; color: var(--text); font-size: 12.5px; }
+  .linkbar a b { display: block; font-family: var(--display); font-size: 13.5px; }
+  .linkbar a:hover { border-color: var(--accent-dim); }
+
+  h2.part { font-family: var(--display); font-size: 20px; margin: 34px 0 4px; padding-top: 18px; border-top: 1px solid var(--border); }
+  .module-head { background: var(--panel-2); border: 1px solid var(--border); border-radius: 3px; padding: 8px 12px; margin: 22px 0 4px; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .module-head b { font-family: var(--display); font-size: 14px; }
+  .module-head span { font-family: var(--mono); font-size: 9.5px; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.05em; }
+  .setup { font-size: 12.5px; color: var(--text-dim); font-style: italic; margin: 8px 0; }
+  .setup b { font-style: normal; color: var(--text); }
+
+  .q { margin: 16px 0 20px; }
+  .q .qhead { display: flex; align-items: baseline; gap: 8px; }
+  .q .qnum { font-family: var(--mono); font-weight: 700; color: var(--accent); font-size: 13px; flex-shrink: 0; }
+  .q .qtext { font-size: 13.5px; }
+  .q .marks { font-family: var(--mono); font-size: 10.5px; color: var(--text-faint); font-style: italic; white-space: nowrap; }
+  .q .flag { font-size: 10.5px; color: var(--accent-soft); font-style: italic; margin: 2px 0 6px 21px; }
+  .q textarea {
+    width: 100%; margin-top: 8px; background: var(--panel); border: 1px solid var(--border); border-radius: 3px;
+    color: var(--text); font-family: var(--sans); font-size: 13px; padding: 9px 11px; resize: vertical; min-height: 54px;
+  }
+  .q textarea:focus { outline: none; border-color: var(--accent-dim); }
+
+  table.fill { width: 100%; border-collapse: collapse; font-size: 12.5px; margin: 10px 0; }
+  table.fill th, table.fill td { border: 1px solid var(--border-soft); padding: 6px 8px; }
+  table.fill th { background: var(--panel-2); font-family: var(--mono); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-faint); text-align: left; }
+  table.fill td input { width: 100%; background: transparent; border: none; color: var(--text); font-family: var(--sans); font-size: 12.5px; padding: 4px 2px; }
+  table.fill td input:focus { outline: none; background: var(--panel-2); }
+
+  footer.note { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--text-faint); font-size: 11.5px; }
+  .savehint { font-size: 10.5px; color: var(--text-faint); }
+
+  @media print {
+    body { background: #fff; color: #000; font-size: 12px; }
+    .toolbar, .theme-toggle, .text-size-toggle, .linkbar, footer.note { display: none !important; }
+    body { zoom: 1 !important; }
+    .q textarea { border: 1px solid #999; color: #000; background: #fff; min-height: 40px; }
+    .module-head { background: #f0f0f0; border-color: #ccc; }
+    h2.part { break-before: page; }
+    a { color: #000; text-decoration: underline; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">QCAA Physics · Unit 1 · Thermal, Nuclear and Electrical Physics</p>
+      <h1>Student Worksheet</h1>
+      <p class="subtitle">Heating Processes &amp; Ionising Radiation and Nuclear Reactions</p>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap; height:fit-content;">
+      <div class="text-size-toggle" id="textSizeToggle" role="group" aria-label="Text size">
+        <button data-action="dec" aria-label="Decrease text size">A&minus;</button>
+        <span class="ts-label" id="textSizeLabel">100%</span>
+        <button data-action="inc" aria-label="Increase text size">A+</button>
+      </div>
+      <div class="toolbar">
+        <button class="print" id="printBtn">&#128438; Print</button>
+        <button data-theme="dark" class="active">Dark</button>
+        <button data-theme="light">Light</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="idfields">
+    <label>Name<input type="text" id="f-name"></label>
+    <label>Class<input type="text" id="f-class"></label>
+    <label>Date<input type="text" id="f-date"></label>
+  </div>
+
+  <div class="linkbar">
+    <a href="../simulations/heating-processes.html" target="_blank" rel="noopener"><b>Heating Processes</b>Open Topic 1 simulation &rarr;</a>
+    <a href="../simulations/ionising-radiation-and-nuclear-reactions.html" target="_blank" rel="noopener"><b>Ionising Radiation &amp; Nuclear Reactions</b>Open Topic 2 simulation &rarr;</a>
+  </div>
+  <p class="savehint">Your answers save automatically in this browser as you type (nothing is uploaded). Use Print for a paper copy.</p>
+
+  <!-- ============ PART A ============ -->
+  <h2 class="part">Part A — Heating Processes</h2>
+
+  <div class="module-head"><b>A1. Heating Curve</b><span>Heating Processes · Module 1</span></div>
+  <p class="setup">Set the substance to <b>Water</b>, mass <b>m = 0.50 kg</b>, heater power <b>P = 500 W</b>.</p>
+  <div class="q" data-id="q1"><div class="qhead"><span class="qnum">Q1.</span><span class="qtext">Read from the simulation: at what temperature does melting begin, and at what temperature does boiling begin?</span></div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q2"><div class="qhead"><span class="qnum">Q2.</span><span class="qtext">Scrub to the moment melting ends. Record the elapsed time and energy supplied at that instant. Calculate by hand the energy needed to melt 0.50 kg of ice using Q = mL (Lƒ = 334 kJ/kg for water). Does your calculation agree with the simulation's reading?</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q3"><div class="qhead"><span class="qnum">Q3.</span><span class="qtext">Switch to Custom substance: melting point 200 °C, boiling point 300 °C, mass 1.00 kg, power 800 W. Before pressing Play, predict which phase will take longest to heat through. Test your prediction, then explain using Q = mcΔT.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q4"><div class="qhead"><span class="qnum">Q4.</span><span class="qtext">Using the particle view, explain why temperature does not rise during the melting or boiling plateaus even though energy is still being supplied.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+
+  <div class="module-head"><b>A2. Thermal Equilibrium</b><span>Heating Processes · Module 2</span></div>
+  <p class="setup">Body A: <b>Copper</b>, 0.20 kg, 95 °C. Body B: <b>Water</b>, 0.50 kg, 20 °C. (c<sub>copper</sub> = 385 J/kg·K, c<sub>water</sub> = 4186 J/kg·K)</p>
+  <div class="q" data-id="q5"><div class="qhead"><span class="qnum">Q5.</span><span class="qtext">Before clicking “Bring into contact”, calculate the predicted final temperature using m₁c₁(Tf − T₁) = −m₂c₂(Tf − T₂). Show your working, then compare to the simulation's answer.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
+  <div class="q" data-id="q6"><div class="qhead"><span class="qnum">Q6.</span><span class="qtext">Using the zeroth law of thermodynamics, explain why the two bodies stop exchanging net energy once they reach the same temperature.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q7"><div class="qhead"><span class="qnum">Q7.</span><span class="qtext">Without calculating, predict what happens to the final temperature if Body A's mass is made much larger than Body B's. Test this and describe what you see.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+
+  <div class="module-head"><b>A3. Black-Body Radiation</b><span>Heating Processes · Module 3</span></div>
+  <p class="setup">Extension module — not part of this topic's official subject matter.</p>
+  <div class="q" data-id="q8"><div class="qhead"><span class="qnum">Q8.</span><span class="qtext">Set temperature to 310 K (body temperature), then 5778 K (the Sun). Record the peak wavelength for each and name the EM spectrum region each falls in.</span><span class="marks">[2]</span></div><div class="flag">Extension — for students who finish early</div><textarea rows="2"></textarea></div>
+  <div class="q" data-id="q9"><div class="qhead"><span class="qnum">Q9.</span><span class="qtext">Using Wien's Law, explain in one sentence why very hot objects glow blue-white while cooler ones glow red.</span><span class="marks">[1]</span></div><div class="flag">Extension — for students who finish early</div><textarea rows="2"></textarea></div>
+
+  <div class="module-head"><b>A4. Mechanical work and efficiency</b><span>not in the simulation</span></div>
+  <div class="q" data-id="q10"><div class="qhead"><span class="qnum">Q10.</span><span class="qtext">Define efficiency, and give one everyday example where not all input energy becomes useful output — state where the “lost” energy goes.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q11"><div class="qhead"><span class="qnum">Q11.</span><span class="qtext">A heater supplies 800 J to a room, but only 650 J actually warms the air. Calculate the efficiency of this energy transfer.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="2"></textarea></div>
+
+  <!-- ============ PART B ============ -->
+  <h2 class="part">Part B — Ionising Radiation &amp; Nuclear Reactions</h2>
+
+  <div class="module-head"><b>B1. Radioactive Decay</b><span>Ionising Radiation · Module 1</span></div>
+  <p class="setup">Select <b>Iodine-131</b> (T&#189; = 8.02 days).</p>
+  <div class="q" data-id="q12"><div class="qhead"><span class="qnum">Q12.</span><span class="qtext">Using N = N₀(½)ⁿ, calculate by hand what fraction remains after 3 whole half-lives. Scrub to 3.00 half-lives and check the “Fraction remaining” reading matches.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q13"><div class="qhead"><span class="qnum">Q13.</span><span class="qtext">Explain why the sample line (actual, random) doesn't exactly follow the smooth theoretical curve, and why the two would match more closely with a much larger sample.</span><span class="marks">[2]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q14"><div class="qhead"><span class="qnum">Q14.</span><span class="qtext">Estimate from the graph how many half-lives it takes for the sample to fall below 10% remaining. Convert this to real time for iodine-131.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+
+  <div class="module-head"><b>B2. Radiation &amp; Matter</b><span>Ionising Radiation · Module 2</span></div>
+  <p class="setup">Use the reference table in the simulation to complete this table:</p>
+  <table class="fill">
+    <thead><tr><th style="width:18%">Radiation</th><th style="width:22%">Charge</th><th style="width:28%">Approx. mass</th><th>Ionising power</th></tr></thead>
+    <tbody>
+      <tr><td>Alpha (&alpha;)</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      <tr><td>Beta (&beta;)</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+      <tr><td>Gamma (&gamma;)</td><td><input type="text"></td><td><input type="text"></td><td><input type="text"></td></tr>
+    </tbody>
+  </table>
+  <div class="q" data-id="q15"><div class="qhead"><span class="qnum">Q15.</span><span class="qtext">Switch to Penetration view. Test each shielding material (paper, aluminium, lead) for all three radiation types and record which are stopped and which pass through.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q16"><div class="qhead"><span class="qnum">Q16.</span><span class="qtext">Switch to Fields view, turn on the magnetic field. Using the charges above, explain why alpha and beta deflect in opposite directions, and why gamma travels straight.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q17"><div class="qhead"><span class="qnum">Q17.</span><span class="qtext">Which particle curves more sharply — alpha or beta? Using the charge and mass values above, explain why in terms of charge-to-mass ratio.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+
+  <div class="module-head"><b>B3. Nuclear Reactions</b><span>Ionising Radiation · Module 3</span></div>
+  <p class="setup">Select <b>“Uranium-238 — alpha (α) decay”</b>.</p>
+  <div class="q" data-id="q18"><div class="qhead"><span class="qnum">Q18.</span><span class="qtext">Write out the balanced nuclear equation shown. Add up mass numbers and atomic numbers on each side to confirm both are conserved.</span><span class="marks">[3]</span></div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q19"><div class="qhead"><span class="qnum">Q19.</span><span class="qtext">Switch to “Carbon-14 — beta-minus (β⁻) decay”. Record Δm and E shown. Using the footer's conversions, show the working for E = Δmc² from Δm through to Joules and MeV.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
+  <div class="q" data-id="q20"><div class="qhead"><span class="qnum">Q20.</span><span class="qtext">Switch to Fission &amp; Fusion. Compare the energy released by one U-235 fission event to one deuterium–tritium fusion event.</span><span class="marks">[2]</span></div><textarea rows="2"></textarea></div>
+  <p class="setup">Binding energy per nucleon (not directly labelled in the simulation): divide E by the total nucleon count — 5 for D + T, 236 for U-235 + n.</p>
+  <div class="q" data-id="q21"><div class="qhead"><span class="qnum">Q21.</span><span class="qtext">Calculate the energy released per nucleon for D–T fusion and for U-235 fission. Which releases more per nucleon? This is why the syllabus describes fusion as releasing “more energy per nucleon”.</span><span class="marks">[4]</span></div><textarea rows="4"></textarea></div>
+  <div class="q" data-id="q22"><div class="qhead"><span class="qnum">Q22.</span><span class="qtext">U-238 is radioactive; iron-56 is one of the most stable nuclides known. Using the strong nuclear force and the proton:neutron ratio, suggest one reason very large nuclei like U-238 tend to be unstable.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
+  <div class="q" data-id="q23"><div class="qhead"><span class="qnum">Q23.</span><span class="qtext">Fission and fusion here must be deliberately induced, unlike the spontaneous decays in Module 1. Explain the difference between natural radioactive decay and artificial transmutation, using one example of each from the simulation.</span><span class="marks">[2]</span></div><div class="flag">Not shown in the simulation — use your own knowledge/research</div><textarea rows="3"></textarea></div>
+
+  <footer class="note">A matching Teacher &amp; Student Guide is available alongside this worksheet, with full syllabus alignment notes.</footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var STORE_KEY = 'qcaa-u1-worksheet-v1';
+  function load() { try { return JSON.parse(localStorage.getItem(STORE_KEY) || '{}'); } catch (e) { return {}; } }
+  function save(data) { try { localStorage.setItem(STORE_KEY, JSON.stringify(data)); } catch (e) {} }
+  var data = load();
+
+  function fieldKey(el) {
+    var q = el.closest('[data-id]');
+    if (q) return q.getAttribute('data-id');
+    if (el.id) return el.id;
+    var table = el.closest('table.fill');
+    if (table) {
+      var cell = el.closest('td'), row = el.closest('tr'), rows = Array.prototype.slice.call(table.querySelectorAll('tbody tr'));
+      var cells = Array.prototype.slice.call(row.querySelectorAll('td'));
+      return 'tbl-' + rows.indexOf(row) + '-' + cells.indexOf(cell);
+    }
+    return null;
+  }
+
+  var inputs = document.querySelectorAll('textarea, .idfields input, table.fill input');
+  Array.prototype.forEach.call(inputs, function (el) {
+    var key = fieldKey(el);
+    if (key && data[key] !== undefined) el.value = data[key];
+    el.addEventListener('input', function () {
+      var k = fieldKey(el);
+      if (k) { data[k] = el.value; save(data); }
+    });
+  });
+
+  document.getElementById('printBtn').addEventListener('click', function () { window.print(); });
+
+  var toolbar = document.querySelector('.toolbar');
+  toolbar.addEventListener('click', function (e) {
+    var btn = e.target.closest('button[data-theme]'); if (!btn) return;
+    document.documentElement.setAttribute('data-theme', btn.getAttribute('data-theme'));
+    Array.prototype.forEach.call(toolbar.querySelectorAll('button[data-theme]'), function (b) { b.classList.toggle('active', b === btn); });
+  });
+
+  (function () {
+    var STEPS = [90, 100, 112, 125, 140, 160];
+    var DEFAULT_INDEX = 2; // 112% — a more legible default than the browser baseline
+    var STORE_KEY = 'qcaa-sim-textsize';
+    var tsToggle = document.getElementById('textSizeToggle');
+    var label = document.getElementById('textSizeLabel');
+    var decBtn = tsToggle.querySelector('[data-action="dec"]');
+    var incBtn = tsToggle.querySelector('[data-action="inc"]');
+    var idx = DEFAULT_INDEX;
+    try {
+      var saved = parseInt(localStorage.getItem(STORE_KEY), 10);
+      var savedIdx = STEPS.indexOf(saved);
+      if (savedIdx !== -1) idx = savedIdx;
+    } catch (e) {}
+
+    function apply() {
+      var pct = STEPS[idx];
+      document.body.style.zoom = pct / 100;
+      label.textContent = pct + '%';
+      decBtn.disabled = idx === 0;
+      incBtn.disabled = idx === STEPS.length - 1;
+      try { localStorage.setItem(STORE_KEY, String(pct)); } catch (e) {}
+    }
+    tsToggle.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn || btn.disabled) return;
+      if (btn.getAttribute('data-action') === 'inc' && idx < STEPS.length - 1) idx++;
+      if (btn.getAttribute('data-action') === 'dec' && idx > 0) idx--;
+      apply();
+    });
+    apply();
+  })();
+})();
+</script>
+</body>
+</html>
