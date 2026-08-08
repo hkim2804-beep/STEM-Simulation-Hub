@@ -711,10 +711,20 @@
           <div class="readout-cell"><div class="k">Peak band</div><div class="v" id="rad-r-band" style="font-size:14px;">Visible</div></div>
         </div>
         <div class="panel graph-panel">
-          <canvas id="rad-graph" height="300"></canvas>
+          <div class="two-col-canvas">
+            <div class="graph-cell"><canvas id="rad-graph" height="300"></canvas></div>
+            <div class="particle-box" id="rad-power-meter" style="height:300px; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; padding:14px 0 10px;">
+              <span class="tag">Radiated power</span>
+              <span id="rad-power-label" style="font-family:var(--mono); font-size:13px; color:var(--readout); text-shadow:0 0 10px var(--readout-glow); margin-bottom:8px; font-variant-numeric:tabular-nums;">63.0 kW</span>
+              <div style="width:34px; flex:1; min-height:0; border:1px solid var(--border-soft); border-radius:3px; background:var(--bg-2); display:flex; flex-direction:column-reverse; overflow:hidden;">
+                <div id="rad-power-fill" style="width:100%; transition:height .25s, background .25s;"></div>
+              </div>
+              <span style="font-family:var(--mono); font-size:9px; color:var(--text-faint); margin-top:8px; text-align:center; line-height:1.4;">P = &sigma;AT&#8308;<br>scales with area &amp; T&#8308;</span>
+            </div>
+          </div>
           <div class="legend">
             <span><span class="dot" style="background:rgba(140,110,255,0.55)"></span>Visible band (380&ndash;700 nm)</span>
-            <span><span class="dot" style="background:var(--accent)"></span>Spectral radiance</span>
+            <span><span class="dot" style="background:var(--accent)"></span>Spectral radiance (per unit area &mdash; shape only, unaffected by A)</span>
             <span><span class="dot" style="background:var(--text-dim)"></span>&lambda;_max</span>
           </div>
         </div>
@@ -914,49 +924,55 @@
 
     var model = null; // { segments, totalTime, t0, tMax }
 
+    // Segments are built in ENERGY (Joules), not time — Q = mcΔT and Q = mL don't
+    // involve power at all, only the rate at which that energy is delivered does.
+    // This is what makes adjusting the power slider mid-playback safe: the amount
+    // of energy needed to reach any given point on the curve never changes, so the
+    // substance's temperature/phase can't retroactively "rewind" when power changes.
+    // Time is only ever derived (time = energy / power) for display and the x-axis.
     function buildModel() {
       var s = readState();
       var t0 = s.tm - 20;
       var tMax = s.tb + 40;
       var segs = [];
-      var t = 0;
+      var E = 0;
       function addRamp(phase, T1, T2, c) {
-        var dur = s.mass * c * Math.abs(T2 - T1) / s.power;
-        segs.push({ phase: phase, kind: 'ramp', t0: t, t1: t + dur, T0: T1, T1v: T2 });
-        t += dur;
+        var dQ = s.mass * c * Math.abs(T2 - T1);
+        segs.push({ phase: phase, kind: 'ramp', E0: E, E1: E + dQ, T0: T1, T1v: T2 });
+        E += dQ;
       }
       function addPlateau(phase, T, L) {
-        var dur = s.mass * L / s.power;
-        segs.push({ phase: phase, kind: 'plateau', t0: t, t1: t + dur, T0: T, T1v: T });
-        t += dur;
+        var dQ = s.mass * L;
+        segs.push({ phase: phase, kind: 'plateau', E0: E, E1: E + dQ, T0: T, T1v: T });
+        E += dQ;
       }
       addRamp('Solid', t0, s.tm, s.cs);
       addPlateau('Melting', s.tm, s.lf);
       addRamp('Liquid', s.tm, s.tb, s.cl);
       addPlateau('Boiling', s.tb, s.lv);
       addRamp('Gas', s.tb, tMax, s.cg);
-      model = { state: s, segments: segs, totalTime: t, t0: t0, tMax: tMax };
-      scrubMax = model.totalTime;
+      model = { state: s, segments: segs, totalEnergy: E, totalTime: E / s.power, t0: t0, tMax: tMax };
+      scrubMax = model.totalEnergy;
       els.scrub.max = Math.round(scrubMax);
     }
 
-    // Beyond the last drawn segment the substance is just gas continuing to heat at
-    // the same rate (Q = mcΔT still applies) — there's no physical reason for the
+    // Beyond the last defined segment the substance is just gas continuing to heat
+    // at the same rate (Q = mcΔT still applies) — there's no physical reason for the
     // model to stop there, so sampling extrapolates indefinitely instead of clamping.
-    function sampleModel(time) {
+    function sampleModel(energy) {
       var segs = model.segments;
-      if (time > model.totalTime) {
+      if (energy > model.totalEnergy) {
         var s = model.state;
-        var rate = s.power / (s.mass * s.cg);
+        var rate = 1 / (s.mass * s.cg); // °C per joule beyond the curve — power-independent
         var lastSeg = segs[segs.length - 1];
-        var T = model.tMax + rate * (time - model.totalTime);
+        var T = model.tMax + rate * (energy - model.totalEnergy);
         return { T: T, phase: lastSeg.phase, seg: lastSeg };
       }
       var seg = segs[segs.length - 1];
       for (var i = 0; i < segs.length; i++) {
-        if (time <= segs[i].t1 || i === segs.length - 1) { seg = segs[i]; break; }
+        if (energy <= segs[i].E1 || i === segs.length - 1) { seg = segs[i]; break; }
       }
-      var frac = seg.t1 > seg.t0 ? (time - seg.t0) / (seg.t1 - seg.t0) : 1;
+      var frac = seg.E1 > seg.E0 ? (energy - seg.E0) / (seg.E1 - seg.E0) : 1;
       frac = Math.max(0, Math.min(1, frac));
       var T = seg.T0 + (seg.T1v - seg.T0) * frac;
       return { T: T, phase: seg.phase, seg: seg };
@@ -967,7 +983,7 @@
       Solid: '#4f9fd8', Melting: '#8fd0f0', Liquid: '#e2823f', Boiling: '#f2c14e', Gas: '#e2483a'
     };
 
-    function drawGraph(currentTime) {
+    function drawGraph(currentEnergy) {
       var fit = fitCanvas(els.graph, 300);
       if (!fit) return;
       var ctx = fit.ctx, W = fit.w, H = fit.h;
@@ -975,11 +991,16 @@
       var pad = { l: 46, r: 14, t: 14, b: 28 };
       var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
 
-      var samp = sampleModel(currentTime);
+      var power = model.state.power;
+      var currentTime = currentEnergy / power;
+      var samp = sampleModel(currentEnergy);
 
       // Base axis covers the defined solid→melt→liquid→boil→gas curve. Once playback
       // runs past that (the substance just keeps heating as a gas), the axis grows to
       // keep the marker in view with a little headroom, instead of clamping playback.
+      // The x-axis is time, but time is derived from energy/power fresh on every
+      // draw — so adjusting power rescales the axis smoothly without moving the
+      // marker's position along the curve (see buildModel/sampleModel).
       var tMin = 0, TMin = model.t0;
       var tMax = Math.max(model.totalTime, currentTime * 1.12);
       var TMax = Math.max(model.tMax, samp.T + (model.tMax - model.t0) * 0.08);
@@ -989,7 +1010,7 @@
       // phase background bands
       model.segments.forEach(function (seg) {
         ctx.fillStyle = phaseColors[seg.phase] + '18';
-        ctx.fillRect(X(seg.t0), pad.t, X(seg.t1) - X(seg.t0), plotH);
+        ctx.fillRect(X(seg.E0 / power), pad.t, X(seg.E1 / power) - X(seg.E0 / power), plotH);
       });
 
       // gridlines
@@ -1014,7 +1035,7 @@
       // curve
       ctx.beginPath();
       model.segments.forEach(function (seg, idx) {
-        var x0 = X(seg.t0), y0 = Y(seg.T0), x1 = X(seg.t1), y1 = Y(seg.T1v);
+        var x0 = X(seg.E0 / power), y0 = Y(seg.T0), x1 = X(seg.E1 / power), y1 = Y(seg.T1v);
         if (idx === 0) ctx.moveTo(x0, y0);
         ctx.lineTo(x1, y1);
       });
@@ -1023,7 +1044,7 @@
       ctx.stroke();
 
       // extrapolated tail once playback has run past the defined curve
-      if (currentTime > model.totalTime) {
+      if (currentEnergy > model.totalEnergy) {
         ctx.fillStyle = phaseColors.Gas + '18';
         ctx.fillRect(X(model.totalTime), pad.t, X(currentTime) - X(model.totalTime), plotH);
         ctx.beginPath();
@@ -1129,12 +1150,14 @@
       ctx.fill();
     }
 
-    var playing = false, curTime = 0, lastTs = null, scrubMax = 0;
+    // curEnergy (joules) is the persistent progress state — see buildModel's note on
+    // why energy, not elapsed seconds, is what's held constant across parameter changes.
+    var playing = false, curEnergy = 0, lastTs = null, scrubMax = 0;
 
     function resetPlayback() {
       playing = false;
-      curTime = 0;
-      scrubMax = model.totalTime;
+      curEnergy = 0;
+      scrubMax = model.totalEnergy;
       els.scrub.max = Math.round(scrubMax);
       els.scrub.value = 0;
       els.play.textContent = '▶ Play';
@@ -1143,12 +1166,12 @@
     }
 
     function render() {
-      var samp = sampleModel(curTime);
-      drawGraph(curTime);
+      var samp = sampleModel(curEnergy);
+      drawGraph(curEnergy);
       var tempFrac = (samp.T - model.t0) / (model.tMax - model.t0);
       updateAndDrawParticles(0.016, samp.phase, samp.T, Math.max(0, Math.min(1, tempFrac)));
-      els.rTime.innerHTML = curTime.toFixed(1) + '<span class="unit">s</span>';
-      els.rEnergy.innerHTML = Math.round(model.state.power * curTime / 1000) + '<span class="unit">kJ</span>';
+      els.rTime.innerHTML = (curEnergy / model.state.power).toFixed(1) + '<span class="unit">s</span>';
+      els.rEnergy.innerHTML = Math.round(curEnergy / 1000) + '<span class="unit">kJ</span>';
       els.rTemp.innerHTML = Math.round(samp.T) + '<span class="unit">°C</span>';
       els.rPhase.textContent = samp.phase;
       els.phaseTag.textContent = samp.phase;
@@ -1162,7 +1185,7 @@
     });
     els.reset.addEventListener('click', resetPlayback);
     els.scrub.addEventListener('input', function () {
-      curTime = parseFloat(els.scrub.value);
+      curEnergy = parseFloat(els.scrub.value);
       playing = false;
       els.play.textContent = '▶ Play';
       render();
@@ -1171,13 +1194,17 @@
       el.addEventListener('input', function () {
         syncLabels();
         buildModel();
-        scrubMax = Math.max(model.totalTime, curTime * 1.1, scrubMax);
+        // curEnergy is deliberately left untouched here: energy delivered so far
+        // doesn't change just because power (or any other parameter) changed, so
+        // temperature/phase pick up exactly where they were — only the derived
+        // time readout and axis rescale to match the new power.
+        scrubMax = Math.max(model.totalEnergy, curEnergy * 1.1, scrubMax);
         els.scrub.max = Math.round(scrubMax);
         render();
       });
     });
 
-    // Playback is open-ended: once curTime runs past the defined curve, the
+    // Playback is open-ended: once curEnergy runs past the defined curve, the
     // substance just keeps heating as a gas (see sampleModel) and the graph's
     // axis keeps expanding to follow it, so there's no limit to clamp to here —
     // the scrub range is grown in occasional jumps rather than every frame so
@@ -1187,12 +1214,14 @@
       if (lastTs === null) lastTs = ts;
       var dt = (ts - lastTs) / 1000;
       lastTs = ts;
-      curTime += dt * (model.totalTime / 14); // matches the original curve's ~14s pace
-      if (curTime > scrubMax * 0.95) {
-        scrubMax = curTime * 1.5;
+      curEnergy += dt * (model.totalEnergy / 14); // matches the original curve's ~14s pace,
+                                                     // independent of power so adjusting the
+                                                     // power slider mid-play never skips a beat
+      if (curEnergy > scrubMax * 0.95) {
+        scrubMax = curEnergy * 1.5;
         els.scrub.max = Math.round(scrubMax);
       }
-      els.scrub.value = curTime;
+      els.scrub.value = curEnergy;
       render();
       requestAnimationFrame(loop);
     }
@@ -1406,9 +1435,16 @@
       swatch: document.getElementById('rad-swatch'),
       graph: document.getElementById('rad-graph'),
       rJ: document.getElementById('rad-r-j'), rP: document.getElementById('rad-r-p'),
-      rLambda: document.getElementById('rad-r-lambda'), rBand: document.getElementById('rad-r-band')
+      rLambda: document.getElementById('rad-r-lambda'), rBand: document.getElementById('rad-r-band'),
+      powerFill: document.getElementById('rad-power-fill'), powerLabel: document.getElementById('rad-power-label')
     };
     var DEFAULT_T = 5778, DEFAULT_A = 1;
+    // Calibration ceiling/floor for the power meter: the smallest and largest
+    // possible P across the full slider range (T: 300–12000 K, A: 0.01–5 m²),
+    // log-scaled since P spans ~9 orders of magnitude over that range.
+    var P_FLOOR = SIGMA * Math.pow(300, 4) * 0.01;
+    var P_CEIL = SIGMA * Math.pow(12000, 4) * 5;
+    var LOG_FLOOR = Math.log10(P_FLOOR), LOG_CEIL = Math.log10(P_CEIL);
 
     document.querySelectorAll('#mod-radiation .preset-row button').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -1523,6 +1559,22 @@
 
       els.swatch.style.background = T >= 700 ? blackbodyRGB(T) : 'linear-gradient(90deg, ' + css('--panel-2') + ', ' + css('--border') + ')';
       drawSpectrum(T, lambdaMax);
+
+      // Spectral radiance (the curve above) is per unit area and genuinely doesn't
+      // change shape with A — only T does, via Wien's Law. Total power is where area
+      // shows up (P = jA, linear in A), so it gets its own meter rather than being
+      // folded into the curve, which would misrepresent radiance as area-dependent.
+      var frac = Math.max(0, Math.min(1, (Math.log10(P) - LOG_FLOOR) / (LOG_CEIL - LOG_FLOOR)));
+      els.powerFill.style.height = (frac * 100) + '%';
+      els.powerFill.style.background = T >= 700 ? blackbodyRGB(T) : css('--text-dim');
+      els.powerLabel.textContent = fmtPower(P);
+    }
+
+    function fmtPower(P) {
+      if (P >= 1e9) return (P / 1e9).toFixed(P >= 1e10 ? 1 : 2) + ' GW';
+      if (P >= 1e6) return (P / 1e6).toFixed(P >= 1e7 ? 1 : 2) + ' MW';
+      if (P >= 1e3) return (P / 1e3).toFixed(P >= 1e4 ? 0 : 1) + ' kW';
+      return P.toFixed(1) + ' W';
     }
 
     els.t.addEventListener('input', render);
