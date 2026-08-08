@@ -1256,8 +1256,9 @@
 
     // hover readout: coordinates of whatever point on the curve the mouse is over
     if(f.valid && state.formsHoverX!=null){
-      const hx=state.formsHoverX, hy=f.a*hx*hx+f.b*hx+f.c;
+      const hx=state.formsHoverX.x, hy=f.a*hx*hx+f.b*hx+f.c;
       const hpx=worldToPx(hx,hy);
+      const isFeature = Math.abs(hx-f.h)<1e-9 || (f.roots && f.roots.some(r=>Math.abs(hx-r)<1e-9));
       if(hpx.x>=-20 && hpx.x<=cw+20 && hpx.y>=-20 && hpx.y<=ch+20){
         const axisPx=worldToPx(hx,0), axisPy=worldToPx(0,hy);
         ctx.save();
@@ -1268,12 +1269,12 @@
         ctx.beginPath(); ctx.moveTo(hpx.x,hpx.y); ctx.lineTo(axisPy.x,hpx.y); ctx.stroke();
         ctx.restore();
 
-        ctx.fillStyle=teal;
-        ctx.beginPath(); ctx.arc(hpx.x,hpx.y,4.5,0,Math.PI*2); ctx.fill();
+        ctx.fillStyle=isFeature?plum:teal;
+        ctx.beginPath(); ctx.arc(hpx.x,hpx.y,isFeature?5.5:4.5,0,Math.PI*2); ctx.fill();
         ctx.lineWidth=1.5; ctx.strokeStyle=cssVar("--panel");
         ctx.stroke();
 
-        drawCoordPill(hpx.x, hpx.y, '('+fmt(hx)+', '+fmt(hy)+')');
+        drawCoordPill(hpx.x, hpx.y, '('+fmt(hx)+', '+fmt(hy)+')'+(isFeature?' ★':''));
       }
     }
     updateFormsUI();
@@ -1414,6 +1415,35 @@
     }
     lastQuadForms={valid:true, a,b,c,h,k,disc,roots};
     return lastQuadForms;
+  }
+
+  // Given the raw mouse position, returns {x, snapped} to hover at, or null if the
+  // cursor isn't actually close to the curve at that x. Magnetic snapping: within
+  // FEATURE_SNAP_PX of the vertex or an x-intercept it locks on exactly; failing
+  // that, within INTEGER_SNAP_PX of a whole number it locks onto the grid; otherwise
+  // it reports the exact, unsnapped coordinate under the cursor.
+  const CURVE_PROXIMITY_PX=18, FEATURE_SNAP_PX=20, INTEGER_SNAP_PX=10;
+  function computeFormsHover(mousePx, mousePy, rawWorldX){
+    const f=computeQuadForms();
+    if(!f.valid) return null;
+
+    const curveFn=x=>f.a*x*x+f.b*x+f.c;
+    const rawCurvePx=worldToPx(rawWorldX, curveFn(rawWorldX));
+    if(Math.abs(rawCurvePx.y-mousePy) > CURVE_PROXIMITY_PX) return null;
+
+    const featureXs=[f.h, ...(f.roots||[])];
+    let bestX=null, bestPxDist=FEATURE_SNAP_PX;
+    featureXs.forEach(fx=>{
+      const d=Math.abs(worldToPx(fx,0).x - mousePx);
+      if(d<bestPxDist){ bestPxDist=d; bestX=fx; }
+    });
+    if(bestX!=null) return {x:bestX, snapped:true};
+
+    const nearestInt=Math.round(rawWorldX);
+    if(Math.abs(worldToPx(nearestInt,0).x - mousePx) < INTEGER_SNAP_PX){
+      return {x:nearestInt, snapped:true};
+    }
+    return {x:rawWorldX, snapped:false};
   }
 
   function updateFormsUI(){
@@ -1579,7 +1609,7 @@
     // Hover readout on the forms parabola — only while not dragging, so it doesn't
     // fight with the point being dragged (which sits exactly on the curve anyway).
     if(state.mode==="forms" && !state.drag){
-      state.formsHoverX = w.x;
+      state.formsHoverX = computeFormsHover(px, py, w.x);
     }
 
     if(!state.drag) return;
