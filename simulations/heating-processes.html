@@ -1,0 +1,1481 @@
+<meta charset="UTF-8">
+<title>Heating Processes — QCAA Physics</title>
+<style>
+  :root {
+    --bg: #10151a;
+    --bg-2: #161d23;
+    --panel: #1a2229;
+    --panel-2: #202a32;
+    --border: #2a3540;
+    --border-soft: #232d35;
+    --text: #eaf0f4;
+    --text-dim: #93a5b3;
+    --text-faint: #5f7280;
+    --accent: #e2823f;
+    --accent-soft: #f2a769;
+    --accent-dim: #6b4a2e;
+    --cold: #4f9fd8;
+    --hot: #e2483a;
+    --readout: #ffcf8a;
+    --readout-glow: rgba(255, 207, 138, 0.35);
+    --grid-line: rgba(234, 240, 244, 0.07);
+    --shadow: 0 1px 0 rgba(0,0,0,0.4);
+    --radius: 3px;
+    --mono: 'Consolas', 'SFMono-Regular', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+    --sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --display: 'Bahnschrift', 'Segoe UI Semibold', 'Segoe UI', system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f4;
+    --bg-2: #e6ebee;
+    --panel: #f8fafb;
+    --panel-2: #eef2f4;
+    --border: #cdd7dd;
+    --border-soft: #dbe2e6;
+    --text: #162027;
+    --text-dim: #4d616f;
+    --text-faint: #8395a1;
+    --accent: #c9631f;
+    --accent-soft: #a4501a;
+    --accent-dim: #f1cba3;
+    --cold: #1f76b0;
+    --hot: #c23324;
+    --readout: #8a4c02;
+    --readout-glow: rgba(138, 76, 2, 0.18);
+    --grid-line: rgba(22, 32, 39, 0.08);
+    --shadow: 0 1px 0 rgba(0,0,0,0.06);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #eef1f4;
+      --bg-2: #e6ebee;
+      --panel: #f8fafb;
+      --panel-2: #eef2f4;
+      --border: #cdd7dd;
+      --border-soft: #dbe2e6;
+      --text: #162027;
+      --text-dim: #4d616f;
+      --text-faint: #8395a1;
+      --accent: #c9631f;
+      --accent-soft: #a4501a;
+      --accent-dim: #f1cba3;
+      --cold: #1f76b0;
+      --hot: #c23324;
+      --readout: #8a4c02;
+      --readout-glow: rgba(138, 76, 2, 0.18);
+      --grid-line: rgba(22, 32, 39, 0.08);
+      color-scheme: light;
+    }
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  ::selection { background: var(--accent-dim); color: var(--text); }
+
+  .wrap {
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 28px 22px 60px;
+  }
+
+  /* ---------- Header ---------- */
+  header.top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 18px;
+    margin-bottom: 20px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 6px;
+  }
+  h1 {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 30px;
+    letter-spacing: 0.01em;
+    margin: 0 0 4px;
+    text-wrap: balance;
+  }
+  .subtitle {
+    color: var(--text-dim);
+    font-size: 13px;
+    max-width: 56ch;
+  }
+  .theme-toggle {
+    display: flex;
+    gap: 2px;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 2px;
+    flex-shrink: 0;
+  }
+  .theme-toggle button {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    background: transparent;
+    border: none;
+    color: var(--text-dim);
+    padding: 6px 10px;
+    border-radius: 2px;
+    cursor: pointer;
+  }
+  .theme-toggle button.active {
+    background: var(--panel-2);
+    color: var(--accent);
+  }
+
+  /* ---------- Tabs ---------- */
+  nav.tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  nav.tabs button {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 13.5px;
+    letter-spacing: 0.01em;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+    padding: 10px 16px;
+    border-radius: var(--radius);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    transition: color .15s, border-color .15s, background .15s;
+  }
+  nav.tabs button .num {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-faint);
+    border: 1px solid var(--border-soft);
+    border-radius: 50%;
+    width: 17px;
+    height: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  nav.tabs button:hover { color: var(--text); border-color: var(--text-faint); }
+  nav.tabs button.active {
+    color: var(--text);
+    background: var(--panel-2);
+    border-color: var(--accent-dim);
+  }
+  nav.tabs button.active .num {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #1a1005;
+  }
+
+  /* ---------- Module layout ---------- */
+  .module { display: none; }
+  .module.active { display: block; }
+
+  .module-head {
+    margin-bottom: 14px;
+  }
+  .module-head h2 {
+    font-family: var(--display);
+    font-size: 19px;
+    margin: 0 0 4px;
+  }
+  .module-head p {
+    color: var(--text-dim);
+    font-size: 13px;
+    max-width: 70ch;
+    margin: 0;
+  }
+  .module-head .formula {
+    font-family: var(--mono);
+    color: var(--accent-soft);
+    background: var(--panel);
+    border: 1px solid var(--border-soft);
+    padding: 2px 7px;
+    border-radius: 2px;
+    font-size: 12.5px;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: 268px minmax(0, 1fr);
+    gap: 16px;
+    align-items: start;
+  }
+  @media (max-width: 800px) {
+    .grid { grid-template-columns: 1fr; }
+  }
+
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .panel-title {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    padding: 10px 14px 8px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  /* ---------- Controls ---------- */
+  .controls { padding: 14px; display: flex; flex-direction: column; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+  .field-label span.val {
+    font-family: var(--mono);
+    color: var(--readout);
+    font-size: 12px;
+    text-shadow: 0 0 10px var(--readout-glow);
+  }
+  select {
+    width: 100%;
+    background: var(--panel-2);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 2px;
+    padding: 7px 8px;
+    font-family: var(--sans);
+    font-size: 12.5px;
+  }
+  input[type="range"] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 22px;
+    background: transparent;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-runnable-track {
+    height: 4px;
+    background: linear-gradient(90deg, var(--border-soft), var(--border-soft));
+    border-radius: 2px;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    margin-top: -5px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--bg);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+  input[type="range"]::-moz-range-track {
+    height: 4px;
+    background: var(--border-soft);
+    border-radius: 2px;
+  }
+  input[type="range"]::-moz-range-thumb {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg);
+  }
+
+  .divider { border-top: 1px dashed var(--border-soft); margin: 2px 0; }
+  .subhead {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+  }
+
+  .btn-row { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--border-soft); }
+  button.action {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 12.5px;
+    background: var(--panel-2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 8px 12px;
+    border-radius: 2px;
+    cursor: pointer;
+    flex: 1;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  button.action:hover { border-color: var(--text-faint); }
+  button.action.primary {
+    background: var(--accent);
+    color: #1a1005;
+    border-color: var(--accent);
+  }
+  button.action.primary:hover { background: var(--accent-soft); }
+  button.action:disabled { opacity: 0.4; cursor: default; }
+
+  .preset-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 14px 0; }
+  .preset-row button {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    background: var(--panel-2);
+    border: 1px solid var(--border-soft);
+    color: var(--text-dim);
+    padding: 5px 9px;
+    border-radius: 20px;
+    cursor: pointer;
+  }
+  .preset-row button:hover { color: var(--text); border-color: var(--accent-dim); }
+
+  /* ---------- Stage ---------- */
+  .stage { display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+  .readouts {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+    gap: 1px;
+    background: var(--border-soft);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    min-width: 0; /* a flex item otherwise won't shrink below its own content's
+                     min-content width — see the .readout-cell note above */
+  }
+  .readout-cell {
+    background: var(--panel);
+    padding: 10px 12px;
+    min-width: 0; /* let a long unbroken number (e.g. a huge kW/m² value) wrap instead
+                     of forcing this grid track — and the whole page — wider */
+  }
+  .readout-cell .k {
+    font-family: var(--mono);
+    font-size: 9.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: 4px;
+  }
+  .readout-cell .v {
+    font-family: var(--mono);
+    font-size: 17px;
+    color: var(--readout);
+    text-shadow: 0 0 12px var(--readout-glow);
+    font-variant-numeric: tabular-nums;
+    overflow-wrap: break-word;
+  }
+  .readout-cell .v .unit { font-size: 11px; color: var(--text-dim); text-shadow: none; margin-left: 2px; }
+
+  .graph-panel { padding: 12px; }
+  canvas { display: block; width: 100%; }
+
+  .two-col-canvas { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 12px; }
+  @media (max-width: 620px) { .two-col-canvas { grid-template-columns: minmax(0, 1fr); } }
+  .graph-cell { min-width: 0; }
+
+  .particle-box {
+    border: 1px solid var(--border-soft);
+    border-radius: 2px;
+    background: var(--bg-2);
+    position: relative;
+    overflow: hidden;
+  }
+  .particle-box .tag {
+    position: absolute; top: 6px; left: 8px;
+    font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-faint);
+    pointer-events: none;
+  }
+  .particle-box .phase-tag {
+    position: absolute; bottom: 7px; left: 8px;
+    font-family: var(--display); font-weight: 700; font-size: 13px;
+    color: var(--accent-soft);
+    pointer-events: none;
+  }
+
+  .scrub-row { display: flex; align-items: center; gap: 10px; }
+  .scrub-row input[type=range] { flex: 1; }
+
+  footer.note {
+    margin-top: 26px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+    color: var(--text-faint);
+    font-size: 11.5px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  footer.note code { font-family: var(--mono); color: var(--text-dim); }
+
+  .swatch {
+    width: 100%;
+    height: 64px;
+    border-radius: 2px;
+    border: 1px solid var(--border-soft);
+  }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: var(--text-dim); padding: 0 12px 12px; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+
+  .obj-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 520px) { .obj-pair { grid-template-columns: 1fr; } }
+  .obj-card {
+    border: 1px solid var(--border-soft);
+    border-radius: 2px;
+    padding: 10px;
+    background: var(--panel-2);
+  }
+  .obj-card .obj-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 12px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .obj-title .swab { width: 9px; height: 9px; border-radius: 50%; }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">QCAA Physics · Unit 1 · Thermal, Nuclear and Electrical Physics</p>
+      <h1>Heating Processes</h1>
+      <p class="subtitle">Three linked instruments for the particle model of heat: phase-change heating curves, thermal equilibrium &amp; calorimetry, and black-body radiation.</p>
+      <p style="font-size:12px; color:var(--text-faint); margin:6px 0 0;">Companion resources: <a href="https://claude.ai/code/artifact/d965b171-cd1c-4f0a-93b2-e932b63a9abf" target="_blank" rel="noopener" style="color:var(--accent-soft);">Teacher &amp; Student Guide</a> &middot; <a href="https://claude.ai/code/artifact/f2194565-8e7a-473a-8cde-873af6519c77" target="_blank" rel="noopener" style="color:var(--accent-soft);">Student Worksheet</a></p>
+    </div>
+    <div class="theme-toggle" id="themeToggle">
+      <button data-theme="dark" class="active">Dark</button>
+      <button data-theme="light">Light</button>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="curve"><span class="num">1</span>Heating Curve</button>
+    <button class="tab-btn" data-tab="equilibrium"><span class="num">2</span>Thermal Equilibrium</button>
+    <button class="tab-btn" data-tab="radiation"><span class="num">3</span>Black-Body Radiation</button>
+  </nav>
+
+  <!-- ============ MODULE 1: HEATING CURVE ============ -->
+  <section class="module active" id="mod-curve">
+    <div class="module-head">
+      <h2>Phase-change heating curve</h2>
+      <p>Constant power <span class="formula">P</span> is delivered to a substance from below its melting point. Watch temperature plateau during melting and boiling while the particle view shows why: energy goes into breaking bonds, not raising <span class="formula">E_k</span>. <span class="formula">Q = mcΔT</span> &nbsp; <span class="formula">Q = mL</span></p>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-title">Setup</div>
+        <div class="preset-row">
+          <button data-preset="water">Water</button>
+          <button data-preset="ethanol">Ethanol</button>
+          <button data-preset="custom">Custom substance</button>
+        </div>
+        <div class="controls">
+          <div class="field">
+            <div class="field-label"><span>Mass, m</span><span class="val" id="hc-mass-val">0.50 kg</span></div>
+            <input type="range" id="hc-mass" min="0.05" max="2" step="0.01" value="0.5">
+          </div>
+          <div class="field">
+            <div class="field-label"><span>Heater power, P</span><span class="val" id="hc-power-val">500 W</span></div>
+            <input type="range" id="hc-power" min="50" max="2000" step="10" value="500">
+          </div>
+          <div id="hc-custom-controls" style="display:none; flex-direction:column; gap:16px;">
+            <div class="divider"></div>
+            <div class="subhead">Custom material properties</div>
+            <div class="field">
+              <div class="field-label"><span>Melting point, T&#7480;</span><span class="val" id="hc-tm-val">0 &deg;C</span></div>
+              <input type="range" id="hc-tm" min="-50" max="200" step="1" value="0">
+            </div>
+            <div class="field">
+              <div class="field-label"><span>Boiling point, T_b</span><span class="val" id="hc-tb-val">100 &deg;C</span></div>
+              <input type="range" id="hc-tb" min="20" max="400" step="1" value="100">
+            </div>
+            <div class="field">
+              <div class="field-label"><span>c (solid)</span><span class="val" id="hc-cs-val">2100 J/kg&middot;K</span></div>
+              <input type="range" id="hc-cs" min="200" max="4500" step="10" value="2100">
+            </div>
+            <div class="field">
+              <div class="field-label"><span>c (liquid)</span><span class="val" id="hc-cl-val">4186 J/kg&middot;K</span></div>
+              <input type="range" id="hc-cl" min="200" max="4500" step="10" value="4186">
+            </div>
+            <div class="field">
+              <div class="field-label"><span>c (gas)</span><span class="val" id="hc-cg-val">2010 J/kg&middot;K</span></div>
+              <input type="range" id="hc-cg" min="200" max="4500" step="10" value="2010">
+            </div>
+            <div class="field">
+              <div class="field-label"><span>Latent heat of fusion, L_f</span><span class="val" id="hc-lf-val">334 kJ/kg</span></div>
+              <input type="range" id="hc-lf" min="10" max="450" step="1" value="334">
+            </div>
+            <div class="field">
+              <div class="field-label"><span>Latent heat of vaporisation, L_v</span><span class="val" id="hc-lv-val">2260 kJ/kg</span></div>
+              <input type="range" id="hc-lv" min="50" max="2500" step="10" value="2260">
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="action primary" id="hc-play">&#9654; Play</button>
+          <button class="action" id="hc-reset">&#8634; Reset</button>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="readouts">
+          <div class="readout-cell"><div class="k">Elapsed time</div><div class="v" id="hc-r-time">0.0<span class="unit">s</span></div></div>
+          <div class="readout-cell"><div class="k">Energy supplied</div><div class="v" id="hc-r-energy">0<span class="unit">kJ</span></div></div>
+          <div class="readout-cell"><div class="k">Temperature</div><div class="v" id="hc-r-temp">&minus;20<span class="unit">&deg;C</span></div></div>
+          <div class="readout-cell"><div class="k">Phase</div><div class="v" id="hc-r-phase">Solid</div></div>
+        </div>
+        <div class="panel graph-panel">
+          <div class="two-col-canvas">
+            <div class="graph-cell"><canvas id="hc-graph" height="300"></canvas></div>
+            <div class="particle-box" id="hc-particle-box" style="height:300px;">
+              <span class="tag">Particle view</span>
+              <span class="phase-tag" id="hc-phase-tag">Solid</span>
+              <canvas id="hc-particles"></canvas>
+            </div>
+          </div>
+          <div class="scrub-row" style="margin-top:10px;">
+            <span class="subhead">Scrub</span>
+            <input type="range" id="hc-scrub" min="0" max="1000" step="1" value="0">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 2: THERMAL EQUILIBRIUM ============ -->
+  <section class="module" id="mod-equilibrium">
+    <div class="module-head">
+      <h2>Thermal equilibrium &amp; calorimetry</h2>
+      <p>Two bodies in contact exchange thermal energy until they reach the same temperature — the Zeroth Law. Energy lost by the hotter body equals energy gained by the cooler one (assuming no losses). <span class="formula">m&#8321;c&#8321;(T&#7623;&minus;T&#8321;) = &minus;m&#8322;c&#8322;(T&#7623;&minus;T&#8322;)</span></p>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-title">Setup</div>
+        <div class="controls">
+          <div class="obj-pair">
+            <div class="obj-card">
+              <div class="obj-title"><span class="swab" style="background:var(--hot)"></span>Body A</div>
+              <div class="field">
+                <div class="field-label"><span>Material</span></div>
+                <select id="te-a-material">
+                  <option value="4186">Water</option>
+                  <option value="897">Aluminium</option>
+                  <option value="385">Copper</option>
+                  <option value="449">Iron</option>
+                  <option value="840">Glass</option>
+                  <option value="128">Lead</option>
+                </select>
+              </div>
+              <div class="field" style="margin-top:10px;">
+                <div class="field-label"><span>Mass</span><span class="val" id="te-a-mass-val">0.30 kg</span></div>
+                <input type="range" id="te-a-mass" min="0.05" max="2" step="0.01" value="0.3">
+              </div>
+              <div class="field" style="margin-top:10px;">
+                <div class="field-label"><span>Initial temp.</span><span class="val" id="te-a-temp-val">90 &deg;C</span></div>
+                <input type="range" id="te-a-temp" min="0" max="100" step="1" value="90">
+              </div>
+            </div>
+            <div class="obj-card">
+              <div class="obj-title"><span class="swab" style="background:var(--cold)"></span>Body B</div>
+              <div class="field">
+                <div class="field-label"><span>Material</span></div>
+                <select id="te-b-material">
+                  <option value="4186" selected>Water</option>
+                  <option value="897">Aluminium</option>
+                  <option value="385">Copper</option>
+                  <option value="449">Iron</option>
+                  <option value="840">Glass</option>
+                  <option value="128">Lead</option>
+                </select>
+              </div>
+              <div class="field" style="margin-top:10px;">
+                <div class="field-label"><span>Mass</span><span class="val" id="te-b-mass-val">1.00 kg</span></div>
+                <input type="range" id="te-b-mass" min="0.05" max="2" step="0.01" value="1">
+              </div>
+              <div class="field" style="margin-top:10px;">
+                <div class="field-label"><span>Initial temp.</span><span class="val" id="te-b-temp-val">15 &deg;C</span></div>
+                <input type="range" id="te-b-temp" min="0" max="100" step="1" value="15">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="action primary" id="te-mix">&#9654; Bring into contact</button>
+          <button class="action" id="te-reset">&#8634; Reset</button>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="readouts">
+          <div class="readout-cell"><div class="k">Equilibrium temp.</div><div class="v" id="te-r-tf">31<span class="unit">&deg;C</span></div></div>
+          <div class="readout-cell"><div class="k">Energy transferred</div><div class="v" id="te-r-q">74<span class="unit">kJ</span></div></div>
+          <div class="readout-cell"><div class="k">Body A now</div><div class="v" id="te-r-a">90<span class="unit">&deg;C</span></div></div>
+          <div class="readout-cell"><div class="k">Body B now</div><div class="v" id="te-r-b">15<span class="unit">&deg;C</span></div></div>
+        </div>
+        <div class="panel graph-panel">
+          <div class="two-col-canvas">
+            <div class="graph-cell"><canvas id="te-graph" height="300"></canvas></div>
+            <div class="particle-box" id="te-particle-box" style="height:300px;">
+              <span class="tag">Particle view</span>
+              <canvas id="te-particles"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 3: RADIATION ============ -->
+  <section class="module" id="mod-radiation">
+    <div class="module-head">
+      <h2>Black-body radiation</h2>
+      <p>Every object radiates thermal energy according to its temperature. Stefan's Law gives the total power; Wien's Law gives the peak wavelength — and therefore the perceived colour. <span class="formula">P = &sigma;AT&#8308;</span> &nbsp; <span class="formula">&lambda;_max = b/T</span></p>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-title">Setup</div>
+        <div class="preset-row">
+          <button data-t-preset="310">Body, 310 K</button>
+          <button data-t-preset="1800">Candle, 1800 K</button>
+          <button data-t-preset="2870">Filament, 2870 K</button>
+          <button data-t-preset="5778">Sun, 5778 K</button>
+          <button data-t-preset="11000">Blue star, 11000 K</button>
+        </div>
+        <div class="controls">
+          <div class="field">
+            <div class="field-label"><span>Temperature, T</span><span class="val" id="rad-t-val">5778 K</span></div>
+            <input type="range" id="rad-t" min="300" max="12000" step="10" value="5778">
+          </div>
+          <div class="field">
+            <div class="field-label"><span>Surface area, A</span><span class="val" id="rad-a-val">1.00 m&sup2;</span></div>
+            <input type="range" id="rad-a" min="0.01" max="5" step="0.01" value="1">
+          </div>
+          <div class="divider"></div>
+          <div class="field">
+            <div class="field-label"><span>Perceived colour</span></div>
+            <div class="swatch" id="rad-swatch"></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="action" id="rad-reset">&#8634; Reset</button>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="readouts">
+          <div class="readout-cell"><div class="k">Intensity, j = &sigma;T&#8308;</div><div class="v" id="rad-r-j">63.0<span class="unit">kW/m&sup2;</span></div></div>
+          <div class="readout-cell"><div class="k">Total power, P</div><div class="v" id="rad-r-p">63.0<span class="unit">kW</span></div></div>
+          <div class="readout-cell"><div class="k">Peak wavelength, &lambda;_max</div><div class="v" id="rad-r-lambda">501<span class="unit">nm</span></div></div>
+          <div class="readout-cell"><div class="k">Peak band</div><div class="v" id="rad-r-band" style="font-size:14px;">Visible</div></div>
+        </div>
+        <div class="panel graph-panel">
+          <canvas id="rad-graph" height="300"></canvas>
+          <div class="legend">
+            <span><span class="dot" style="background:rgba(140,110,255,0.55)"></span>Visible band (380&ndash;700 nm)</span>
+            <span><span class="dot" style="background:var(--accent)"></span>Spectral radiance</span>
+            <span><span class="dot" style="background:var(--text-dim)"></span>&lambda;_max</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="note">
+    <span>Models assume no energy loss to surroundings and constant material properties per phase &mdash; simplifications appropriate to QCAA Unit 1 problem-solving.</span>
+    <span><code>&sigma; = 5.670&times;10&#8315;&#8312; W m&#8315;&sup2;K&#8315;&#8308;</code> &nbsp; <code>b = 2.898&times;10&#8315;&sup3; m&middot;K</code></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------- Theme ---------------- */
+  var reRenderAll = [];
+  var themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var t = btn.getAttribute('data-theme');
+    document.documentElement.setAttribute('data-theme', t);
+    Array.prototype.forEach.call(themeToggle.querySelectorAll('button'), function (b) {
+      b.classList.toggle('active', b === btn);
+    });
+    reRenderAll.forEach(function (fn) { fn(); });
+  });
+
+  /* ---------------- Tabs ---------------- */
+  var tabs = document.getElementById('tabs');
+  tabs.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var name = btn.getAttribute('data-tab');
+    Array.prototype.forEach.call(tabs.querySelectorAll('button'), function (b) {
+      b.classList.toggle('active', b === btn);
+    });
+    Array.prototype.forEach.call(document.querySelectorAll('.module'), function (m) {
+      m.classList.toggle('active', m.id === 'mod-' + name);
+    });
+    reRenderAll.forEach(function (fn) { fn(); });
+  });
+
+  function css(varName) {
+    return getComputedStyle(document.documentElement).getPropertyValue(varName).trim();
+  }
+
+  function fitCanvas(canvas, cssHeight) {
+    // Skip while the canvas (or an ancestor, e.g. an inactive tab) is display:none —
+    // getBoundingClientRect() would return a zero/stale rect and desync the axis
+    // mapping from the box that's actually visible once it reappears.
+    if (canvas.offsetParent === null) return null;
+    var dpr = window.devicePixelRatio || 1;
+    var rect = canvas.parentElement.getBoundingClientRect();
+    var w = rect.width;
+    if (w <= 0) return null;
+    var h = cssHeight || canvas.height;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.width = Math.round(w * dpr);
+    canvas.height = Math.round(h * dpr);
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx: ctx, w: w, h: h };
+  }
+
+  // Re-fits happen on demand (play loop, slider input, tab switch, theme toggle),
+  // but a box can also change size for reasons we don't explicitly listen for —
+  // container queries settling after load, font metrics shifting a sidebar, the
+  // host page resizing the artifact frame. ResizeObserver catches all of those
+  // by watching the box itself rather than guessing at every trigger.
+  function observeResize(el, cb) {
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    var pending = false;
+    var ro = new ResizeObserver(function () {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; cb(); });
+    });
+    ro.observe(el);
+    return ro;
+  }
+
+  /* =========================================================
+     MODULE 1 — HEATING CURVE
+     ========================================================= */
+  (function () {
+    var els = {
+      mass: document.getElementById('hc-mass'),
+      power: document.getElementById('hc-power'),
+      tm: document.getElementById('hc-tm'),
+      tb: document.getElementById('hc-tb'),
+      cs: document.getElementById('hc-cs'),
+      cl: document.getElementById('hc-cl'),
+      cg: document.getElementById('hc-cg'),
+      lf: document.getElementById('hc-lf'),
+      lv: document.getElementById('hc-lv'),
+      customBox: document.getElementById('hc-custom-controls'),
+      play: document.getElementById('hc-play'),
+      reset: document.getElementById('hc-reset'),
+      scrub: document.getElementById('hc-scrub'),
+      graph: document.getElementById('hc-graph'),
+      particles: document.getElementById('hc-particles'),
+      rTime: document.getElementById('hc-r-time'),
+      rEnergy: document.getElementById('hc-r-energy'),
+      rTemp: document.getElementById('hc-r-temp'),
+      rPhase: document.getElementById('hc-r-phase'),
+      phaseTag: document.getElementById('hc-phase-tag')
+    };
+
+    var presets = {
+      water:   { tm: 0,    tb: 100, cs: 2100, cl: 4186, cg: 2010, lf: 334,  lv: 2260 },
+      ethanol: { tm: -114, tb: 78,  cs: 1400, cl: 2440, cg: 1400, lf: 108,  lv: 841  },
+      custom:  { tm: 0,    tb: 100, cs: 2100, cl: 4186, cg: 2010, lf: 334,  lv: 2260 }
+    };
+    var currentPreset = 'water';
+
+    function applyPresetToSliders(p) {
+      els.tm.value = p.tm; els.tb.value = p.tb;
+      els.cs.value = p.cs; els.cl.value = p.cl; els.cg.value = p.cg;
+      els.lf.value = p.lf; els.lv.value = p.lv;
+    }
+
+    document.querySelectorAll('#mod-curve .preset-row button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        currentPreset = btn.getAttribute('data-preset');
+        document.querySelectorAll('#mod-curve .preset-row button').forEach(function (b) { b.classList.toggle('active', b === btn); });
+        els.customBox.style.display = (currentPreset === 'custom') ? 'flex' : 'none';
+        applyPresetToSliders(presets[currentPreset]);
+        syncLabels();
+        buildModel();
+        resetPlayback();
+      });
+    });
+
+    function readState() {
+      var tm = parseFloat(els.tm.value), tb = parseFloat(els.tb.value);
+      if (tb <= tm + 5) { tb = tm + 5; els.tb.value = tb; }
+      return {
+        mass: parseFloat(els.mass.value),
+        power: parseFloat(els.power.value),
+        tm: tm, tb: tb,
+        cs: parseFloat(els.cs.value), cl: parseFloat(els.cl.value), cg: parseFloat(els.cg.value),
+        lf: parseFloat(els.lf.value) * 1000, lv: parseFloat(els.lv.value) * 1000
+      };
+    }
+
+    function syncLabels() {
+      document.getElementById('hc-mass-val').textContent = parseFloat(els.mass.value).toFixed(2) + ' kg';
+      document.getElementById('hc-power-val').textContent = Math.round(els.power.value) + ' W';
+      document.getElementById('hc-tm-val').textContent = els.tm.value + ' °C';
+      document.getElementById('hc-tb-val').textContent = els.tb.value + ' °C';
+      document.getElementById('hc-cs-val').textContent = els.cs.value + ' J/kg·K';
+      document.getElementById('hc-cl-val').textContent = els.cl.value + ' J/kg·K';
+      document.getElementById('hc-cg-val').textContent = els.cg.value + ' J/kg·K';
+      document.getElementById('hc-lf-val').textContent = els.lf.value + ' kJ/kg';
+      document.getElementById('hc-lv-val').textContent = els.lv.value + ' kJ/kg';
+    }
+
+    var model = null; // { segments, totalTime, t0, tMax }
+
+    function buildModel() {
+      var s = readState();
+      var t0 = s.tm - 20;
+      var tMax = s.tb + 40;
+      var segs = [];
+      var t = 0;
+      function addRamp(phase, T1, T2, c) {
+        var dur = s.mass * c * Math.abs(T2 - T1) / s.power;
+        segs.push({ phase: phase, kind: 'ramp', t0: t, t1: t + dur, T0: T1, T1v: T2 });
+        t += dur;
+      }
+      function addPlateau(phase, T, L) {
+        var dur = s.mass * L / s.power;
+        segs.push({ phase: phase, kind: 'plateau', t0: t, t1: t + dur, T0: T, T1v: T });
+        t += dur;
+      }
+      addRamp('Solid', t0, s.tm, s.cs);
+      addPlateau('Melting', s.tm, s.lf);
+      addRamp('Liquid', s.tm, s.tb, s.cl);
+      addPlateau('Boiling', s.tb, s.lv);
+      addRamp('Gas', s.tb, tMax, s.cg);
+      model = { state: s, segments: segs, totalTime: t, t0: t0, tMax: tMax };
+      scrubMax = model.totalTime;
+      els.scrub.max = Math.round(scrubMax);
+    }
+
+    // Beyond the last drawn segment the substance is just gas continuing to heat at
+    // the same rate (Q = mcΔT still applies) — there's no physical reason for the
+    // model to stop there, so sampling extrapolates indefinitely instead of clamping.
+    function sampleModel(time) {
+      var segs = model.segments;
+      if (time > model.totalTime) {
+        var s = model.state;
+        var rate = s.power / (s.mass * s.cg);
+        var lastSeg = segs[segs.length - 1];
+        var T = model.tMax + rate * (time - model.totalTime);
+        return { T: T, phase: lastSeg.phase, seg: lastSeg };
+      }
+      var seg = segs[segs.length - 1];
+      for (var i = 0; i < segs.length; i++) {
+        if (time <= segs[i].t1 || i === segs.length - 1) { seg = segs[i]; break; }
+      }
+      var frac = seg.t1 > seg.t0 ? (time - seg.t0) / (seg.t1 - seg.t0) : 1;
+      frac = Math.max(0, Math.min(1, frac));
+      var T = seg.T0 + (seg.T1v - seg.T0) * frac;
+      return { T: T, phase: seg.phase, seg: seg };
+    }
+
+    /* ---- drawing the graph ---- */
+    var phaseColors = {
+      Solid: '#4f9fd8', Melting: '#8fd0f0', Liquid: '#e2823f', Boiling: '#f2c14e', Gas: '#e2483a'
+    };
+
+    function drawGraph(currentTime) {
+      var fit = fitCanvas(els.graph, 300);
+      if (!fit) return;
+      var ctx = fit.ctx, W = fit.w, H = fit.h;
+      ctx.clearRect(0, 0, W, H);
+      var pad = { l: 46, r: 14, t: 14, b: 28 };
+      var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+
+      var samp = sampleModel(currentTime);
+
+      // Base axis covers the defined solid→melt→liquid→boil→gas curve. Once playback
+      // runs past that (the substance just keeps heating as a gas), the axis grows to
+      // keep the marker in view with a little headroom, instead of clamping playback.
+      var tMin = 0, TMin = model.t0;
+      var tMax = Math.max(model.totalTime, currentTime * 1.12);
+      var TMax = Math.max(model.tMax, samp.T + (model.tMax - model.t0) * 0.08);
+      function X(tt) { return pad.l + (tt - tMin) / (tMax - tMin) * plotW; }
+      function Y(TT) { return pad.t + (1 - (TT - TMin) / (TMax - TMin)) * plotH; }
+
+      // phase background bands
+      model.segments.forEach(function (seg) {
+        ctx.fillStyle = phaseColors[seg.phase] + '18';
+        ctx.fillRect(X(seg.t0), pad.t, X(seg.t1) - X(seg.t0), plotH);
+      });
+
+      // gridlines
+      ctx.strokeStyle = css('--grid-line');
+      ctx.lineWidth = 1;
+      ctx.font = '10px ' + css('--mono');
+      ctx.fillStyle = css('--text-faint');
+      var TSteps = 6;
+      for (var i = 0; i <= TSteps; i++) {
+        var TT = TMin + (TMax - TMin) * i / TSteps;
+        var y = Y(TT);
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+        ctx.fillText(Math.round(TT) + '°', 4, y + 3);
+      }
+      var tStepCount = 6;
+      for (var j = 0; j <= tStepCount; j++) {
+        var tt = tMin + (tMax - tMin) * j / tStepCount;
+        var x = X(tt);
+        ctx.fillText(Math.round(tt) + 's', x - 10, H - 8);
+      }
+
+      // curve
+      ctx.beginPath();
+      model.segments.forEach(function (seg, idx) {
+        var x0 = X(seg.t0), y0 = Y(seg.T0), x1 = X(seg.t1), y1 = Y(seg.T1v);
+        if (idx === 0) ctx.moveTo(x0, y0);
+        ctx.lineTo(x1, y1);
+      });
+      ctx.strokeStyle = css('--accent');
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // extrapolated tail once playback has run past the defined curve
+      if (currentTime > model.totalTime) {
+        ctx.fillStyle = phaseColors.Gas + '18';
+        ctx.fillRect(X(model.totalTime), pad.t, X(currentTime) - X(model.totalTime), plotH);
+        ctx.beginPath();
+        ctx.moveTo(X(model.totalTime), Y(model.tMax));
+        ctx.lineTo(X(currentTime), Y(samp.T));
+        ctx.strokeStyle = css('--accent');
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+      }
+
+      // current marker
+      var mx = X(currentTime), my = Y(samp.T);
+      ctx.beginPath(); ctx.moveTo(mx, pad.t); ctx.lineTo(mx, pad.t + plotH);
+      ctx.strokeStyle = css('--text-faint'); ctx.lineWidth = 1; ctx.setLineDash([3, 3]); ctx.stroke(); ctx.setLineDash([]);
+      ctx.beginPath(); ctx.arc(mx, my, 5, 0, Math.PI * 2);
+      ctx.fillStyle = css('--readout'); ctx.fill();
+      ctx.strokeStyle = css('--bg'); ctx.lineWidth = 2; ctx.stroke();
+
+      // axis labels
+      ctx.fillStyle = css('--text-dim');
+      ctx.font = '11px ' + css('--sans');
+      ctx.save();
+      ctx.translate(12, pad.t + plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = 'center';
+      ctx.fillText('Temperature (°C)', 0, 0);
+      ctx.restore();
+    }
+
+    /* ---- particle simulation ---- */
+    var NP = 42;
+    var pts = [];
+    function initParticles() {
+      pts = [];
+      for (var i = 0; i < NP; i++) {
+        pts.push({ x: Math.random(), y: Math.random(), vx: (Math.random() - 0.5), vy: (Math.random() - 0.5), hx: 0, hy: 0 });
+      }
+      var cols = 7, rows = 6, k = 0;
+      for (var r = 0; r < rows; r++) for (var c = 0; c < cols; c++) {
+        if (k >= NP) break;
+        pts[k].hx = (c + 0.5) / cols; pts[k].hy = (r + 0.5) / rows; k++;
+      }
+    }
+    initParticles();
+
+    function updateAndDrawParticles(dt, phase, T, tempFrac) {
+      var fit = fitCanvas(els.particles, els.particles.parentElement.clientHeight);
+      if (!fit) return;
+      var ctx = fit.ctx, W = fit.w, H = fit.h;
+      ctx.clearRect(0, 0, W, H);
+
+      var speed = 0.15 + tempFrac * 1.1;
+
+      pts.forEach(function (p) {
+        if (phase === 'Solid') {
+          var tx = p.hx * W, ty = p.hy * H;
+          p.x += (Math.random() - 0.5) * speed * 0.9;
+          p.y += (Math.random() - 0.5) * speed * 0.9;
+          p.x = Math.max(-6, Math.min(6, p.x));
+          p.y = Math.max(-6, Math.min(6, p.y));
+          drawDot(ctx, tx + p.x, ty + p.y, phase);
+        } else if (phase === 'Melting') {
+          var blend = tempFrac; // reused as progress within plateau not exact but fine visually
+          var tx2 = p.hx * W, ty2 = p.hy * H;
+          p.x += (Math.random() - 0.5) * (0.9 + blend * 1.5);
+          p.y += (Math.random() - 0.5) * (0.9 + blend * 1.5);
+          p.x = Math.max(-14, Math.min(14, p.x));
+          p.y = Math.max(-14, Math.min(14, p.y));
+          drawDot(ctx, tx2 + p.x, ty2 + p.y, phase);
+        } else if (phase === 'Liquid' || phase === 'Boiling') {
+          if (p.px === undefined) { p.px = p.hx * W; p.py = p.hy * H; }
+          p.vx += (Math.random() - 0.5) * 0.6;
+          p.vy += (Math.random() - 0.5) * 0.6;
+          p.vx *= 0.9; p.vy *= 0.9;
+          var maxV = 0.8 + speed * 0.6;
+          p.vx = Math.max(-maxV, Math.min(maxV, p.vx));
+          p.vy = Math.max(-maxV, Math.min(maxV, p.vy));
+          p.px += p.vx; p.py += p.vy;
+          if (p.px < 6) { p.px = 6; p.vx *= -1; }
+          if (p.px > W - 6) { p.px = W - 6; p.vx *= -1; }
+          if (p.py < 6) { p.py = 6; p.vy *= -1; }
+          if (p.py > H - 6) { p.py = H - 6; p.vy *= -1; }
+          drawDot(ctx, p.px, p.py, phase);
+        } else { // Gas or Boiling->Gas
+          if (p.gx === undefined) { p.gx = Math.random() * W; p.gy = Math.random() * H; p.gvx = (Math.random() - 0.5) * 2; p.gvy = (Math.random() - 0.5) * 2; }
+          var gSpeed = 1.2 + speed * 1.6;
+          var mag = Math.sqrt(p.gvx * p.gvx + p.gvy * p.gvy) || 1;
+          p.gvx = p.gvx / mag * gSpeed; p.gvy = p.gvy / mag * gSpeed;
+          p.gx += p.gvx; p.gy += p.gvy;
+          if (p.gx < 5 || p.gx > W - 5) p.gvx *= -1;
+          if (p.gy < 5 || p.gy > H - 5) p.gvy *= -1;
+          p.gx = Math.max(5, Math.min(W - 5, p.gx));
+          p.gy = Math.max(5, Math.min(H - 5, p.gy));
+          drawDot(ctx, p.gx, p.gy, phase);
+        }
+      });
+    }
+
+    function drawDot(ctx, x, y, phase) {
+      ctx.beginPath();
+      ctx.arc(x, y, 4, 0, Math.PI * 2);
+      ctx.fillStyle = phaseColors[phase] || css('--accent');
+      ctx.fill();
+    }
+
+    var playing = false, curTime = 0, lastTs = null, scrubMax = 0;
+
+    function resetPlayback() {
+      playing = false;
+      curTime = 0;
+      scrubMax = model.totalTime;
+      els.scrub.max = Math.round(scrubMax);
+      els.scrub.value = 0;
+      els.play.textContent = '▶ Play';
+      pts.forEach(function (p) { p.px = undefined; p.py = undefined; p.gx = undefined; p.gy = undefined; });
+      render();
+    }
+
+    function render() {
+      var samp = sampleModel(curTime);
+      drawGraph(curTime);
+      var tempFrac = (samp.T - model.t0) / (model.tMax - model.t0);
+      updateAndDrawParticles(0.016, samp.phase, samp.T, Math.max(0, Math.min(1, tempFrac)));
+      els.rTime.innerHTML = curTime.toFixed(1) + '<span class="unit">s</span>';
+      els.rEnergy.innerHTML = Math.round(model.state.power * curTime / 1000) + '<span class="unit">kJ</span>';
+      els.rTemp.innerHTML = Math.round(samp.T) + '<span class="unit">°C</span>';
+      els.rPhase.textContent = samp.phase;
+      els.phaseTag.textContent = samp.phase;
+    }
+
+    els.play.addEventListener('click', function () {
+      playing = !playing;
+      els.play.textContent = playing ? '⏸ Pause' : '▶ Play';
+      lastTs = null;
+      if (playing) requestAnimationFrame(loop);
+    });
+    els.reset.addEventListener('click', resetPlayback);
+    els.scrub.addEventListener('input', function () {
+      curTime = parseFloat(els.scrub.value);
+      playing = false;
+      els.play.textContent = '▶ Play';
+      render();
+    });
+    [els.mass, els.power, els.tm, els.tb, els.cs, els.cl, els.cg, els.lf, els.lv].forEach(function (el) {
+      el.addEventListener('input', function () {
+        syncLabels();
+        buildModel();
+        scrubMax = Math.max(model.totalTime, curTime * 1.1, scrubMax);
+        els.scrub.max = Math.round(scrubMax);
+        render();
+      });
+    });
+
+    // Playback is open-ended: once curTime runs past the defined curve, the
+    // substance just keeps heating as a gas (see sampleModel) and the graph's
+    // axis keeps expanding to follow it, so there's no limit to clamp to here —
+    // the scrub range is grown in occasional jumps rather than every frame so
+    // dragging it stays smooth.
+    function loop(ts) {
+      if (!playing) return;
+      if (lastTs === null) lastTs = ts;
+      var dt = (ts - lastTs) / 1000;
+      lastTs = ts;
+      curTime += dt * (model.totalTime / 14); // matches the original curve's ~14s pace
+      if (curTime > scrubMax * 0.95) {
+        scrubMax = curTime * 1.5;
+        els.scrub.max = Math.round(scrubMax);
+      }
+      els.scrub.value = curTime;
+      render();
+      requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('resize', render);
+    reRenderAll.push(function () { if (!playing) render(); });
+    observeResize(document.querySelector('#mod-curve .graph-cell'), render);
+    observeResize(document.getElementById('hc-particle-box'), render);
+    syncLabels();
+    buildModel();
+    resetPlayback();
+    document.querySelector('#mod-curve .preset-row button[data-preset="water"]').classList.add('active');
+  })();
+
+  /* =========================================================
+     MODULE 2 — THERMAL EQUILIBRIUM
+     ========================================================= */
+  (function () {
+    var els = {
+      aMat: document.getElementById('te-a-material'), aMass: document.getElementById('te-a-mass'), aTemp: document.getElementById('te-a-temp'),
+      bMat: document.getElementById('te-b-material'), bMass: document.getElementById('te-b-mass'), bTemp: document.getElementById('te-b-temp'),
+      mix: document.getElementById('te-mix'), reset: document.getElementById('te-reset'),
+      graph: document.getElementById('te-graph'), particles: document.getElementById('te-particles'),
+      rTf: document.getElementById('te-r-tf'), rQ: document.getElementById('te-r-q'), rA: document.getElementById('te-r-a'), rB: document.getElementById('te-r-b')
+    };
+
+    function state() {
+      return {
+        ca: parseFloat(els.aMat.value), ma: parseFloat(els.aMass.value), ta: parseFloat(els.aTemp.value),
+        cb: parseFloat(els.bMat.value), mb: parseFloat(els.bMass.value), tb: parseFloat(els.bTemp.value)
+      };
+    }
+    function finalTemp(s) {
+      return (s.ma * s.ca * s.ta + s.mb * s.cb * s.tb) / (s.ma * s.ca + s.mb * s.cb);
+    }
+
+    function syncLabels() {
+      document.getElementById('te-a-mass-val').textContent = parseFloat(els.aMass.value).toFixed(2) + ' kg';
+      document.getElementById('te-b-mass-val').textContent = parseFloat(els.bMass.value).toFixed(2) + ' kg';
+      document.getElementById('te-a-temp-val').textContent = els.aTemp.value + ' °C';
+      document.getElementById('te-b-temp-val').textContent = els.bTemp.value + ' °C';
+    }
+
+    var progress = 0; // 0..1, 0 = not mixed
+    var animId = null, animStart = null;
+    var DURATION = 2200;
+
+    function easeOutCubic(x) { return 1 - Math.pow(1 - x, 3); }
+
+    function tempColor(t, tmin, tmax) {
+      var f = Math.max(0, Math.min(1, (t - tmin) / (tmax - tmin)));
+      var cold = [79, 159, 216], hot = [226, 72, 58];
+      var r = Math.round(cold[0] + (hot[0] - cold[0]) * f);
+      var g = Math.round(cold[1] + (hot[1] - cold[1]) * f);
+      var b = Math.round(cold[2] + (hot[2] - cold[2]) * f);
+      return 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+
+    var teParticles = [];
+    function initTeParticles() {
+      teParticles = [];
+      for (var i = 0; i < 24; i++) teParticles.push({ side: 'a', x: Math.random(), y: Math.random(), vx: 0, vy: 0 });
+      for (var j = 0; j < 24; j++) teParticles.push({ side: 'b', x: Math.random(), y: Math.random(), vx: 0, vy: 0 });
+    }
+    initTeParticles();
+
+    function drawParticlesTE(s, curA, curB, tmin, tmax) {
+      var fit = fitCanvas(els.particles, els.particles.parentElement.clientHeight);
+      if (!fit) return;
+      var ctx = fit.ctx, W = fit.w, H = fit.h;
+      ctx.clearRect(0, 0, W, H);
+      if (progress === 0) {
+        ctx.strokeStyle = css('--border-soft'); ctx.setLineDash([4, 4]);
+        ctx.beginPath(); ctx.moveTo(W / 2, 4); ctx.lineTo(W / 2, H - 4); ctx.stroke(); ctx.setLineDash([]);
+      }
+      teParticles.forEach(function (p) {
+        var T = p.side === 'a' ? curA : curB;
+        var speed = 0.3 + 1.3 * Math.max(0, Math.min(1, (T - 0) / 100));
+        p.vx += (Math.random() - 0.5) * speed;
+        p.vy += (Math.random() - 0.5) * speed;
+        p.vx *= 0.85; p.vy *= 0.85;
+        var xmin = 0.03, xmax = 0.97, ymin = 0.05, ymax = 0.95;
+        var halfBoundary = progress < 1 ? (p.side === 'a' ? [xmin, 0.49] : [0.51, xmax]) : [xmin, xmax];
+        p.x += p.vx * 0.01; p.y += p.vy * 0.01;
+        p.x = Math.max(halfBoundary[0], Math.min(halfBoundary[1], p.x));
+        p.y = Math.max(ymin, Math.min(ymax, p.y));
+        ctx.beginPath();
+        ctx.arc(p.x * W, p.y * H, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = tempColor(T, tmin, tmax);
+        ctx.fill();
+      });
+    }
+
+    function drawGraphTE(s, tf) {
+      var fit = fitCanvas(els.graph, 300);
+      if (!fit) return;
+      var ctx = fit.ctx, W = fit.w, H = fit.h;
+      ctx.clearRect(0, 0, W, H);
+      var pad = { l: 46, r: 14, t: 14, b: 28 };
+      var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+      var tmin = Math.min(s.ta, s.tb, tf) - 5, tmax = Math.max(s.ta, s.tb, tf) + 5;
+      function X(p) { return pad.l + p * plotW; }
+      function Y(T) { return pad.t + (1 - (T - tmin) / (tmax - tmin)) * plotH; }
+
+      ctx.strokeStyle = css('--grid-line'); ctx.lineWidth = 1;
+      ctx.font = '10px ' + css('--mono'); ctx.fillStyle = css('--text-faint');
+      for (var i = 0; i <= 5; i++) {
+        var T = tmin + (tmax - tmin) * i / 5;
+        var y = Y(T);
+        ctx.beginPath(); ctx.moveTo(pad.l, y); ctx.lineTo(W - pad.r, y); ctx.stroke();
+        ctx.fillText(Math.round(T) + '°', 4, y + 3);
+      }
+
+      // final temp dashed line
+      ctx.strokeStyle = css('--text-faint'); ctx.setLineDash([3, 3]);
+      ctx.beginPath(); ctx.moveTo(pad.l, Y(tf)); ctx.lineTo(W - pad.r, Y(tf)); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = css('--text-dim'); ctx.fillText('T_f = ' + tf.toFixed(1) + '°C', W - pad.r - 70, Y(tf) - 5);
+
+      var steps = 60;
+      function curve(T1) {
+        ctx.beginPath();
+        for (var k = 0; k <= steps; k++) {
+          var p = k / steps;
+          var eff = p <= progress ? easeOutCubic(p) : easeOutCubic(progress);
+          var Tv = p <= progress ? (T1 + (tf - T1) * easeOutCubic(p)) : null;
+          if (Tv === null) break;
+          var xx = X(p), yy = Y(Tv);
+          if (k === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+        }
+      }
+      ctx.lineWidth = 2.5;
+      ctx.strokeStyle = css('--hot'); curve(s.ta); ctx.stroke();
+      ctx.strokeStyle = css('--cold'); curve(s.tb); ctx.stroke();
+
+      ctx.fillStyle = css('--text-dim'); ctx.font = '11px ' + css('--sans');
+      ctx.save(); ctx.translate(12, pad.t + plotH / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = 'center';
+      ctx.fillText('Temperature (°C)', 0, 0); ctx.restore();
+      ctx.textAlign = 'left';
+      ctx.fillText('contact time →', pad.l, H - 6);
+    }
+
+    function currentTemps(s, tf) {
+      var e = easeOutCubic(progress);
+      return { a: s.ta + (tf - s.ta) * e, b: s.tb + (tf - s.tb) * e };
+    }
+
+    function render() {
+      var s = state();
+      var tf = finalTemp(s);
+      var cur = currentTemps(s, tf);
+      var tmin = Math.min(s.ta, s.tb), tmax = Math.max(s.ta, s.tb);
+      drawGraphTE(s, tf);
+      drawParticlesTE(s, cur.a, cur.b, tmin, tmax);
+      els.rTf.innerHTML = tf.toFixed(1) + '<span class="unit">°C</span>';
+      var q = Math.abs(s.ma * s.ca * (tf - s.ta)) / 1000;
+      els.rQ.innerHTML = q.toFixed(1) + '<span class="unit">kJ</span>';
+      els.rA.innerHTML = cur.a.toFixed(1) + '<span class="unit">°C</span>';
+      els.rB.innerHTML = cur.b.toFixed(1) + '<span class="unit">°C</span>';
+    }
+
+    function animLoop(ts) {
+      if (animStart === null) animStart = ts;
+      var elapsed = ts - animStart;
+      progress = Math.min(1, elapsed / DURATION);
+      render();
+      if (progress < 1) {
+        animId = requestAnimationFrame(animLoop);
+      } else {
+        animId = null;
+      }
+    }
+
+    els.mix.addEventListener('click', function () {
+      if (animId) cancelAnimationFrame(animId);
+      animStart = null;
+      animId = requestAnimationFrame(animLoop);
+    });
+    els.reset.addEventListener('click', function () {
+      if (animId) cancelAnimationFrame(animId);
+      progress = 0; animStart = null;
+      initTeParticles();
+      render();
+    });
+    [els.aMat, els.aMass, els.aTemp, els.bMat, els.bMass, els.bTemp].forEach(function (el) {
+      el.addEventListener('input', function () {
+        syncLabels();
+        if (progress > 0 && progress < 1) { /* mid-animation edits allowed, just recompute */ }
+        render();
+      });
+    });
+
+    window.addEventListener('resize', render);
+    reRenderAll.push(render);
+    observeResize(document.querySelector('#mod-equilibrium .graph-cell'), render);
+    observeResize(document.getElementById('te-particle-box'), render);
+    syncLabels();
+    render();
+  })();
+
+  /* =========================================================
+     MODULE 3 — BLACK-BODY RADIATION
+     ========================================================= */
+  (function () {
+    var SIGMA = 5.670374419e-8;
+    var WIEN_B = 2.897771955e-3;
+    var h = 6.62607015e-34, c = 2.99792458e8, k = 1.380649e-23;
+
+    var els = {
+      t: document.getElementById('rad-t'), a: document.getElementById('rad-a'),
+      reset: document.getElementById('rad-reset'),
+      swatch: document.getElementById('rad-swatch'),
+      graph: document.getElementById('rad-graph'),
+      rJ: document.getElementById('rad-r-j'), rP: document.getElementById('rad-r-p'),
+      rLambda: document.getElementById('rad-r-lambda'), rBand: document.getElementById('rad-r-band')
+    };
+    var DEFAULT_T = 5778, DEFAULT_A = 1;
+
+    document.querySelectorAll('#mod-radiation .preset-row button').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        els.t.value = btn.getAttribute('data-t-preset');
+        render();
+      });
+    });
+    els.reset.addEventListener('click', function () {
+      els.t.value = DEFAULT_T;
+      els.a.value = DEFAULT_A;
+      render();
+    });
+
+    function planck(lambdaNm, T) {
+      var lambda = lambdaNm * 1e-9;
+      var exponent = (h * c) / (lambda * k * T);
+      if (exponent > 700) return 0;
+      return (2 * h * c * c) / Math.pow(lambda, 5) / (Math.exp(exponent) - 1);
+    }
+
+    // Tanner Helland blackbody-to-RGB approximation
+    function blackbodyRGB(kelvin) {
+      var temp = kelvin / 100;
+      var r, g, b;
+      if (temp <= 66) { r = 255; }
+      else { r = 329.698727446 * Math.pow(temp - 60, -0.1332047592); r = Math.max(0, Math.min(255, r)); }
+      if (temp <= 66) { g = 99.4708025861 * Math.log(temp) - 161.1195681661; }
+      else { g = 288.1221695283 * Math.pow(temp - 60, -0.0755148492); }
+      g = Math.max(0, Math.min(255, g));
+      if (temp >= 66) { b = 255; }
+      else if (temp <= 19) { b = 0; }
+      else { b = 138.5177312231 * Math.log(temp - 10) - 305.0447927307; b = Math.max(0, Math.min(255, b)); }
+      return 'rgb(' + Math.round(r) + ',' + Math.round(g) + ',' + Math.round(b) + ')';
+    }
+
+    function drawSpectrum(T, lambdaMax) {
+      var fit = fitCanvas(els.graph, 300);
+      if (!fit) return;
+      var ctx = fit.ctx, W = fit.w, H = fit.h;
+      ctx.clearRect(0, 0, W, H);
+      var pad = { l: 46, r: 14, t: 14, b: 28 };
+      var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+
+      // Fixed log-scale axis (50 nm – 50,000 nm) covers every peak from 300 K–12,000 K
+      // without ever needing to rescale — a linear axis sized to the current λ_max would
+      // swing ~25× across the slider range (1.2 µm at 12,000 K vs 31 µm at 300 K), which
+      // reads as the whole graph "expanding" every time the temperature changes.
+      var lamMin = 50, lamMax = 50000;
+      var logMin = Math.log10(lamMin), logMax = Math.log10(lamMax);
+      function X(l) { return pad.l + (Math.log10(l) - logMin) / (logMax - logMin) * plotW; }
+
+      // visible band shading
+      ctx.fillStyle = 'rgba(140,110,255,0.14)';
+      ctx.fillRect(X(380), pad.t, X(700) - X(380), plotH);
+
+      // gridlines + x labels at nice round wavelengths
+      ctx.strokeStyle = css('--grid-line'); ctx.lineWidth = 1;
+      ctx.font = '10px ' + css('--mono'); ctx.fillStyle = css('--text-faint');
+      var ticks = [100, 300, 1000, 3000, 10000, 30000];
+      ticks.forEach(function (lam) {
+        var x = X(lam);
+        ctx.beginPath(); ctx.moveTo(x, pad.t); ctx.lineTo(x, pad.t + plotH); ctx.stroke();
+        var label = lam >= 1000 ? (lam / 1000) + 'k' : String(lam);
+        ctx.fillText(label, x - 10, H - 8);
+      });
+
+      // curve — sample evenly in log-λ space so resolution matches the log axis,
+      // and normalize against the true peak (always inside this fixed range)
+      var N = 160, vals = [], lambdas = [], maxV = 0;
+      for (var n = 0; n <= N; n++) {
+        var l2 = Math.pow(10, logMin + (logMax - logMin) * n / N);
+        var v = planck(l2, T);
+        vals.push(v); lambdas.push(l2);
+        if (v > maxV) maxV = v;
+      }
+      function Y(v) { return pad.t + (1 - (maxV > 0 ? v / maxV : 0)) * plotH; }
+      ctx.beginPath();
+      for (var m = 0; m <= N; m++) {
+        var xx = X(lambdas[m]), yy = Y(vals[m]);
+        if (m === 0) ctx.moveTo(xx, yy); else ctx.lineTo(xx, yy);
+      }
+      ctx.strokeStyle = css('--accent'); ctx.lineWidth = 2.5; ctx.stroke();
+      ctx.lineTo(X(lamMax), pad.t + plotH); ctx.lineTo(X(lamMin), pad.t + plotH); ctx.closePath();
+      ctx.fillStyle = css('--accent') + '22'; ctx.fill();
+
+      // peak marker
+      var xp = X(lambdaMax);
+      ctx.beginPath(); ctx.moveTo(xp, pad.t); ctx.lineTo(xp, pad.t + plotH);
+      ctx.strokeStyle = css('--text-dim'); ctx.setLineDash([3, 3]); ctx.stroke(); ctx.setLineDash([]);
+
+      ctx.fillStyle = css('--text-dim'); ctx.font = '11px ' + css('--sans');
+      ctx.save(); ctx.translate(12, pad.t + plotH / 2); ctx.rotate(-Math.PI / 2); ctx.textAlign = 'center';
+      ctx.fillText('Relative spectral radiance', 0, 0); ctx.restore();
+      ctx.textAlign = 'left';
+      ctx.fillText('wavelength (nm)', pad.l, H - 6);
+    }
+
+    function render() {
+      var T = parseFloat(els.t.value), A = parseFloat(els.a.value);
+      document.getElementById('rad-t-val').textContent = Math.round(T) + ' K';
+      document.getElementById('rad-a-val').textContent = A.toFixed(2) + ' m²';
+
+      var j = SIGMA * Math.pow(T, 4);
+      var P = j * A;
+      var lambdaMax = (WIEN_B / T) * 1e9;
+
+      els.rJ.innerHTML = (j / 1000).toFixed(j > 1e6 ? 0 : 1) + '<span class="unit">kW/m²</span>';
+      els.rP.innerHTML = (P / 1000).toFixed(P > 1e6 ? 0 : 1) + '<span class="unit">kW</span>';
+      els.rLambda.innerHTML = lambdaMax.toFixed(lambdaMax < 100 ? 1 : 0) + '<span class="unit">nm</span>';
+      var band = lambdaMax < 380 ? 'Ultraviolet' : (lambdaMax <= 700 ? 'Visible' : (lambdaMax <= 100000 ? 'Infrared' : 'Microwave / radio'));
+      els.rBand.textContent = band;
+
+      els.swatch.style.background = T >= 700 ? blackbodyRGB(T) : 'linear-gradient(90deg, ' + css('--panel-2') + ', ' + css('--border') + ')';
+      drawSpectrum(T, lambdaMax);
+    }
+
+    els.t.addEventListener('input', render);
+    els.a.addEventListener('input', render);
+    window.addEventListener('resize', render);
+    reRenderAll.push(render);
+    observeResize(els.graph.parentElement, render);
+    render();
+  })();
+
+})();
+</script>
