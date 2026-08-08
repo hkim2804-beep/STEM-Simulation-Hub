@@ -6,7 +6,7 @@
   <title>Contact - STEM Simulation Hub</title>
   <script>(function(){try{var t=localStorage.getItem('stemhub_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script>
   <style>
-    :root{--p:#126c5a;--s:#1fb79d;--bg:#f4fcfa;--card:#ffffff;--ink:#0f2720;--muted:#4a655f;--line:#dcece7;--radius:18px;--shadow:0 18px 40px rgba(15,39,32,.08);--serif:"Iowan Old Style","Palatino Linotype","URW Palladio","P052",Georgia,serif;--header-grad:linear-gradient(120deg,#126c5a 0%,#1fb79d 72%,#55d0b2 100%);--input-bg:#fbfdfb;--note-bg:#f0fbf8;--note-line:#d3f3ea}
+    :root{--p:#126c5a;--s:#1fb79d;--bg:#f4fcfa;--card:#ffffff;--ink:#0f2720;--muted:#4a655f;--line:#dcece7;--radius:18px;--shadow:0 18px 40px rgba(15,39,32,.08);--serif:"Iowan Old Style","Palatino Linotype","URW Palladio","P052",Georgia,serif;--header-grad:linear-gradient(120deg,#126c5a 0%,#1fb79d 72%,#55d0b2 100%);--input-bg:#fbfdfb;--note-bg:#f0fbf8;--note-line:#d3f3ea;--fill:#126c5a}
     :root[data-theme="dark"]{--p:#4fe0c2;--s:#2dd4bf;--bg:#081512;--card:#0e1e1a;--ink:#e3f5f1;--muted:#8fb3ac;--line:rgba(95,224,203,.18);--shadow:0 18px 40px rgba(0,0,0,.4);--input-bg:#0a1a16;--note-bg:rgba(45,212,191,.1);--note-line:rgba(95,224,203,.25)}
     @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--p:#4fe0c2;--s:#2dd4bf;--bg:#081512;--card:#0e1e1a;--ink:#e3f5f1;--muted:#8fb3ac;--line:rgba(95,224,203,.18);--shadow:0 18px 40px rgba(0,0,0,.4);--input-bg:#0a1a16;--note-bg:rgba(45,212,191,.1);--note-line:rgba(95,224,203,.25)}}
     *{box-sizing:border-box}
@@ -27,7 +27,7 @@
     input,textarea{width:100%;padding:14px 16px;border:1px solid var(--line);border-radius:14px;font:inherit;color:var(--ink);background:var(--input-bg)}
     textarea{min-height:180px;resize:vertical}
     .actions{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
-    .actions button{background:var(--p);color:#fff;border:none;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
+    .actions button{background:var(--fill);color:#fff;border:none;border-radius:999px;padding:12px 22px;font:inherit;font-weight:700;cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
     .actions button:hover{transform:translateY(-1px);box-shadow:0 10px 24px rgba(15,39,32,.14)}
     .actions .mailto{color:var(--p);font-weight:700;text-decoration:none}
     footer{max-width:980px;margin:0 auto 32px;padding:0 20px;color:var(--muted);font-size:.92rem}

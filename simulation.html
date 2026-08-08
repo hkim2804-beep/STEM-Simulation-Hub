@@ -1,5 +1,5 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Simulation — STEM Simulation Hub</title><script>(function(){try{var t=localStorage.getItem('stemhub_theme');if(t)document.documentElement.setAttribute('data-theme',t)}catch(e){}})()</script><style>
-:root{--p:#0f6e63;--p-dark:#0b544c;--s:#14b8a6;--s-light:#e4f7f4;--bg:#eef8f6;--card:#fff;--ink:#0f1b19;--muted:#5b6b68;--line:#d7ebe7;--line-soft:#eaf6f4;--gold:#f5a623;--gold-deep:#c9820a;--radius-sm:8px;--radius-md:14px;--radius-lg:20px;--shadow-sm:0 1px 2px rgba(15,27,25,.06),0 1px 1px rgba(15,27,25,.04);--shadow-md:0 10px 24px -8px rgba(15,27,25,.16),0 2px 8px rgba(15,27,25,.06);--shadow-lg:0 24px 48px -14px rgba(15,27,25,.28),0 4px 14px rgba(15,27,25,.08);--focus:0 0 0 3px rgba(20,184,166,.35);--worksheet:#8a5a2b;--worksheet-light:#f7ecdd;--serif:"Iowan Old Style","Palatino Linotype","URW Palladio","P052",Georgia,serif;--mono:"Cascadia Code","SF Mono","JetBrains Mono",Consolas,"Liberation Mono",monospace;--header-grad:linear-gradient(120deg,#0f6e63 0%,#14b8a6 72%,#5eead4 100%)}
+:root{--p:#0f6e63;--p-dark:#0b544c;--s:#14b8a6;--s-light:#e4f7f4;--bg:#eef8f6;--card:#fff;--ink:#0f1b19;--muted:#5b6b68;--line:#d7ebe7;--line-soft:#eaf6f4;--gold:#f5a623;--gold-deep:#c9820a;--radius-sm:8px;--radius-md:14px;--radius-lg:20px;--shadow-sm:0 1px 2px rgba(15,27,25,.06),0 1px 1px rgba(15,27,25,.04);--shadow-md:0 10px 24px -8px rgba(15,27,25,.16),0 2px 8px rgba(15,27,25,.06);--shadow-lg:0 24px 48px -14px rgba(15,27,25,.28),0 4px 14px rgba(15,27,25,.08);--focus:0 0 0 3px rgba(20,184,166,.35);--worksheet:#8a5a2b;--worksheet-light:#f7ecdd;--serif:"Iowan Old Style","Palatino Linotype","URW Palladio","P052",Georgia,serif;--mono:"Cascadia Code","SF Mono","JetBrains Mono",Consolas,"Liberation Mono",monospace;--header-grad:linear-gradient(120deg,#0f6e63 0%,#14b8a6 72%,#5eead4 100%);--fill:#0f6e63;--fill-dark:#0b544c}
 :root[data-theme="dark"]{--p:#5fe0cb;--p-dark:#8ef0e0;--s:#2dd4bf;--s-light:rgba(45,212,191,.14);--bg:#081512;--card:#0e1e1a;--ink:#e3f5f1;--muted:#8fb3ac;--line:rgba(95,224,203,.18);--line-soft:rgba(95,224,203,.09);--gold:#ffbf4d;--gold-deep:#f0a83a;--worksheet:#e0a34f;--worksheet-light:rgba(224,163,79,.13);--shadow-sm:0 1px 2px rgba(0,0,0,.3),0 1px 1px rgba(0,0,0,.2);--shadow-md:0 10px 24px -8px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.25);--shadow-lg:0 24px 48px -14px rgba(0,0,0,.55),0 4px 14px rgba(0,0,0,.3);--focus:0 0 0 3px rgba(95,224,203,.45)}
 @media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--p:#5fe0cb;--p-dark:#8ef0e0;--s:#2dd4bf;--s-light:rgba(45,212,191,.14);--bg:#081512;--card:#0e1e1a;--ink:#e3f5f1;--muted:#8fb3ac;--line:rgba(95,224,203,.18);--line-soft:rgba(95,224,203,.09);--gold:#ffbf4d;--gold-deep:#f0a83a;--worksheet:#e0a34f;--worksheet-light:rgba(224,163,79,.13);--shadow-sm:0 1px 2px rgba(0,0,0,.3),0 1px 1px rgba(0,0,0,.2);--shadow-md:0 10px 24px -8px rgba(0,0,0,.45),0 2px 8px rgba(0,0,0,.25);--shadow-lg:0 24px 48px -14px rgba(0,0,0,.55),0 4px 14px rgba(0,0,0,.3);--focus:0 0 0 3px rgba(95,224,203,.45)}}
 :root[data-theme="dark"] .hero-shot{background:linear-gradient(135deg,#0e2620,#0a1a16)}
@@ -38,13 +38,13 @@ main{max-width:1100px;margin:0 auto;padding:24px 20px 60px}
 .hero-body{padding:26px 28px;display:flex;flex-direction:column;gap:10px}
 .eyebrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .badge-cat{background:var(--s-light);color:var(--p);padding:6px 12px;border-radius:999px;font-weight:800;font-size:.78rem;text-decoration:none}
-.badge-cat:hover{background:var(--p);color:#fff}
+.badge-cat:hover{background:var(--fill);color:#fff}
 .badge-subj{color:var(--muted);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
 h1{font-family:var(--serif);font-size:1.7rem;margin:2px 0 0;letter-spacing:-.01em;font-weight:600}
 .provider{color:var(--muted);font-size:.94rem;margin:0}
 .stars{color:var(--gold);font-size:1rem;letter-spacing:1px;margin:2px 0}
-.open-btn{margin-top:6px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--p);color:#fff;font-weight:800;text-decoration:none;padding:13px 20px;border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);transition:background .15s ease,transform .1s ease;width:fit-content}
-.open-btn:hover{background:var(--p-dark)}
+.open-btn{margin-top:6px;display:inline-flex;align-items:center;justify-content:center;gap:8px;background:var(--fill);color:#fff;font-weight:800;text-decoration:none;padding:13px 20px;border-radius:var(--radius-sm);box-shadow:var(--shadow-sm);transition:background .15s ease,transform .1s ease;width:fit-content}
+.open-btn:hover{background:var(--fill-dark)}
 .open-btn:active{transform:translateY(1px)}
 
 section.block{background:var(--card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border:1px solid var(--line-soft);padding:22px 26px;margin-top:20px}
@@ -61,7 +61,7 @@ section.block p{margin:0;color:var(--ink)}
 .worksheet-actions{flex:0 0 auto;display:flex;gap:8px}
 .worksheet-card a.dl{background:var(--worksheet);color:#fff;text-decoration:none;font-weight:700;font-size:.84rem;padding:9px 16px;border-radius:var(--radius-sm);white-space:nowrap}
 .worksheet-card a.dl:hover{background:#6f4720}
-.worksheet-card button.preview-toggle{background:#fff;color:var(--worksheet);border:1px solid var(--worksheet);font-weight:700;font-size:.84rem;padding:9px 16px;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap}
+.worksheet-card button.preview-toggle{background:var(--card);color:var(--worksheet);border:1px solid var(--worksheet);font-weight:700;font-size:.84rem;padding:9px 16px;border-radius:var(--radius-sm);cursor:pointer;white-space:nowrap}
 .worksheet-card button.preview-toggle:hover{background:var(--worksheet-light)}
 .worksheet-preview{margin-top:14px}
 .worksheet-preview iframe{width:100%;height:70vh;max-height:640px;border:1px solid #e6d2b3;border-radius:var(--radius-sm);background:#fff;display:block}
@@ -87,7 +87,7 @@ section.block p{margin:0;color:var(--ink)}
 .tag-label{display:block;color:var(--muted);font-size:.72rem;font-weight:800;margin-bottom:8px;text-transform:uppercase;letter-spacing:.07em}
 .chips{display:flex;flex-wrap:wrap;gap:7px}
 .chip{border:1px solid #a9ded4;background:var(--s-light);color:var(--p);padding:5px 11px;border-radius:999px;font-size:.78rem;font-weight:600;text-decoration:none;cursor:pointer}
-.chip:hover{background:var(--p);color:#fff}
+.chip:hover{background:var(--fill);color:#fff}
 .chip.cd{position:relative}
 .chip-empty{color:var(--muted);font-size:.85rem;font-style:italic}
 
