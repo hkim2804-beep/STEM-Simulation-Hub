@@ -234,6 +234,7 @@
   svg.circuit .wire-flow { stroke-dasharray: 5 6; animation: flowmove linear infinite; }
   @keyframes flowmove { to { stroke-dashoffset: -33; } }
   svg.circuit .src-label { font-size: 15px; fill: var(--accent-soft); font-weight: 700; pointer-events: none; }
+  svg.circuit .req-label { font-size: 13px; fill: var(--readout); font-weight: 700; pointer-events: none; }
   /* Node-dots and wire hit-corridors overlap in several places (a node
      sits mid-span on the lead wire either side of it). Only the element
      relevant to the active meter mode should actually catch clicks, or
@@ -383,7 +384,7 @@
 
       <div class="stage">
         <div class="readouts" id="build-readouts">
-          <div class="readout-cell"><div class="k">Equivalent R</div><div class="v" id="r-req">&mdash;</div></div>
+          <div class="readout-cell"><div class="k">Total resistance</div><div class="v" id="r-req">&mdash;</div></div>
           <div class="readout-cell"><div class="k">Total current</div><div class="v" id="r-itot">&mdash;</div></div>
           <div class="readout-cell"><div class="k">Total power</div><div class="v" id="r-ptot">&mdash;</div></div>
           <div class="readout-cell"><div class="k">Meter reading</div><div class="v small" id="r-meter">&mdash;</div></div>
@@ -712,6 +713,11 @@
     var shape = SHAPES[topoKey].shape;
     var L = computeLayout(shape);
     svg.setAttribute('viewBox', '0 0 ' + L.totalW + ' 300');
+    // width:100% + height:auto has no guaranteed intrinsic ratio on an <svg>
+    // in every engine, especially one whose viewBox was set while its panel
+    // was still display:none (e.g. the Quiz tab before it's first opened) -
+    // pin the ratio explicitly so the diagram can't collapse to 0 height.
+    svg.style.aspectRatio = L.totalW + ' / 300';
     svg.classList.toggle('meter-volt', opts.interactive && opts.meterMode === 'volt');
     svg.classList.toggle('meter-amm', opts.interactive && opts.meterMode === 'amm');
     var segs = []; // {el, current}
@@ -753,6 +759,11 @@
     var srcLabelEl = el('text', { x: X_START, y: midY + 42, class: 'src-label', 'text-anchor': 'middle' });
     srcLabelEl.textContent = fmt(tree._topV, 1) + ' V';
     svg.appendChild(srcLabelEl);
+    if (opts.showReqLabel) {
+      var reqLabelEl = el('text', { x: X_START, y: midY + 60, class: 'req-label', 'text-anchor': 'middle' });
+      reqLabelEl.textContent = 'R total = ' + fmt(tree._topV / tree._I, 2) + ' Ω';
+      svg.appendChild(reqLabelEl);
+    }
 
     var trunkCurrent = tree._I;
     var prevX = X_START, prevPot = tree._topV;
@@ -1158,7 +1169,7 @@
       solveTree(tree, state.Vs);
 
       var draw = drawCircuit(els.svg, state.topo, leafById, tree, {
-        interactive: true, meterMode: state.meter,
+        interactive: true, meterMode: state.meter, showReqLabel: true,
         onNodeClick: onNodeClick, onSegClick: onSegClick,
         onCompClick: function (id, rectEl) { openComponentEditor(id, rectEl); },
         onBatteryClick: function (rectEl) { openVoltageEditor(rectEl); }
@@ -1349,7 +1360,7 @@
 
     var current = null; // { topoKey, leafById, tree, Vs, qType, qLeafId, answer, unit, prompt }
 
-    function generate() {
+    function generate(focusInput) {
       var topoKey = pick(DIFF_SHAPES[diff]);
       var slots = SHAPES[topoKey].slots;
       var leafById = {};
@@ -1396,7 +1407,7 @@
       els.feedback.className = 'quiz-feedback';
       els.feedback.textContent = '';
       els.next.disabled = true;
-      els.answer.focus();
+      if (focusInput !== false) els.answer.focus();
     }
 
     function check() {
@@ -1428,7 +1439,7 @@
 
     reRenderAll.push(function () { if (current) drawCircuit(els.svg, current.topoKey, current.leafById, current.tree, { interactive: false, highlightId: current.highlightId }); });
     updateScore();
-    els.question.textContent = 'Click "New Question" to begin.';
+    generate(false); // populate a first circuit immediately so the panel is never blank, without stealing focus on page load
   })();
 
 })();
