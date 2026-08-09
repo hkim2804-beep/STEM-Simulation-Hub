@@ -230,16 +230,25 @@
   svg.circuit text { font-family: var(--mono); fill: var(--text-dim); user-select: none; }
   svg.circuit .comp-label { font-size: 16px; fill: var(--text); font-weight: 700; pointer-events: none; }
   svg.circuit .comp-val { font-size: 12.5px; fill: var(--text-dim); font-weight: 600; pointer-events: none; }
-  svg.circuit .wire { stroke: var(--text-faint); stroke-width: 2; fill: none; }
+  svg.circuit .wire { stroke: var(--text-faint); stroke-width: 2; fill: none; pointer-events: none; }
   svg.circuit .wire-flow { stroke-dasharray: 5 6; animation: flowmove linear infinite; }
   @keyframes flowmove { to { stroke-dashoffset: -33; } }
   svg.circuit .src-label { font-size: 15px; fill: var(--accent-soft); font-weight: 700; pointer-events: none; }
-  svg.circuit .hit { fill: transparent; stroke: transparent; stroke-width: 18; cursor: pointer; }
+  /* Node-dots and wire hit-corridors overlap in several places (a node
+     sits mid-span on the lead wire either side of it). Only the element
+     relevant to the active meter mode should actually catch clicks, or
+     whichever one happens to paint on top silently eats the other's
+     clicks regardless of mode. */
+  svg.circuit .hit { fill: transparent; stroke: transparent; stroke-width: 22; cursor: default; pointer-events: none; }
+  svg.circuit .node-dot { fill: var(--panel-2); stroke: var(--text-faint); stroke-width: 1.5; cursor: default; pointer-events: none; }
+  svg.circuit.meter-amm .hit { pointer-events: auto; cursor: pointer; }
+  svg.circuit.meter-amm .node-dot { opacity: 0.35; }
+  svg.circuit.meter-volt .node-dot { pointer-events: auto; cursor: pointer; }
+  svg.circuit.meter-volt .node-dot:not(.p1):not(.p2) { opacity: 0.9; }
   svg.circuit .hit:hover + .wire { stroke: var(--accent-soft); }
-  svg.circuit .node-dot { fill: var(--panel-2); stroke: var(--text-faint); stroke-width: 1.5; cursor: pointer; }
-  svg.circuit .node-dot:hover { stroke: var(--accent); fill: var(--accent-dim); }
-  svg.circuit .node-dot.p1 { fill: var(--probe1); stroke: var(--probe1); }
-  svg.circuit .node-dot.p2 { fill: var(--probe2); stroke: var(--probe2); }
+  svg.circuit .node-dot:hover { stroke: var(--accent); fill: var(--accent-dim); r: 9; }
+  svg.circuit .node-dot.p1 { fill: var(--probe1); stroke: var(--probe1); opacity: 1; }
+  svg.circuit .node-dot.p2 { fill: var(--probe2); stroke: var(--probe2); opacity: 1; }
   svg.circuit .node-dot.amm { fill: var(--readout); stroke: var(--readout); }
   svg.circuit .comp-box { stroke-width: 2.4; fill: var(--panel-2); }
   svg.circuit .comp-box.lamp { stroke-dasharray: 6 3; }
@@ -284,6 +293,18 @@
 
   .meter-instructions { font-size: 11.5px; color: var(--text-dim); line-height: 1.5; padding: 0 14px 12px; margin-top: -6px; }
   .meter-instructions b { color: var(--text); }
+  .probe-arm-row { display: flex; gap: 6px; padding: 0 14px 12px; }
+  .probe-arm {
+    flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+    font-family: var(--display); font-weight: 600; font-size: 11.5px; background: var(--panel-2);
+    border: 1.5px solid var(--border); color: var(--text-dim); padding: 7px 8px; border-radius: 20px; cursor: pointer;
+  }
+  .probe-arm .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .probe-arm.p1 .dot { background: var(--probe1); }
+  .probe-arm.p2 .dot { background: var(--probe2); }
+  .probe-arm.p1.armed { border-color: var(--probe1); color: var(--text); background: color-mix(in srgb, var(--probe1) 16%, var(--panel-2)); }
+  .probe-arm.p2.armed { border-color: var(--probe2); color: var(--text); background: color-mix(in srgb, var(--probe2) 16%, var(--panel-2)); }
+  .probe-arm:hover { border-color: var(--text-faint); }
 </style>
 
 <div class="wrap">
@@ -351,6 +372,10 @@
           </div>
         </div>
         <p class="meter-instructions" id="meter-instr">Turn on a meter, then click points on the circuit diagram.</p>
+        <div class="probe-arm-row" id="probe-arm-row" style="display:none;">
+          <button class="probe-arm p1" data-probe="p1" type="button"><span class="dot"></span>Place probe 1</button>
+          <button class="probe-arm p2" data-probe="p2" type="button"><span class="dot"></span>Place probe 2</button>
+        </div>
         <div class="btn-row">
           <button class="action" id="clear-probes">&#8634; Clear probes</button>
         </div>
@@ -687,6 +712,8 @@
     var shape = SHAPES[topoKey].shape;
     var L = computeLayout(shape);
     svg.setAttribute('viewBox', '0 0 ' + L.totalW + ' 300');
+    svg.classList.toggle('meter-volt', opts.interactive && opts.meterMode === 'volt');
+    svg.classList.toggle('meter-amm', opts.interactive && opts.meterMode === 'amm');
     var segs = []; // {el, current}
     var nodes = []; // {el, x, y, potential, id}
     var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -698,7 +725,7 @@
       return g;
     }
     function addNode(x, y, potential, key) {
-      var c = el('circle', { cx: x, cy: y, r: 7, class: 'node-dot' });
+      var c = el('circle', { cx: x, cy: y, r: 8, class: 'node-dot' });
       c._meta = { kind: 'node', potential: potential, key: key, x: x, y: y };
       svg.appendChild(c);
       nodes.push(c);
@@ -851,6 +878,7 @@
       srcVVal: document.getElementById('src-v-val'),
       meterMode: document.getElementById('meter-mode'),
       meterInstr: document.getElementById('meter-instr'),
+      probeArmRow: document.getElementById('probe-arm-row'),
       clearProbes: document.getElementById('clear-probes'),
       svg: document.getElementById('build-svg'),
       legend: document.getElementById('build-legend'),
@@ -875,7 +903,8 @@
       slotLamp: { A: 'small', B: 'small', C: 'small' },
       Vs: 12,
       meter: 'none',
-      probe1: null, probe2: null, ammPoint: null
+      probe1: null, probe2: null, ammPoint: null,
+      armedProbe: 'p1'
     };
 
     function buildLeafById() {
@@ -1082,22 +1111,39 @@
     });
 
     function updateMeterInstr() {
-      if (state.meter === 'none') els.meterInstr.innerHTML = 'Turn on a meter, then click points on the circuit diagram.';
-      else if (state.meter === 'volt') els.meterInstr.innerHTML = '<b>Voltmeter:</b> click two points on the diagram to place the red and teal probes. Reading = V(red) &minus; V(teal).';
-      else els.meterInstr.innerHTML = '<b>Ammeter:</b> click any wire segment to read the current flowing through it at that point.';
+      els.probeArmRow.style.display = state.meter === 'volt' ? 'flex' : 'none';
+      if (state.meter === 'none') {
+        els.meterInstr.innerHTML = 'Turn on a meter, then click points on the circuit diagram.';
+      } else if (state.meter === 'volt') {
+        var which = state.armedProbe === 'p1' ? '<b>probe 1 (red)</b>' : '<b>probe 2 (teal)</b>';
+        els.meterInstr.innerHTML = 'The next point you click on the diagram places ' + which + '. Use the buttons below to switch which probe you’re placing. Reading = V(red) &minus; V(teal).';
+      } else {
+        els.meterInstr.innerHTML = '<b>Ammeter:</b> click directly on a wire (not on a junction dot) to read the current flowing through it at that point.';
+      }
     }
     updateMeterInstr();
 
-    function clearProbes() { state.probe1 = null; state.probe2 = null; state.ammPoint = null; }
-    els.clearProbes.addEventListener('click', function () { clearProbes(); renderAll(); });
+    els.probeArmRow.addEventListener('click', function (e) {
+      var btn = e.target.closest('.probe-arm');
+      if (!btn) return;
+      state.armedProbe = btn.getAttribute('data-probe');
+      updateMeterInstr();
+      renderAll();
+    });
+
+    function clearProbes() { state.probe1 = null; state.probe2 = null; state.ammPoint = null; state.armedProbe = 'p1'; }
+    els.clearProbes.addEventListener('click', function () { clearProbes(); updateMeterInstr(); renderAll(); });
 
     function onNodeClick(meta) {
       if (state.meter !== 'volt') return;
-      if (state.probe1 === null || (state.probe1 !== null && state.probe2 !== null)) {
-        state.probe1 = meta; state.probe2 = null;
+      if (state.armedProbe === 'p1') {
+        state.probe1 = meta;
+        state.armedProbe = 'p2';
       } else {
         state.probe2 = meta;
+        state.armedProbe = 'p1';
       }
+      updateMeterInstr();
       renderAll();
     }
     function onSegClick(meta) {
@@ -1123,6 +1169,9 @@
         draw.nodes.forEach(function (n) {
           if (state.probe1 && n._meta.key === state.probe1.key) n.classList.add('p1');
           if (state.probe2 && n._meta.key === state.probe2.key) n.classList.add('p2');
+        });
+        Array.prototype.forEach.call(els.probeArmRow.querySelectorAll('.probe-arm'), function (b) {
+          b.classList.toggle('armed', b.getAttribute('data-probe') === state.armedProbe);
         });
       }
       if (state.meter === 'amm' && state.ammPoint) {
