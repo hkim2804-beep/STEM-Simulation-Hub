@@ -837,7 +837,8 @@ const curriculumData = [
     "simulationKey": "angles",
     "keywords": [
       "angles",
-      "proof"
+      "proof",
+      "trigonometry"
     ]
   },
   {
@@ -1113,7 +1114,8 @@ const curriculumData = [
     "simulationKey": "angles",
     "keywords": [
       "angles",
-      "proof"
+      "proof",
+      "trigonometry"
     ]
   },
   {
