@@ -124,7 +124,7 @@ function loadCustom(key){try{return JSON.parse(localStorage.getItem(key)||'[]')}
 function norm(u){return String(u||'').trim().toLowerCase()}
 function normalizeText(value){return String(value||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,' ')}
 function tokenize(value){return normalizeText(value).split(/\s+/).filter(Boolean)}
-function matchesTopicKeyword(term,keyword){const nt=normalizeText(term),nk=normalizeText(keyword);if(!nt||!nk)return false;if(nt===nk)return true;const tt=tokenize(term),kt=tokenize(keyword);if(!tt.length||!kt.length)return false;if(tt.length===1&&kt.length===1)return tt[0]===kt[0];return tt.some(t=>kt.includes(t))||kt.some(t=>tt.includes(t))}
+function matchesTopicKeyword(term,keyword){const nt=normalizeText(term),nk=normalizeText(keyword);if(!nt||!nk)return false;if(nt===nk)return true;const tt=tokenize(term),kt=tokenize(keyword);if(!tt.length||!kt.length)return false;if(tt.length===1&&kt.length===1)return tt[0]===kt[0];const smaller=tt.length<=kt.length?tt:kt,larger=tt.length<=kt.length?kt:tt;return smaller.every(t=>larger.includes(t))}
 
 const data=typeof curriculumData==='undefined'?[]:curriculumData;
 const syllabus=typeof SYLLABUS_SENIOR==='undefined'?[]:SYLLABUS_SENIOR;
