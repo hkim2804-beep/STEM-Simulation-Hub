@@ -1,0 +1,1385 @@
+<meta charset="UTF-8">
+<title>DC Circuits: Series, Parallel &amp; Ohm's Law — QCAA Physics</title>
+<style>
+  :root {
+    --bg: #10151a;
+    --bg-2: #161d23;
+    --panel: #1a2229;
+    --panel-2: #202a32;
+    --border: #2a3540;
+    --border-soft: #232d35;
+    --text: #eaf0f4;
+    --text-dim: #93a5b3;
+    --text-faint: #5f7280;
+    --accent: #e2823f;
+    --accent-soft: #f2a769;
+    --accent-dim: #6b4a2e;
+    --lamp: #f2c14e;
+    --lamp-soft: #f7d783;
+    --diode: #4f9fd8;
+    --diode-soft: #7fbfe8;
+    --slotA: #e2823f;
+    --slotB: #56b2c9;
+    --slotC: #c88fe6;
+    --probe1: #e2483a;
+    --probe2: #5fd0c9;
+    --ok: #7fbf6a;
+    --bad: #e2483a;
+    --readout: #ffcf8a;
+    --readout-glow: rgba(255, 207, 138, 0.35);
+    --grid-line: rgba(234, 240, 244, 0.07);
+    --shadow: 0 1px 0 rgba(0,0,0,0.4);
+    --radius: 3px;
+    --mono: 'Consolas', 'SFMono-Regular', ui-monospace, 'Cascadia Mono', Menlo, monospace;
+    --sans: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+    --display: 'Bahnschrift', 'Segoe UI Semibold', 'Segoe UI', system-ui, sans-serif;
+    color-scheme: dark;
+  }
+  :root[data-theme="light"] {
+    --bg: #eef1f4;
+    --bg-2: #e6ebee;
+    --panel: #f8fafb;
+    --panel-2: #eef2f4;
+    --border: #cdd7dd;
+    --border-soft: #dbe2e6;
+    --text: #162027;
+    --text-dim: #4d616f;
+    --text-faint: #8395a1;
+    --accent: #c9631f;
+    --accent-soft: #a4501a;
+    --accent-dim: #f1cba3;
+    --lamp: #a67a06;
+    --lamp-soft: #8a6505;
+    --diode: #1f76b0;
+    --diode-soft: #155a87;
+    --slotA: #c9631f;
+    --slotB: #1c7d92;
+    --slotC: #8a4bc4;
+    --probe1: #c23324;
+    --probe2: #0e8f86;
+    --ok: #3f8c2c;
+    --bad: #c23324;
+    --readout: #8a4c02;
+    --readout-glow: rgba(138, 76, 2, 0.18);
+    --grid-line: rgba(22, 32, 39, 0.08);
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #eef1f4; --bg-2: #e6ebee; --panel: #f8fafb; --panel-2: #eef2f4;
+      --border: #cdd7dd; --border-soft: #dbe2e6; --text: #162027; --text-dim: #4d616f;
+      --text-faint: #8395a1; --accent: #c9631f; --accent-soft: #a4501a; --accent-dim: #f1cba3;
+      --lamp: #a67a06; --lamp-soft: #8a6505; --diode: #1f76b0; --diode-soft: #155a87;
+      --slotA: #c9631f; --slotB: #1c7d92; --slotC: #8a4bc4;
+      --probe1: #c23324; --probe2: #0e8f86; --ok: #3f8c2c; --bad: #c23324;
+      --readout: #8a4c02; --readout-glow: rgba(138, 76, 2, 0.18); --grid-line: rgba(22, 32, 39, 0.08);
+      color-scheme: light;
+    }
+  }
+
+  * { box-sizing: border-box; min-width: 0; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+  ::selection { background: var(--accent-dim); color: var(--text); }
+
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 28px 22px 60px; }
+
+  header.top {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+    border-bottom: 1px solid var(--border); padding-bottom: 18px; margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  .eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--accent); margin: 0 0 6px;
+  }
+  h1 { font-family: var(--display); font-weight: 700; font-size: 30px; letter-spacing: 0.01em; margin: 0 0 4px; text-wrap: balance; }
+  .subtitle { color: var(--text-dim); font-size: 13px; max-width: 62ch; }
+  .theme-toggle { display: flex; gap: 2px; background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); padding: 2px; flex-shrink: 0; }
+  .theme-toggle button { font-family: var(--mono); font-size: 11px; letter-spacing: 0.04em; background: transparent; border: none; color: var(--text-dim); padding: 6px 10px; border-radius: 2px; cursor: pointer; }
+  .theme-toggle button.active { background: var(--panel-2); color: var(--accent); }
+
+  .text-size-toggle {
+    display: flex; align-items: center; gap: 2px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: var(--radius); padding: 2px;
+  }
+  .text-size-toggle button {
+    font-family: var(--mono); font-size: 12px; font-weight: 700; background: transparent;
+    border: none; color: var(--text-dim); padding: 6px 9px; border-radius: 2px; cursor: pointer; line-height: 1;
+  }
+  .text-size-toggle button:hover:not(:disabled) { color: var(--accent); }
+  .text-size-toggle button:disabled { opacity: 0.35; cursor: default; }
+  .text-size-toggle .ts-label {
+    font-family: var(--mono); font-size: 10px; color: var(--text-faint); padding: 0 3px; min-width: 32px; text-align: center;
+  }
+
+  nav.tabs { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; }
+  nav.tabs button {
+    font-family: var(--display); font-weight: 600; font-size: 13.5px; letter-spacing: 0.01em;
+    background: var(--panel); border: 1px solid var(--border); color: var(--text-dim);
+    padding: 10px 16px; border-radius: var(--radius); cursor: pointer; display: flex; align-items: center; gap: 9px;
+    transition: color .15s, border-color .15s, background .15s;
+  }
+  nav.tabs button .num {
+    font-family: var(--mono); font-size: 10.5px; color: var(--text-faint);
+    border: 1px solid var(--border-soft); border-radius: 50%; width: 17px; height: 17px;
+    display: flex; align-items: center; justify-content: center;
+  }
+  nav.tabs button:hover { color: var(--text); border-color: var(--text-faint); }
+  nav.tabs button.active { color: var(--text); background: var(--panel-2); border-color: var(--accent-dim); }
+  nav.tabs button.active .num { background: var(--accent); border-color: var(--accent); color: #1a1005; }
+
+  .module { display: none; }
+  .module.active { display: block; }
+  .module-head { margin-bottom: 14px; }
+  .module-head h2 { font-family: var(--display); font-size: 19px; margin: 0 0 4px; }
+  .module-head p { color: var(--text-dim); font-size: 13px; max-width: 76ch; margin: 0; }
+  .module-head .formula {
+    font-family: var(--mono); color: var(--accent-soft); background: var(--panel);
+    border: 1px solid var(--border-soft); padding: 2px 7px; border-radius: 2px; font-size: 12.5px;
+  }
+
+  .grid { display: grid; grid-template-columns: 268px minmax(0, 1fr); gap: 16px; align-items: start; }
+  @media (max-width: 800px) { .grid { grid-template-columns: 1fr; } }
+
+  .panel { background: var(--panel); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .panel-title {
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-faint); padding: 10px 14px 8px; border-bottom: 1px solid var(--border-soft);
+    display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  }
+
+  .controls { padding: 14px; display: flex; flex-direction: column; gap: 16px; }
+  .field { display: flex; flex-direction: column; gap: 6px; }
+  .field-label { display: flex; justify-content: space-between; align-items: baseline; font-size: 12px; color: var(--text-dim); gap: 8px; }
+  .field-label span.val { font-family: var(--mono); color: var(--readout); font-size: 12px; text-shadow: 0 0 10px var(--readout-glow); text-align: right; white-space: nowrap; }
+  select {
+    width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 2px; padding: 7px 8px; font-family: var(--sans); font-size: 12.5px;
+  }
+  input[type="text"], input[type="number"] {
+    width: 100%; background: var(--panel-2); color: var(--text); border: 1px solid var(--border);
+    border-radius: 2px; padding: 8px 9px; font-family: var(--mono); font-size: 14px;
+  }
+  input[type="text"]:focus, input[type="number"]:focus { outline: 2px solid var(--accent-dim); outline-offset: 1px; border-color: var(--accent); }
+  input[type="range"] { -webkit-appearance: none; width: 100%; height: 22px; background: transparent; cursor: pointer; }
+  input[type="range"]::-webkit-slider-runnable-track { height: 4px; background: var(--border-soft); border-radius: 2px; }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 14px; height: 14px; margin-top: -5px; border-radius: 50%;
+    background: var(--accent); border: 2px solid var(--bg); box-shadow: 0 0 0 1px var(--accent);
+  }
+  input[type="range"]::-moz-range-track { height: 4px; background: var(--border-soft); border-radius: 2px; }
+  input[type="range"]::-moz-range-thumb { width: 12px; height: 12px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg); }
+
+  .divider { border-top: 1px dashed var(--border-soft); margin: 2px 0; }
+  .subhead { font-family: var(--mono); font-size: 10px; letter-spacing: 0.09em; text-transform: uppercase; color: var(--text-faint); }
+
+  .btn-row { display: flex; gap: 8px; padding: 12px 14px; border-top: 1px solid var(--border-soft); }
+  button.action {
+    font-family: var(--display); font-weight: 600; font-size: 12.5px; background: var(--panel-2);
+    border: 1px solid var(--border); color: var(--text); padding: 8px 12px; border-radius: 2px;
+    cursor: pointer; flex: 1; display: flex; align-items: center; justify-content: center; gap: 6px;
+  }
+  button.action:hover { border-color: var(--text-faint); }
+  button.action:disabled { opacity: 0.4; cursor: default; }
+  button.action.primary { background: var(--accent); color: #1a1005; border-color: var(--accent); }
+  button.action.primary:hover { background: var(--accent-soft); }
+
+  .preset-row { display: flex; gap: 6px; flex-wrap: wrap; padding: 12px 14px 0; }
+  .preset-row button {
+    font-family: var(--mono); font-size: 10.5px; background: var(--panel-2); border: 1px solid var(--border-soft);
+    color: var(--text-dim); padding: 5px 9px; border-radius: 20px; cursor: pointer;
+  }
+  .preset-row button:hover { color: var(--text); border-color: var(--accent-dim); }
+  .preset-row button.active { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+
+  .sub-toggle { display: flex; gap: 2px; background: var(--panel-2); border: 1px solid var(--border); border-radius: var(--radius); padding: 2px; }
+  .sub-toggle button {
+    flex: 1; font-family: var(--display); font-weight: 600; font-size: 11.5px; background: transparent;
+    border: none; color: var(--text-dim); padding: 7px 6px; border-radius: 2px; cursor: pointer;
+  }
+  .sub-toggle button.active { background: var(--panel); color: var(--accent); }
+
+  .stage { display: flex; flex-direction: column; gap: 14px; }
+  .readouts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(112px, 1fr)); gap: 1px;
+    background: var(--border-soft); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden;
+  }
+  .readout-cell { background: var(--panel); padding: 10px 12px; }
+  .readout-cell .k { font-family: var(--mono); font-size: 9.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 4px; }
+  .readout-cell .v { font-family: var(--mono); font-size: 17px; color: var(--readout); text-shadow: 0 0 12px var(--readout-glow); font-variant-numeric: tabular-nums; overflow-wrap: break-word; }
+  .readout-cell .v.small { font-size: 13px; }
+  .readout-cell .v .unit { font-size: 11px; color: var(--text-dim); text-shadow: none; margin-left: 2px; }
+
+  .graph-panel { padding: 12px; }
+  canvas { display: block; width: 100%; }
+  .graph-cell { min-width: 0; }
+
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 11px; color: var(--text-dim); padding: 10px 2px 0; }
+  .legend .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+  .legend .sw { width: 14px; height: 2px; display: inline-block; margin-right: 5px; vertical-align: middle; }
+
+  svg.circuit { display: block; width: 100%; height: auto; }
+  svg.circuit text { font-family: var(--mono); fill: var(--text-dim); user-select: none; }
+  svg.circuit .comp-label { font-size: 16px; fill: var(--text); font-weight: 700; pointer-events: none; }
+  svg.circuit .comp-val { font-size: 12.5px; fill: var(--text-dim); font-weight: 600; pointer-events: none; }
+  svg.circuit .wire { stroke: var(--text-faint); stroke-width: 2; fill: none; }
+  svg.circuit .wire-flow { stroke-dasharray: 5 6; animation: flowmove linear infinite; }
+  @keyframes flowmove { to { stroke-dashoffset: -33; } }
+  svg.circuit .src-label { font-size: 15px; fill: var(--accent-soft); font-weight: 700; pointer-events: none; }
+  svg.circuit .hit { fill: transparent; stroke: transparent; stroke-width: 18; cursor: pointer; }
+  svg.circuit .hit:hover + .wire { stroke: var(--accent-soft); }
+  svg.circuit .node-dot { fill: var(--panel-2); stroke: var(--text-faint); stroke-width: 1.5; cursor: pointer; }
+  svg.circuit .node-dot:hover { stroke: var(--accent); fill: var(--accent-dim); }
+  svg.circuit .node-dot.p1 { fill: var(--probe1); stroke: var(--probe1); }
+  svg.circuit .node-dot.p2 { fill: var(--probe2); stroke: var(--probe2); }
+  svg.circuit .node-dot.amm { fill: var(--readout); stroke: var(--readout); }
+  svg.circuit .comp-box { stroke-width: 2.4; fill: var(--panel-2); }
+  svg.circuit .comp-box.lamp { stroke-dasharray: 6 3; }
+  svg.circuit .comp-box.diode { stroke-dasharray: 2 3; }
+  svg.circuit .comp-box.editable { cursor: pointer; }
+  svg.circuit .comp-box.editable:hover { filter: brightness(1.25); }
+  svg.circuit .batt-hit { fill: transparent; cursor: pointer; }
+  svg.circuit .batt-hit:hover ~ .batt-cell { filter: brightness(1.3); }
+  @media (prefers-reduced-motion: reduce) { svg.circuit .wire-flow { animation: none; } }
+
+  .comp-popover {
+    position: fixed; z-index: 80; background: var(--panel-2); border: 1px solid var(--border);
+    border-radius: var(--radius); box-shadow: 0 12px 32px rgba(0,0,0,0.4); padding: 12px; width: 226px;
+  }
+  .comp-popover .pop-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .comp-popover .pop-title { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--text); }
+  .comp-popover .pop-close {
+    background: none; border: none; color: var(--text-faint); font-size: 18px; line-height: 1;
+    cursor: pointer; padding: 2px 4px; border-radius: 2px;
+  }
+  .comp-popover .pop-close:hover { color: var(--text); background: var(--panel); }
+  .comp-popover .pop-note { font-size: 11px; color: var(--text-faint); margin: 6px 0 0; line-height: 1.4; }
+
+  footer.note {
+    margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--border); color: var(--text-faint);
+    font-size: 11.5px; display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+  }
+  footer.note a { color: var(--accent-soft); }
+  footer.note code { font-family: var(--mono); color: var(--text-dim); }
+
+  .quiz-q { padding: 14px; }
+  .quiz-q p { margin: 0 0 12px; font-size: 14px; color: var(--text); }
+  .quiz-q .ans-row { display: flex; gap: 8px; align-items: center; }
+  .quiz-q .ans-row input { max-width: 160px; }
+  .quiz-q .ans-row .unit-tag { font-family: var(--mono); color: var(--text-dim); font-size: 13px; }
+  .quiz-feedback { margin-top: 12px; padding: 10px 12px; border-radius: 2px; font-size: 13px; display: none; }
+  .quiz-feedback.show { display: block; }
+  .quiz-feedback.ok { background: var(--accent-dim); border: 1px solid var(--ok); color: var(--text); }
+  .quiz-feedback.bad { background: var(--panel-2); border: 1px solid var(--bad); color: var(--text); }
+  .quiz-feedback b.mark.ok { color: var(--ok); }
+  .quiz-feedback b.mark.bad { color: var(--bad); }
+
+  .meter-instructions { font-size: 11.5px; color: var(--text-dim); line-height: 1.5; padding: 0 14px 12px; margin-top: -6px; }
+  .meter-instructions b { color: var(--text); }
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <p class="eyebrow">QCAA Physics &middot; Unit 1 &middot; Thermal, Nuclear and Electrical Physics</p>
+      <h1>DC Circuits: Series, Parallel &amp; Ohm's Law</h1>
+      <p class="subtitle">Build series, parallel and combined circuits from ohmic and non-ohmic resistors, probe them with a virtual voltmeter or ammeter, and read the current&ndash;voltage characteristic straight off the graph.</p>
+      <p style="font-size:12px; color:var(--text-faint); margin:6px 0 0;">Reference: <a href="https://www.qcaa.qld.edu.au/senior/senior-subjects/syllabuses/sciences/physics" target="_blank" rel="noopener" style="color:var(--accent-soft);">QCAA Physics General Senior Syllabus</a></p>
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <div class="text-size-toggle" id="textSizeToggle" role="group" aria-label="Text size">
+        <button data-action="dec" aria-label="Decrease text size">A&minus;</button>
+        <span class="ts-label" id="textSizeLabel">100%</span>
+        <button data-action="inc" aria-label="Increase text size">A+</button>
+      </div>
+      <div class="theme-toggle" id="themeToggle">
+        <button data-theme="dark" class="active">Dark</button>
+        <button data-theme="light">Light</button>
+      </div>
+    </div>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="build"><span class="num">1</span>Circuit Builder</button>
+    <button class="tab-btn" data-tab="quiz"><span class="num">2</span>Quiz Mode</button>
+  </nav>
+
+  <!-- ============ MODULE 1: CIRCUIT BUILDER ============ -->
+  <section class="module active" id="mod-build">
+    <div class="module-head">
+      <h2>Build a circuit</h2>
+      <p>Choose a topology, set each resistor's value (or swap in a non-ohmic lamp or diode), and adjust the source voltage. Then switch on the voltmeter or ammeter and click points on the diagram to measure it. <span class="formula">V = IR</span></p>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-title">Topology</div>
+        <div class="preset-row" id="topo-presets">
+          <button data-topo="s2">Series &times;2</button>
+          <button data-topo="s3">Series &times;3</button>
+          <button data-topo="p2">Parallel &times;2</button>
+          <button data-topo="p3">Parallel &times;3</button>
+          <button data-topo="ca">A + (B&nbsp;&#8741;&nbsp;C)</button>
+          <button data-topo="cb">(A&nbsp;&#8741;&nbsp;B) + C</button>
+        </div>
+
+        <div class="controls" id="slot-controls"></div>
+
+        <div class="divider" style="margin:0 14px;"></div>
+        <div class="controls">
+          <div class="field">
+            <div class="field-label"><span>Source voltage, V</span><span class="val" id="src-v-val">12.0 V</span></div>
+            <input type="range" id="src-v" min="1" max="24" step="0.5" value="12">
+          </div>
+        </div>
+
+        <div class="divider" style="margin:0 14px;"></div>
+        <div class="panel-title" style="border-bottom:none; padding-bottom:0;">Meter</div>
+        <div class="controls" style="padding-top:8px;">
+          <div class="sub-toggle" id="meter-mode">
+            <button data-meter="none" class="active">Off</button>
+            <button data-meter="volt">Voltmeter</button>
+            <button data-meter="amm">Ammeter</button>
+          </div>
+        </div>
+        <p class="meter-instructions" id="meter-instr">Turn on a meter, then click points on the circuit diagram.</p>
+        <div class="btn-row">
+          <button class="action" id="clear-probes">&#8634; Clear probes</button>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="readouts" id="build-readouts">
+          <div class="readout-cell"><div class="k">Equivalent R</div><div class="v" id="r-req">&mdash;</div></div>
+          <div class="readout-cell"><div class="k">Total current</div><div class="v" id="r-itot">&mdash;</div></div>
+          <div class="readout-cell"><div class="k">Total power</div><div class="v" id="r-ptot">&mdash;</div></div>
+          <div class="readout-cell"><div class="k">Meter reading</div><div class="v small" id="r-meter">&mdash;</div></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><span>Circuit diagram</span><span style="text-transform:none; letter-spacing:normal; font-size:11px;">Click a resistor or the battery to edit it</span></div>
+          <div style="padding:14px;">
+            <svg class="circuit" id="build-svg" viewBox="0 0 760 300" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+          <div class="legend" id="build-legend"></div>
+        </div>
+
+        <div class="panel graph-panel">
+          <div class="panel-title" style="border-bottom:none; padding:0 0 8px;">Current&ndash;voltage characteristics</div>
+          <div class="graph-cell"><canvas id="iv-graph" height="300"></canvas></div>
+          <div class="legend" id="iv-legend"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ MODULE 2: QUIZ MODE ============ -->
+  <section class="module" id="mod-quiz">
+    <div class="module-head">
+      <h2>Practice</h2>
+      <p>Randomly generated series, parallel and combined circuits with easy numbers. Work out the value asked for, then check your answer.</p>
+    </div>
+    <div class="grid">
+      <div class="panel">
+        <div class="panel-title">Difficulty</div>
+        <div class="preset-row" id="quiz-diff">
+          <button data-diff="series">Series</button>
+          <button data-diff="parallel">Parallel</button>
+          <button data-diff="combined">Combined</button>
+          <button data-diff="mixed" class="active">Mixed</button>
+        </div>
+        <div class="controls">
+          <div class="readouts" style="grid-template-columns:1fr 1fr;">
+            <div class="readout-cell"><div class="k">Score</div><div class="v" id="quiz-score">0 / 0</div></div>
+            <div class="readout-cell"><div class="k">Streak</div><div class="v" id="quiz-streak">0</div></div>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button class="action primary" id="quiz-new">New Question</button>
+        </div>
+        <div class="btn-row" style="padding-top:0;">
+          <button class="action" id="quiz-reset-score">Reset score</button>
+        </div>
+      </div>
+
+      <div class="stage">
+        <div class="panel">
+          <div class="panel-title">Circuit</div>
+          <div style="padding:14px;">
+            <svg class="circuit" id="quiz-svg" viewBox="0 0 760 300" preserveAspectRatio="xMidYMid meet"></svg>
+          </div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title">Question</div>
+          <div class="quiz-q">
+            <p id="quiz-question">Click &ldquo;New Question&rdquo; to begin.</p>
+            <div class="ans-row">
+              <input type="text" id="quiz-answer" placeholder="Your answer" inputmode="decimal">
+              <span class="unit-tag" id="quiz-unit"></span>
+              <button class="action" id="quiz-check" style="flex:none; padding:8px 16px;">Check</button>
+            </div>
+            <div class="quiz-feedback" id="quiz-feedback"></div>
+          </div>
+          <div class="btn-row">
+            <button class="action primary" id="quiz-next" disabled>Next Question &rarr;</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="note">
+    <span>Lamp models a filament bulb (V &prop; I<sup>1.6</sup>, resistance rises with current); diode models an LED (I &prop; e<sup>V/k</sup>&minus;1, sharp turn-on voltage). Both are solved numerically alongside ohmic resistors, so every meter reading is exact for the circuit shown.</span>
+    <span><code>V = IR</code> &nbsp; <code>P = IV</code> &nbsp; <code>R&#8347;&#8348;&#8348; = R&#8321;+R&#8322;+&hellip;</code> &nbsp; <code>1/R&#8347;&#8348;&#8348; = 1/R&#8321;+1/R&#8322;+&hellip;</code></span>
+  </footer>
+</div>
+
+<script>
+(function () {
+  "use strict";
+
+  /* ---------------- Theme ---------------- */
+  var reRenderAll = [];
+  var themeToggle = document.getElementById('themeToggle');
+  themeToggle.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    document.documentElement.setAttribute('data-theme', btn.getAttribute('data-theme'));
+    Array.prototype.forEach.call(themeToggle.querySelectorAll('button'), function (b) { b.classList.toggle('active', b === btn); });
+    reRenderAll.forEach(function (fn) { fn(); });
+  });
+
+  /* ---------------- Text size ---------------- */
+  (function () {
+    var STEPS = [90, 100, 112, 125, 140, 160];
+    var DEFAULT_INDEX = 2;
+    var STORE_KEY = 'qcaa-sim-textsize';
+    var toggle = document.getElementById('textSizeToggle');
+    var label = document.getElementById('textSizeLabel');
+    var decBtn = toggle.querySelector('[data-action="dec"]');
+    var incBtn = toggle.querySelector('[data-action="inc"]');
+    var idx = DEFAULT_INDEX;
+    try {
+      var saved = parseInt(localStorage.getItem(STORE_KEY), 10);
+      var savedIdx = STEPS.indexOf(saved);
+      if (savedIdx !== -1) idx = savedIdx;
+    } catch (e) {}
+
+    function apply() {
+      var pct = STEPS[idx];
+      document.body.style.zoom = pct / 100;
+      label.textContent = pct + '%';
+      decBtn.disabled = idx === 0;
+      incBtn.disabled = idx === STEPS.length - 1;
+      try { localStorage.setItem(STORE_KEY, String(pct)); } catch (e) {}
+      reRenderAll.forEach(function (fn) { fn(); });
+    }
+    toggle.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn || btn.disabled) return;
+      if (btn.getAttribute('data-action') === 'inc' && idx < STEPS.length - 1) idx++;
+      if (btn.getAttribute('data-action') === 'dec' && idx > 0) idx--;
+      apply();
+    });
+    apply();
+  })();
+
+  /* ---------------- Tabs ---------------- */
+  var tabs = document.getElementById('tabs');
+  tabs.addEventListener('click', function (e) {
+    var btn = e.target.closest('button');
+    if (!btn) return;
+    var name = btn.getAttribute('data-tab');
+    Array.prototype.forEach.call(tabs.querySelectorAll('button'), function (b) { b.classList.toggle('active', b === btn); });
+    Array.prototype.forEach.call(document.querySelectorAll('.module'), function (m) { m.classList.toggle('active', m.id === 'mod-' + name); });
+    reRenderAll.forEach(function (fn) { fn(); });
+  });
+
+  function css(varName) { return getComputedStyle(document.documentElement).getPropertyValue(varName).trim(); }
+  function fmt(x, dp) {
+    if (!isFinite(x)) return '—';
+    return x.toLocaleString(undefined, { minimumFractionDigits: dp, maximumFractionDigits: dp });
+  }
+  function fitCanvas(canvas, cssHeight) {
+    if (canvas.offsetParent === null) return null;
+    var dpr = window.devicePixelRatio || 1;
+    // document.body.style.zoom (used by the text-size toggle) scales the whole
+    // page, including this container's rendered rect — so the measured width
+    // is already post-zoom. Divide it back out before writing it to style.width,
+    // otherwise the zoom gets applied a second time and the canvas overflows.
+    var zoom = parseFloat(document.body.style.zoom) || 1;
+    var rect = canvas.parentElement.getBoundingClientRect();
+    var w = rect.width / zoom;
+    if (w <= 0) return null;
+    var h = cssHeight || canvas.height;
+    canvas.style.width = w + 'px';
+    canvas.style.height = h + 'px';
+    canvas.width = Math.round(w * zoom * dpr);
+    canvas.height = Math.round(h * zoom * dpr);
+    var ctx = canvas.getContext('2d');
+    ctx.setTransform(zoom * dpr, 0, 0, zoom * dpr, 0, 0);
+    return { ctx: ctx, w: w, h: h };
+  }
+  function observeResize(el, cb) {
+    if (!el || typeof ResizeObserver === 'undefined') return;
+    var pending = false;
+    var ro = new ResizeObserver(function () {
+      if (pending) return;
+      pending = true;
+      requestAnimationFrame(function () { pending = false; cb(); });
+    });
+    ro.observe(el);
+    return ro;
+  }
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function el(tag, attrs) {
+    var e = document.createElementNS(SVGNS, tag);
+    for (var k in attrs) e.setAttribute(k, attrs[k]);
+    return e;
+  }
+
+  /* =========================================================
+     CIRCUIT MATH — leaves are odd-symmetric, restricted to
+     the physical domain I,V >= 0 (single DC source, one
+     direction of current flow throughout).
+     ========================================================= */
+  function ohmicLeaf(id, R) {
+    return { id: id, kind: 'ohmic', R: R,
+      V_of_I: function (I) { return I * R; },
+      I_of_V: function (V) { return V / R; } };
+  }
+  function lampLeaf(id, k, p) {
+    return { id: id, kind: 'lamp', k: k, p: p,
+      V_of_I: function (I) { return k * Math.pow(Math.max(I, 0), p); },
+      I_of_V: function (V) { return Math.pow(Math.max(V, 0) / k, 1 / p); } };
+  }
+  function diodeLeaf(id, Is, nVt) {
+    return { id: id, kind: 'diode', Is: Is, nVt: nVt,
+      I_of_V: function (V) { return Is * (Math.exp(Math.max(V, 0) / nVt) - 1); },
+      V_of_I: function (I) { return nVt * Math.log(Math.max(I, 0) / Is + 1); } };
+  }
+  function bisectInvert(f, target) {
+    if (target <= 0) return 0;
+    var hi = 1, tries = 0;
+    while (f(hi) < target && tries < 200) { hi *= 1.7; tries++; }
+    var lo = 0;
+    for (var k = 0; k < 80; k++) {
+      var mid = (lo + hi) / 2;
+      if (f(mid) < target) lo = mid; else hi = mid;
+    }
+    return (lo + hi) / 2;
+  }
+  function seriesNode(children) {
+    function V_of_I(I) { var s = 0; for (var i = 0; i < children.length; i++) s += children[i].V_of_I(I); return s; }
+    function I_of_V(V) { return bisectInvert(V_of_I, V); }
+    return { kind: 'series', children: children, V_of_I: V_of_I, I_of_V: I_of_V };
+  }
+  function parallelNode(children) {
+    function I_of_V(V) { var s = 0; for (var i = 0; i < children.length; i++) s += children[i].I_of_V(V); return s; }
+    function V_of_I(I) { return bisectInvert(I_of_V, I); }
+    return { kind: 'parallel', children: children, I_of_V: I_of_V, V_of_I: V_of_I };
+  }
+  function isLeaf(n) { return n.kind === 'ohmic' || n.kind === 'lamp' || n.kind === 'diode'; }
+
+  function solveTree(root, Vs) {
+    var Itot = root.I_of_V(Vs);
+    (function assign(node, I) {
+      node._I = I;
+      node._V = node.V_of_I(I);
+      if (isLeaf(node)) return;
+      if (node.kind === 'series') {
+        node.children.forEach(function (c) { assign(c, I); });
+      } else {
+        node.children.forEach(function (c) { assign(c, c.I_of_V(node._V)); });
+      }
+    })(root, Itot);
+    (function potentials(node, topV, botV) {
+      node._topV = topV; node._botV = botV;
+      if (isLeaf(node)) return;
+      if (node.kind === 'series') {
+        var v = topV;
+        node.children.forEach(function (c) {
+          var cb = v - c._V;
+          potentials(c, v, cb);
+          v = cb;
+        });
+      } else {
+        node.children.forEach(function (c) { potentials(c, topV, botV); });
+      }
+    })(root, Vs, 0);
+    return Itot;
+  }
+  function leavesOf(root) {
+    var out = [];
+    (function walk(n) { if (isLeaf(n)) out.push(n); else n.children.forEach(walk); })(root);
+    return out;
+  }
+
+  /* =========================================================
+     TOPOLOGIES — a shape is a flat left-to-right series chain;
+     an array item is a parallel split of 2-3 leaves.
+     ========================================================= */
+  var SHAPES = {
+    s2: { label: 'Series ×2', slots: ['A', 'B'], shape: ['A', 'B'] },
+    s3: { label: 'Series ×3', slots: ['A', 'B', 'C'], shape: ['A', 'B', 'C'] },
+    p2: { label: 'Parallel ×2', slots: ['A', 'B'], shape: [['A', 'B']] },
+    p3: { label: 'Parallel ×3', slots: ['A', 'B', 'C'], shape: [['A', 'B', 'C']] },
+    ca: { label: 'A + (B ∥ C)', slots: ['A', 'B', 'C'], shape: ['A', ['B', 'C']] },
+    cb: { label: '(A ∥ B) + C', slots: ['A', 'B', 'C'], shape: [['A', 'B'], 'C'] }
+  };
+  function buildTree(shape, leafById) {
+    var items = shape.map(function (it) {
+      return typeof it === 'string' ? leafById[it] : parallelNode(it.map(function (id) { return leafById[id]; }));
+    });
+    return items.length === 1 ? items[0] : seriesNode(items);
+  }
+
+  var Y_TOP = 70, Y_BOT_BUS = 160, Y_RET = 240, X_START = 64;
+  var H_BOX_ALONG = 118, H_BOX_CROSS = 46, H_HALF = H_BOX_ALONG / 2;
+  var V_BOX_ALONG = 58, V_BOX_CROSS = 42, V_LEAD = (Y_BOT_BUS - Y_TOP - V_BOX_ALONG) / 2;
+  function computeLayout(shape) {
+    var x = X_START + 56; // lead out of battery
+    var items = [];
+    shape.forEach(function (it) {
+      if (typeof it === 'string') {
+        var w = 200;
+        items.push({ kind: 'h', id: it, x0: x, x1: x + w, cx: x + w / 2 });
+        x += w;
+      } else {
+        var n = it.length, gap = 150, w = gap * n + 50;
+        var x0 = x, branchXs = it.map(function (_, i) { return x0 + 50 + gap * (i + 0.5); });
+        items.push({ kind: 'split', ids: it, x0: x0, x1: x0 + w, branchXs: branchXs });
+        x = x0 + w;
+      }
+    });
+    var rightX = x + 56;
+    return { items: items, rightX: rightX, totalW: rightX + 44 };
+  }
+
+  function makeHit(x1, y1, x2, y2, meta) {
+    var g = el('g', {});
+    var hit = el('line', { x1: x1, y1: y1, x2: x2, y2: y2, class: 'hit' });
+    var wire = el('line', { x1: x1, y1: y1, x2: x2, y2: y2, class: 'wire' });
+    g.appendChild(hit); g.appendChild(wire);
+    g._hit = hit; g._wire = wire; g._meta = meta;
+    return g;
+  }
+  var SLOT_COLOR_VAR = { A: '--slotA', B: '--slotB', C: '--slotC' };
+  function compColor(id) { return css(SLOT_COLOR_VAR[id] || '--accent'); }
+  function compLabel(leaf) {
+    if (leaf.kind === 'ohmic') return { name: leaf.id, val: fmt(leaf.R, leaf.R < 10 ? 1 : 0) + 'Ω' };
+    if (leaf.kind === 'lamp') return { name: leaf.id, val: 'lamp' };
+    return { name: leaf.id, val: 'LED' };
+  }
+
+  function drawCircuit(svg, topoKey, leafById, tree, opts) {
+    opts = opts || {};
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var shape = SHAPES[topoKey].shape;
+    var L = computeLayout(shape);
+    svg.setAttribute('viewBox', '0 0 ' + L.totalW + ' 300');
+    var segs = []; // {el, current}
+    var nodes = []; // {el, x, y, potential, id}
+    var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function addSeg(x1, y1, x2, y2, current, key) {
+      var g = makeHit(x1, y1, x2, y2, { kind: 'seg', current: current, key: key });
+      svg.appendChild(g);
+      segs.push(g);
+      return g;
+    }
+    function addNode(x, y, potential, key) {
+      var c = el('circle', { cx: x, cy: y, r: 7, class: 'node-dot' });
+      c._meta = { kind: 'node', potential: potential, key: key, x: x, y: y };
+      svg.appendChild(c);
+      nodes.push(c);
+      return c;
+    }
+
+    // battery
+    if (opts.interactive && opts.onBatteryClick) {
+      var battHit = el('rect', {
+        x: X_START - 26, y: Y_TOP + 14, width: 52, height: (Y_RET - 14) - (Y_TOP + 14), rx: 4,
+        class: 'batt-hit'
+      });
+      svg.appendChild(battHit);
+      battHit.addEventListener('click', function (e) { e.stopPropagation(); opts.onBatteryClick(battHit); });
+    }
+    svg.appendChild(el('line', { x1: X_START, y1: Y_TOP, x2: X_START, y2: Y_RET, class: 'wire' }));
+    var midY = (Y_TOP + Y_RET) / 2;
+    [ -16, -6, 6, 16 ].forEach(function (dy, i) {
+      var isLong = i % 2 === 0;
+      var half = isLong ? 18 : 10;
+      svg.appendChild(el('line', { x1: X_START - half, y1: midY + dy, x2: X_START + half, y2: midY + dy, stroke: css('--accent'), 'stroke-width': isLong ? 2.5 : 5, class: 'batt-cell' }));
+    });
+    svg.appendChild(el('text', { x: X_START - 40, y: Y_TOP + 2, class: 'src-label', 'text-anchor': 'middle' })).textContent = '+';
+    svg.appendChild(el('text', { x: X_START - 40, y: Y_RET + 2, class: 'src-label', 'text-anchor': 'middle' })).textContent = '−';
+    var srcLabelEl = el('text', { x: X_START, y: midY + 42, class: 'src-label', 'text-anchor': 'middle' });
+    srcLabelEl.textContent = fmt(tree._topV, 1) + ' V';
+    svg.appendChild(srcLabelEl);
+
+    var trunkCurrent = tree._I;
+    var prevX = X_START, prevPot = tree._topV;
+    addNode(X_START, Y_TOP, tree._topV, 'src+');
+
+    L.items.forEach(function (item) {
+      if (item.kind === 'h') {
+        var leaf = leafById[item.id];
+        var half = H_HALF;
+        addSeg(prevX, Y_TOP, item.cx - half, Y_TOP, trunkCurrent, 'lead');
+        addNode(item.cx - half - 16, Y_TOP, leaf._topV, item.id + '-in');
+        drawComponent(svg, leaf, item.cx, Y_TOP, H_BOX_ALONG, H_BOX_CROSS, 'h', opts);
+        addNode(item.cx + half + 16, Y_TOP, leaf._botV, item.id + '-out');
+        prevX = item.cx + half; prevPot = leaf._botV;
+      } else {
+        var ids = item.ids, bx = item.branchXs;
+        var anyLeaf = leafById[ids[0]];
+        addSeg(prevX, Y_TOP, bx[0], Y_TOP, trunkCurrent, 'lead-in-split');
+        var running = trunkCurrent;
+        ids.forEach(function (id, i) {
+          var leaf = leafById[id];
+          addNode(bx[i], Y_TOP, anyLeaf._topV, id + '-top');
+          addSeg(bx[i], Y_TOP, bx[i], Y_TOP + V_LEAD, leaf._I, id + '-drop-in');
+          drawComponent(svg, leaf, bx[i], (Y_TOP + Y_BOT_BUS) / 2, V_BOX_ALONG, V_BOX_CROSS, 'v', opts);
+          addSeg(bx[i], Y_BOT_BUS - V_LEAD, bx[i], Y_BOT_BUS, leaf._I, id + '-drop-out');
+          addNode(bx[i], Y_BOT_BUS, anyLeaf._botV, id + '-bot');
+          if (i < ids.length - 1) {
+            running -= leaf._I;
+            addSeg(bx[i], Y_TOP, bx[i + 1], Y_TOP, running, 'top-bus-' + i);
+          }
+        });
+        var merge = 0;
+        for (var i = 0; i < ids.length - 1; i++) {
+          merge += leafById[ids[i]]._I;
+          addSeg(bx[i], Y_BOT_BUS, bx[i + 1], Y_BOT_BUS, merge, 'bot-bus-' + i);
+        }
+        var lastX = bx[bx.length - 1];
+        addSeg(lastX, Y_BOT_BUS, lastX, Y_TOP, trunkCurrent, 'riser');
+        addSeg(lastX, Y_TOP, item.x1, Y_TOP, trunkCurrent, 'lead-out-split');
+        prevX = item.x1; prevPot = anyLeaf._botV;
+      }
+    });
+
+    addSeg(prevX, Y_TOP, L.rightX, Y_TOP, trunkCurrent, 'lead-corner');
+    addNode(L.rightX, Y_TOP, prevPot, 'corner-top');
+    addSeg(L.rightX, Y_TOP, L.rightX, Y_RET, trunkCurrent, 'right-vert');
+    addSeg(L.rightX, Y_RET, X_START, Y_RET, trunkCurrent, 'return');
+    addNode((L.rightX + X_START) / 2, Y_RET, 0, 'ret-mid');
+    addNode(X_START, Y_RET, 0, 'src-');
+
+    // style + animate segments
+    segs.forEach(function (g) {
+      var cur = Math.abs(g._meta.current);
+      g._wire.classList.add('wire-flow');
+      var dur = cur > 0.005 ? Math.max(0.35, 6 / (cur * 9)) : 0;
+      if (dur > 0 && !reduceMotion) {
+        g._wire.style.animationDuration = dur.toFixed(2) + 's';
+      } else {
+        g._wire.classList.remove('wire-flow');
+      }
+      var w = cur > 0.005 ? Math.min(2 + cur * 2.2, 5) : 1.4;
+      g._wire.style.strokeWidth = w;
+      if (opts.interactive && (opts.meterMode === 'amm')) {
+        g._hit.style.cursor = 'pointer';
+      }
+    });
+
+    if (opts.interactive) {
+      segs.forEach(function (g) {
+        g._hit.addEventListener('click', function () { opts.onSegClick && opts.onSegClick(g._meta, g); });
+      });
+      nodes.forEach(function (n) {
+        n.addEventListener('click', function () { opts.onNodeClick && opts.onNodeClick(n._meta, n); });
+      });
+    }
+
+    return { segs: segs, nodes: nodes, layout: L };
+  }
+
+  function drawComponent(svg, leaf, cx, cy, alongLen, crossLen, orient, opts) {
+    var isV = orient === 'v';
+    var bw = isV ? crossLen : alongLen, bh = isV ? alongLen : crossLen;
+    var rect = el('rect', {
+      x: cx - bw / 2, y: cy - bh / 2, width: bw, height: bh, rx: 5,
+      class: 'comp-box ' + leaf.kind
+    });
+    rect.style.stroke = compColor(leaf.id);
+    svg.appendChild(rect);
+    var lab = compLabel(leaf);
+    var t1 = el('text', { x: cx, y: cy - 4, class: 'comp-label', 'text-anchor': 'middle' });
+    t1.textContent = lab.name;
+    t1.style.fill = compColor(leaf.id);
+    var t2 = el('text', { x: cx, y: cy + 14, class: 'comp-val', 'text-anchor': 'middle' });
+    t2.textContent = lab.val;
+    if (isV) {
+      t1.setAttribute('transform', 'rotate(-90 ' + cx + ' ' + cy + ')');
+      t2.setAttribute('transform', 'rotate(-90 ' + cx + ' ' + cy + ')');
+      t1.setAttribute('y', cy - 4); t1.setAttribute('x', cx);
+      t2.setAttribute('y', cy + 14); t2.setAttribute('x', cx);
+    }
+    svg.appendChild(t1); svg.appendChild(t2);
+    if (opts.highlightId && opts.highlightId === leaf.id) {
+      rect.setAttribute('stroke-width', 3.4);
+      rect.style.filter = 'drop-shadow(0 0 5px ' + compColor(leaf.id) + ')';
+    }
+    if (opts.interactive && opts.onCompClick) {
+      rect.classList.add('editable');
+      rect.addEventListener('click', function (e) {
+        e.stopPropagation();
+        opts.onCompClick(leaf.id, rect);
+      });
+    }
+  }
+
+  /* =========================================================
+     MODULE 1 — CIRCUIT BUILDER
+     ========================================================= */
+  (function () {
+    var els = {
+      topoRow: document.getElementById('topo-presets'),
+      slotControls: document.getElementById('slot-controls'),
+      srcV: document.getElementById('src-v'),
+      srcVVal: document.getElementById('src-v-val'),
+      meterMode: document.getElementById('meter-mode'),
+      meterInstr: document.getElementById('meter-instr'),
+      clearProbes: document.getElementById('clear-probes'),
+      svg: document.getElementById('build-svg'),
+      legend: document.getElementById('build-legend'),
+      rReq: document.getElementById('r-req'),
+      rItot: document.getElementById('r-itot'),
+      rPtot: document.getElementById('r-ptot'),
+      rMeter: document.getElementById('r-meter'),
+      graph: document.getElementById('iv-graph'),
+      graphLegend: document.getElementById('iv-legend')
+    };
+
+    var LAMP_PRESETS = {
+      small: { name: 'Small lamp', k: 2.5 / Math.pow(0.3, 1.6), p: 1.6 },
+      large: { name: 'Large lamp', k: 6 / Math.pow(0.5, 1.6), p: 1.6 }
+    };
+    var DIODE_PRESET = { Is: 0.012, nVt: 0.55 };
+
+    var state = {
+      topo: 's2',
+      slotType: { A: 'ohmic', B: 'ohmic', C: 'ohmic' },
+      slotR: { A: 6, B: 10, C: 4 },
+      slotLamp: { A: 'small', B: 'small', C: 'small' },
+      Vs: 12,
+      meter: 'none',
+      probe1: null, probe2: null, ammPoint: null
+    };
+
+    function buildLeafById() {
+      var out = {};
+      SHAPES[state.topo].slots.forEach(function (id) {
+        var t = state.slotType[id];
+        if (t === 'ohmic') out[id] = ohmicLeaf(id, state.slotR[id]);
+        else if (t === 'lamp') { var p = LAMP_PRESETS[state.slotLamp[id]]; out[id] = lampLeaf(id, p.k, p.p); }
+        else out[id] = diodeLeaf(id, DIODE_PRESET.Is, DIODE_PRESET.nVt);
+      });
+      return out;
+    }
+
+    // Shared by the sidebar field AND the on-diagram popover, so both stay in sync automatically.
+    function renderTypeAndValue(container, id) {
+      container.innerHTML = '';
+      var toggle = document.createElement('div');
+      toggle.className = 'sub-toggle';
+      toggle.style.marginBottom = '6px';
+      ['ohmic', 'lamp', 'diode'].forEach(function (t) {
+        var b = document.createElement('button');
+        b.textContent = t === 'ohmic' ? 'Ohmic' : t === 'lamp' ? 'Lamp' : 'Diode';
+        b.dataset.slot = id; b.dataset.type = t;
+        if (state.slotType[id] === t) b.classList.add('active');
+        b.addEventListener('click', function () {
+          state.slotType[id] = t;
+          renderSlotControls();
+          renderPopoverIfOpen(id);
+          renderAll();
+        });
+        toggle.appendChild(b);
+      });
+      container.appendChild(toggle);
+
+      if (state.slotType[id] === 'ohmic') {
+        var lbl = document.createElement('div');
+        lbl.className = 'field-label';
+        lbl.innerHTML = '<span>Resistance</span><span class="val" data-slotval="' + id + '">' + fmt(state.slotR[id], 0) + ' Ω</span>';
+        container.appendChild(lbl);
+        var range = document.createElement('input');
+        range.type = 'range'; range.min = 1; range.max = 100; range.step = 1; range.value = state.slotR[id];
+        range.addEventListener('input', function () {
+          state.slotR[id] = parseFloat(range.value);
+          syncSlotValueDisplay(id);
+          renderAll();
+        });
+        container.appendChild(range);
+      } else if (state.slotType[id] === 'lamp') {
+        var sel = document.createElement('select');
+        ['small', 'large'].forEach(function (k) {
+          var o = document.createElement('option');
+          o.value = k; o.textContent = LAMP_PRESETS[k].name;
+          if (state.slotLamp[id] === k) o.selected = true;
+          sel.appendChild(o);
+        });
+        sel.addEventListener('change', function () {
+          state.slotLamp[id] = sel.value;
+          renderPopoverIfOpen(id);
+          renderAll();
+        });
+        container.appendChild(sel);
+        var note = document.createElement('p');
+        note.className = 'pop-note';
+        note.textContent = 'Non-ohmic: resistance rises as it heats up.';
+        container.appendChild(note);
+      } else {
+        var note2 = document.createElement('p');
+        note2.className = 'pop-note';
+        note2.textContent = 'Non-ohmic: negligible current until a turn-on voltage, then rises steeply.';
+        container.appendChild(note2);
+      }
+    }
+    function syncSlotValueDisplay(id) {
+      var v = fmt(state.slotR[id], 0) + ' Ω';
+      document.querySelectorAll('[data-slotval="' + id + '"]').forEach(function (s) { s.textContent = v; });
+    }
+    function syncSrcVDisplay() {
+      var v = fmt(state.Vs, 1) + ' V';
+      els.srcVVal.textContent = v;
+      document.querySelectorAll('[data-srcvval]').forEach(function (s) { s.textContent = v; });
+    }
+
+    function renderSlotControls() {
+      var slots = SHAPES[state.topo].slots;
+      els.slotControls.innerHTML = '';
+      slots.forEach(function (id) {
+        var wrap = document.createElement('div');
+        wrap.className = 'field';
+        var head = document.createElement('div');
+        head.className = 'subhead';
+        head.style.cssText = 'margin-bottom:2px; color:' + compColor(id) + '; font-size:11px;';
+        head.textContent = 'Resistor ' + id;
+        wrap.appendChild(head);
+        var body = document.createElement('div');
+        body.style.cssText = 'display:flex; flex-direction:column; gap:8px;';
+        renderTypeAndValue(body, id);
+        wrap.appendChild(body);
+        els.slotControls.appendChild(wrap);
+      });
+    }
+
+    /* ---------------- On-diagram popover editor ---------------- */
+    var popoverEl = null, popoverBodyEl = null, popoverForId = null;
+    function closePopover() {
+      if (!popoverEl) return;
+      popoverEl.remove();
+      popoverEl = null; popoverBodyEl = null; popoverForId = null;
+      document.removeEventListener('mousedown', outsideClickHandler, true);
+    }
+    function outsideClickHandler(e) { if (popoverEl && !popoverEl.contains(e.target)) closePopover(); }
+    function renderPopoverIfOpen(id) {
+      if (popoverEl && popoverForId === id && popoverBodyEl) renderTypeAndValue(popoverBodyEl, id);
+    }
+    function positionPopover(div, rect) {
+      var margin = 10, left = rect.left, top = rect.bottom + margin;
+      div.style.left = left + 'px'; div.style.top = top + 'px';
+      requestAnimationFrame(function () {
+        if (!div.isConnected) return;
+        var pw = div.offsetWidth, ph = div.offsetHeight;
+        var l = left, t = top;
+        if (l + pw > window.innerWidth - 8) l = window.innerWidth - pw - 8;
+        if (l < 8) l = 8;
+        if (t + ph > window.innerHeight - 8) t = rect.top - ph - margin;
+        if (t < 8) t = 8;
+        div.style.left = l + 'px'; div.style.top = t + 'px';
+      });
+    }
+    function makePopoverShell(titleText, titleColor) {
+      var div = document.createElement('div');
+      div.className = 'comp-popover';
+      var head = document.createElement('div');
+      head.className = 'pop-head';
+      var title = document.createElement('span');
+      title.className = 'pop-title'; title.style.color = titleColor; title.textContent = titleText;
+      var closeBtn = document.createElement('button');
+      closeBtn.className = 'pop-close'; closeBtn.setAttribute('aria-label', 'Close'); closeBtn.textContent = '×';
+      closeBtn.addEventListener('click', closePopover);
+      head.appendChild(title); head.appendChild(closeBtn);
+      div.appendChild(head);
+      return div;
+    }
+    function openComponentEditor(id, rectEl) {
+      var rect = rectEl.getBoundingClientRect();
+      closePopover();
+      var div = makePopoverShell('Resistor ' + id, compColor(id));
+      var body = document.createElement('div');
+      div.appendChild(body);
+      document.body.appendChild(div);
+      renderTypeAndValue(body, id);
+      popoverEl = div; popoverBodyEl = body; popoverForId = id;
+      positionPopover(div, rect);
+      setTimeout(function () { document.addEventListener('mousedown', outsideClickHandler, true); }, 0);
+    }
+    function openVoltageEditor(rectEl) {
+      var rect = rectEl.getBoundingClientRect();
+      closePopover();
+      var div = makePopoverShell('Source voltage', css('--accent-soft'));
+      var lbl = document.createElement('div');
+      lbl.className = 'field-label';
+      lbl.innerHTML = '<span>Voltage</span><span class="val" data-srcvval>' + fmt(state.Vs, 1) + ' V</span>';
+      div.appendChild(lbl);
+      var range = document.createElement('input');
+      range.type = 'range'; range.min = 1; range.max = 24; range.step = 0.5; range.value = state.Vs;
+      range.addEventListener('input', function () {
+        state.Vs = parseFloat(range.value);
+        els.srcV.value = state.Vs;
+        syncSrcVDisplay();
+        renderAll();
+      });
+      div.appendChild(range);
+      document.body.appendChild(div);
+      popoverEl = div; popoverBodyEl = null; popoverForId = null;
+      positionPopover(div, rect);
+      setTimeout(function () { document.addEventListener('mousedown', outsideClickHandler, true); }, 0);
+    }
+    tabs.addEventListener('click', closePopover);
+
+    els.topoRow.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      state.topo = btn.getAttribute('data-topo');
+      Array.prototype.forEach.call(els.topoRow.querySelectorAll('button'), function (b) { b.classList.toggle('active', b === btn); });
+      clearProbes();
+      closePopover();
+      renderSlotControls();
+      renderAll();
+    });
+    els.topoRow.querySelector('[data-topo="s2"]').classList.add('active');
+
+    els.srcV.addEventListener('input', function () {
+      state.Vs = parseFloat(els.srcV.value);
+      syncSrcVDisplay();
+      renderAll();
+    });
+
+    els.meterMode.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      state.meter = btn.getAttribute('data-meter');
+      Array.prototype.forEach.call(els.meterMode.querySelectorAll('button'), function (b) { b.classList.toggle('active', b === btn); });
+      clearProbes();
+      updateMeterInstr();
+      renderAll();
+    });
+
+    function updateMeterInstr() {
+      if (state.meter === 'none') els.meterInstr.innerHTML = 'Turn on a meter, then click points on the circuit diagram.';
+      else if (state.meter === 'volt') els.meterInstr.innerHTML = '<b>Voltmeter:</b> click two points on the diagram to place the red and teal probes. Reading = V(red) &minus; V(teal).';
+      else els.meterInstr.innerHTML = '<b>Ammeter:</b> click any wire segment to read the current flowing through it at that point.';
+    }
+    updateMeterInstr();
+
+    function clearProbes() { state.probe1 = null; state.probe2 = null; state.ammPoint = null; }
+    els.clearProbes.addEventListener('click', function () { clearProbes(); renderAll(); });
+
+    function onNodeClick(meta) {
+      if (state.meter !== 'volt') return;
+      if (state.probe1 === null || (state.probe1 !== null && state.probe2 !== null)) {
+        state.probe1 = meta; state.probe2 = null;
+      } else {
+        state.probe2 = meta;
+      }
+      renderAll();
+    }
+    function onSegClick(meta) {
+      if (state.meter !== 'amm') return;
+      state.ammPoint = meta;
+      renderAll();
+    }
+
+    function renderAll() {
+      var leafById = buildLeafById();
+      var tree = buildTree(SHAPES[state.topo].shape, leafById);
+      solveTree(tree, state.Vs);
+
+      var draw = drawCircuit(els.svg, state.topo, leafById, tree, {
+        interactive: true, meterMode: state.meter,
+        onNodeClick: onNodeClick, onSegClick: onSegClick,
+        onCompClick: function (id, rectEl) { openComponentEditor(id, rectEl); },
+        onBatteryClick: function (rectEl) { openVoltageEditor(rectEl); }
+      });
+
+      // mark probes / ammeter point
+      if (state.meter === 'volt') {
+        draw.nodes.forEach(function (n) {
+          if (state.probe1 && n._meta.key === state.probe1.key) n.classList.add('p1');
+          if (state.probe2 && n._meta.key === state.probe2.key) n.classList.add('p2');
+        });
+      }
+      if (state.meter === 'amm' && state.ammPoint) {
+        draw.segs.forEach(function (g) {
+          if (g._meta.key === state.ammPoint.key) g._wire.classList.add('node-dot', 'amm');
+          if (g._meta.key === state.ammPoint.key) { g._wire.style.stroke = css('--readout'); g._wire.style.strokeWidth = 5; }
+        });
+      }
+
+      // readouts
+      els.rReq.textContent = fmt(state.Vs / tree._I, 2) + ' Ω';
+      els.rItot.innerHTML = fmt(tree._I, 3) + '<span class="unit">A</span>';
+      els.rPtot.innerHTML = fmt(tree._I * state.Vs, 2) + '<span class="unit">W</span>';
+
+      if (state.meter === 'volt' && state.probe1 && state.probe2) {
+        var dV = state.probe1.potential - state.probe2.potential;
+        els.rMeter.innerHTML = fmt(dV, 2) + '<span class="unit">V</span>';
+      } else if (state.meter === 'amm' && state.ammPoint) {
+        els.rMeter.innerHTML = fmt(Math.abs(state.ammPoint.current), 3) + '<span class="unit">A</span>';
+      } else {
+        els.rMeter.textContent = '—';
+      }
+
+      // legend
+      els.legend.innerHTML = '';
+      var legendItems = [];
+      if (state.meter === 'volt') legendItems.push(['red probe (+)', css('--probe1')], ['teal probe (−)', css('--probe2')]);
+      if (state.meter === 'amm') legendItems.push(['ammeter point', css('--readout')]);
+      legendItems.push(['dashed flow = current direction, speed ∝ magnitude', css('--text-faint')]);
+      legendItems.forEach(function (it) {
+        var span = document.createElement('span');
+        span.innerHTML = '<span class="dot" style="background:' + it[1] + '"></span>' + it[0];
+        els.legend.appendChild(span);
+      });
+
+      drawGraph(leafById, tree);
+    }
+
+    function drawGraph(leafById, tree) {
+      var fit = fitCanvas(els.graph, 300);
+      if (!fit) return;
+      var ctx = fit.ctx, W = fit.w, H = fit.h;
+      ctx.clearRect(0, 0, W, H);
+      var pad = { l: 66, r: 20, t: 20, b: 48 };
+      var plotW = W - pad.l - pad.r, plotH = H - pad.t - pad.b;
+      if (plotW <= 20 || plotH <= 20) return;
+
+      var leaves = SHAPES[state.topo].slots.map(function (id) { return leafById[id]; });
+      var vMax = Math.max(state.Vs, 1);
+      leaves.forEach(function (lf) { vMax = Math.max(vMax, lf._V * 1.3); });
+      var iMax = 0.05;
+      leaves.forEach(function (lf) {
+        var probe = lf.I_of_V(vMax);
+        iMax = Math.max(iMax, lf._I * 1.4, isFinite(probe) ? probe : 0);
+      });
+      iMax = Math.min(iMax, 20);
+
+      function X(v) { return pad.l + (v / vMax) * plotW; }
+      function Y(i) { return pad.t + plotH - (i / iMax) * plotH; }
+
+      var monoFont = css('--mono'), sansFont = css('--sans');
+      var xTicks = 5, yTicks = 4;
+      ctx.lineWidth = 1;
+      ctx.textBaseline = 'alphabetic';
+
+      for (var i = 0; i <= xTicks; i++) {
+        var v = vMax * i / xTicks, gx = X(v);
+        ctx.strokeStyle = css('--grid-line');
+        ctx.beginPath(); ctx.moveTo(gx, pad.t); ctx.lineTo(gx, pad.t + plotH); ctx.stroke();
+        ctx.fillStyle = css('--text-dim');
+        ctx.font = '12px ' + monoFont;
+        ctx.textAlign = 'center';
+        ctx.fillText(fmt(v, v < 3 ? 1 : 0), gx, pad.t + plotH + 18);
+      }
+      for (var j = 0; j <= yTicks; j++) {
+        var iv = iMax * j / yTicks, gy = Y(iv);
+        ctx.strokeStyle = css('--grid-line');
+        ctx.beginPath(); ctx.moveTo(pad.l, gy); ctx.lineTo(W - pad.r, gy); ctx.stroke();
+        ctx.fillStyle = css('--text-dim');
+        ctx.font = '12px ' + monoFont;
+        ctx.textAlign = 'right';
+        ctx.fillText(fmt(iv, iv < 1 ? 2 : 1), pad.l - 10, gy + 4);
+      }
+
+      ctx.strokeStyle = css('--border');
+      ctx.beginPath();
+      ctx.moveTo(pad.l, pad.t); ctx.lineTo(pad.l, pad.t + plotH); ctx.lineTo(pad.l + plotW, pad.t + plotH);
+      ctx.stroke();
+
+      ctx.fillStyle = css('--text-dim');
+      ctx.font = '600 13px ' + sansFont;
+      ctx.textAlign = 'center';
+      ctx.fillText('Voltage, V (volts)', pad.l + plotW / 2, H - 8);
+
+      ctx.save();
+      ctx.translate(18, pad.t + plotH / 2);
+      ctx.rotate(-Math.PI / 2);
+      ctx.textAlign = 'center';
+      ctx.fillText('Current, I (amps)', 0, 0);
+      ctx.restore();
+
+      els.graphLegend.innerHTML = '';
+      leaves.forEach(function (lf) {
+        var color = compColor(lf.id);
+        ctx.beginPath();
+        var N = 100;
+        for (var n = 0; n <= N; n++) {
+          var vv = vMax * n / N;
+          var ii = lf.I_of_V(vv);
+          var py = Y(Math.min(ii, iMax));
+          if (n === 0) ctx.moveTo(X(vv), py); else ctx.lineTo(X(vv), py);
+        }
+        ctx.strokeStyle = color; ctx.lineWidth = 2.6; ctx.stroke();
+
+        // operating point
+        ctx.beginPath();
+        ctx.arc(X(lf._V), Y(Math.min(lf._I, iMax)), 5, 0, Math.PI * 2);
+        ctx.fillStyle = color; ctx.fill();
+        ctx.strokeStyle = css('--bg'); ctx.lineWidth = 1.5; ctx.stroke();
+
+        var span = document.createElement('span');
+        span.innerHTML = '<span class="sw" style="background:' + color + '"></span>' + lf.id + ' (' + (lf.kind === 'ohmic' ? fmt(lf.R, 0) + ' Ω' : lf.kind) + ') — op. pt ' + fmt(lf._V, 2) + ' V, ' + fmt(lf._I, 3) + ' A';
+        els.graphLegend.appendChild(span);
+      });
+    }
+
+    observeResize(els.graph.parentElement, function () { renderAll(); });
+    reRenderAll.push(renderAll);
+    renderSlotControls();
+    renderAll();
+  })();
+
+  /* =========================================================
+     MODULE 2 — QUIZ MODE
+     ========================================================= */
+  (function () {
+    var els = {
+      diffRow: document.getElementById('quiz-diff'),
+      svg: document.getElementById('quiz-svg'),
+      question: document.getElementById('quiz-question'),
+      answer: document.getElementById('quiz-answer'),
+      unit: document.getElementById('quiz-unit'),
+      check: document.getElementById('quiz-check'),
+      feedback: document.getElementById('quiz-feedback'),
+      next: document.getElementById('quiz-next'),
+      newBtn: document.getElementById('quiz-new'),
+      resetBtn: document.getElementById('quiz-reset-score'),
+      score: document.getElementById('quiz-score'),
+      streak: document.getElementById('quiz-streak')
+    };
+
+    var NICE_R = [2, 3, 4, 5, 6, 8, 10, 12, 15, 20, 25, 30];
+    var NICE_V = [6, 9, 12, 18, 24];
+    var NICE_PAIRS = [[2,2],[3,6],[4,4],[4,12],[6,6],[6,12],[6,3],[8,8],[9,18],[10,10],[10,15],[12,12],[12,4],[15,30],[20,20],[20,5],[30,15],[8,24]];
+    var NICE_TRIPLES = [[6,6,6],[12,12,12],[9,9,9],[15,15,15],[24,24,24],[12,6,4],[6,6,3],[8,8,8]];
+
+    var DIFF_SHAPES = { series: ['s2', 's3'], parallel: ['p2', 'p3'], combined: ['ca', 'cb'], mixed: ['s2', 's3', 'p2', 'p3', 'ca', 'cb'] };
+    var diff = 'mixed';
+
+    els.diffRow.addEventListener('click', function (e) {
+      var btn = e.target.closest('button');
+      if (!btn) return;
+      diff = btn.getAttribute('data-diff');
+      Array.prototype.forEach.call(els.diffRow.querySelectorAll('button'), function (b) { b.classList.toggle('active', b === btn); });
+    });
+
+    function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+    var score = { correct: 0, total: 0, streak: 0 };
+    function updateScore() {
+      els.score.textContent = score.correct + ' / ' + score.total;
+      els.streak.textContent = score.streak;
+    }
+    els.resetBtn.addEventListener('click', function () { score = { correct: 0, total: 0, streak: 0 }; updateScore(); });
+
+    var current = null; // { topoKey, leafById, tree, Vs, qType, qLeafId, answer, unit, prompt }
+
+    function generate() {
+      var topoKey = pick(DIFF_SHAPES[diff]);
+      var slots = SHAPES[topoKey].slots;
+      var leafById = {};
+      if (topoKey === 's2' || topoKey === 's3') {
+        slots.forEach(function (id) { leafById[id] = ohmicLeaf(id, pick(NICE_R)); });
+      } else if (topoKey === 'p2') {
+        var pr = pick(NICE_PAIRS);
+        leafById.A = ohmicLeaf('A', pr[0]); leafById.B = ohmicLeaf('B', pr[1]);
+      } else if (topoKey === 'p3') {
+        var tr = pick(NICE_TRIPLES);
+        leafById.A = ohmicLeaf('A', tr[0]); leafById.B = ohmicLeaf('B', tr[1]); leafById.C = ohmicLeaf('C', tr[2]);
+      } else if (topoKey === 'ca') {
+        leafById.A = ohmicLeaf('A', pick(NICE_R));
+        var pr2 = pick(NICE_PAIRS);
+        leafById.B = ohmicLeaf('B', pr2[0]); leafById.C = ohmicLeaf('C', pr2[1]);
+      } else if (topoKey === 'cb') {
+        var pr3 = pick(NICE_PAIRS);
+        leafById.A = ohmicLeaf('A', pr3[0]); leafById.B = ohmicLeaf('B', pr3[1]);
+        leafById.C = ohmicLeaf('C', pick(NICE_R));
+      }
+      var Vs = pick(NICE_V);
+      var tree = buildTree(SHAPES[topoKey].shape, leafById);
+      solveTree(tree, Vs);
+
+      var qTypes = ['req', 'itot'];
+      slots.forEach(function (id) { qTypes.push('I_' + id); qTypes.push('V_' + id); });
+      var qType = pick(qTypes);
+      var answer, unit, prompt, highlightId = null;
+      if (qType === 'req') { answer = Vs / tree._I; unit = 'Ω'; prompt = 'What is the equivalent (total) resistance of this circuit?'; }
+      else if (qType === 'itot') { answer = tree._I; unit = 'A'; prompt = 'What is the total current supplied by the source?'; }
+      else {
+        var id = qType.slice(2);
+        highlightId = id;
+        if (qType[0] === 'I') { answer = leafById[id]._I; unit = 'A'; prompt = 'What is the current through resistor ' + id + ' (' + fmt(leafById[id].R, 0) + ' Ω)?'; }
+        else { answer = leafById[id]._V; unit = 'V'; prompt = 'What is the voltage across resistor ' + id + ' (' + fmt(leafById[id].R, 0) + ' Ω)?'; }
+      }
+
+      current = { topoKey: topoKey, leafById: leafById, tree: tree, Vs: Vs, qType: qType, answer: answer, unit: unit, prompt: prompt, highlightId: highlightId };
+
+      drawCircuit(els.svg, topoKey, leafById, tree, { interactive: false, highlightId: highlightId });
+      els.question.innerHTML = prompt + ' <span style="color:var(--text-faint);">(Source: ' + fmt(Vs, 0) + ' V)</span>';
+      els.unit.textContent = unit;
+      els.answer.value = '';
+      els.feedback.className = 'quiz-feedback';
+      els.feedback.textContent = '';
+      els.next.disabled = true;
+      els.answer.focus();
+    }
+
+    function check() {
+      if (!current) return;
+      var raw = parseFloat(els.answer.value);
+      if (isNaN(raw)) {
+        els.feedback.className = 'quiz-feedback bad show';
+        els.feedback.innerHTML = '<b class="mark bad">Enter a number.</b>';
+        return;
+      }
+      var a = current.answer;
+      var tol = Math.max(Math.abs(a) * 0.03, 0.03);
+      var ok = Math.abs(raw - a) <= tol;
+      score.total++;
+      if (ok) { score.correct++; score.streak++; }
+      else { score.streak = 0; }
+      updateScore();
+      els.feedback.className = 'quiz-feedback ' + (ok ? 'ok' : 'bad') + ' show';
+      els.feedback.innerHTML = ok
+        ? '<b class="mark ok">Correct.</b> ' + fmt(a, 3) + ' ' + current.unit
+        : '<b class="mark bad">Not quite.</b> Correct answer: ' + fmt(a, 3) + ' ' + current.unit;
+      els.next.disabled = false;
+    }
+
+    els.check.addEventListener('click', check);
+    els.answer.addEventListener('keydown', function (e) { if (e.key === 'Enter') { if (els.next.disabled) check(); else generate(); } });
+    els.next.addEventListener('click', generate);
+    els.newBtn.addEventListener('click', generate);
+
+    reRenderAll.push(function () { if (current) drawCircuit(els.svg, current.topoKey, current.leafById, current.tree, { interactive: false, highlightId: current.highlightId }); });
+    updateScore();
+    els.question.textContent = 'Click "New Question" to begin.';
+  })();
+
+})();
+</script>
