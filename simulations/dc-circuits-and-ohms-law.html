@@ -671,7 +671,7 @@
 
   var Y_TOP = 70, Y_BOT_BUS = 160, Y_RET = 240, X_START = 64;
   var H_BOX_ALONG = 118, H_BOX_CROSS = 46, H_HALF = H_BOX_ALONG / 2;
-  var V_BOX_ALONG = 58, V_BOX_CROSS = 42, V_LEAD = (Y_BOT_BUS - Y_TOP - V_BOX_ALONG) / 2;
+  var V_BOX_ALONG = 58, V_BOX_CROSS = 42;
   function computeLayout(shape) {
     var x = X_START + 56; // lead out of battery
     var items = [];
@@ -769,7 +769,15 @@
     var prevX = X_START, prevPot = tree._topV;
     addNode(X_START, Y_TOP, tree._topV, 'src+');
 
-    L.items.forEach(function (item) {
+    // A parallel split that ends the chain (nothing comes after it) merges
+    // straight into the return rail instead of rising back up to the top
+    // rail and running an unbroken wire past the branches to the corner -
+    // that wire used to be electrically idle (current had already fully
+    // recombined before it) but LOOKED exactly like a zero-resistance
+    // bypass around the resistors sitting right below it.
+    var endedOnReturnRail = false;
+    L.items.forEach(function (item, itemIdx) {
+      var isTerminalSplit = item.kind === 'split' && itemIdx === L.items.length - 1;
       if (item.kind === 'h') {
         var leaf = leafById[item.id];
         var half = H_HALF;
@@ -781,15 +789,17 @@
       } else {
         var ids = item.ids, bx = item.branchXs;
         var anyLeaf = leafById[ids[0]];
+        var botY = isTerminalSplit ? Y_RET : Y_BOT_BUS;
+        var vLead = (botY - Y_TOP - V_BOX_ALONG) / 2;
         addSeg(prevX, Y_TOP, bx[0], Y_TOP, trunkCurrent, 'lead-in-split');
         var running = trunkCurrent;
         ids.forEach(function (id, i) {
           var leaf = leafById[id];
           addNode(bx[i], Y_TOP, anyLeaf._topV, id + '-top');
-          addSeg(bx[i], Y_TOP, bx[i], Y_TOP + V_LEAD, leaf._I, id + '-drop-in');
-          drawComponent(svg, leaf, bx[i], (Y_TOP + Y_BOT_BUS) / 2, V_BOX_ALONG, V_BOX_CROSS, 'v', opts);
-          addSeg(bx[i], Y_BOT_BUS - V_LEAD, bx[i], Y_BOT_BUS, leaf._I, id + '-drop-out');
-          addNode(bx[i], Y_BOT_BUS, anyLeaf._botV, id + '-bot');
+          addSeg(bx[i], Y_TOP, bx[i], Y_TOP + vLead, leaf._I, id + '-drop-in');
+          drawComponent(svg, leaf, bx[i], (Y_TOP + botY) / 2, V_BOX_ALONG, V_BOX_CROSS, 'v', opts);
+          addSeg(bx[i], botY - vLead, bx[i], botY, leaf._I, id + '-drop-out');
+          addNode(bx[i], botY, anyLeaf._botV, id + '-bot');
           if (i < ids.length - 1) {
             running -= leaf._I;
             addSeg(bx[i], Y_TOP, bx[i + 1], Y_TOP, running, 'top-bus-' + i);
@@ -798,21 +808,45 @@
         var merge = 0;
         for (var i = 0; i < ids.length - 1; i++) {
           merge += leafById[ids[i]]._I;
-          addSeg(bx[i], Y_BOT_BUS, bx[i + 1], Y_BOT_BUS, merge, 'bot-bus-' + i);
+          addSeg(bx[i], botY, bx[i + 1], botY, merge, 'bot-bus-' + i);
         }
         var lastX = bx[bx.length - 1];
-        addSeg(lastX, Y_BOT_BUS, lastX, Y_TOP, trunkCurrent, 'riser');
-        addSeg(lastX, Y_TOP, item.x1, Y_TOP, trunkCurrent, 'lead-out-split');
-        prevX = item.x1; prevPot = anyLeaf._botV;
+        if (isTerminalSplit) {
+          prevX = lastX; prevPot = anyLeaf._botV;
+          endedOnReturnRail = true;
+        } else {
+          // Offset the riser away from the last branch's own top-tap x
+          // position. Landing it exactly on that point would visually fuse
+          // the "merged, now continuing in series" wire with the branch's
+          // own shared-top-node wire, making the next component look like
+          // it's wired in parallel with this split rather than after it.
+          var riserX = lastX + Math.min(30, (item.x1 - lastX) / 2);
+          addSeg(lastX, botY, riserX, botY, trunkCurrent, 'bot-bus-out');
+          addSeg(riserX, botY, riserX, Y_TOP, trunkCurrent, 'riser');
+          addSeg(riserX, Y_TOP, item.x1, Y_TOP, trunkCurrent, 'lead-out-split');
+          prevX = item.x1; prevPot = anyLeaf._botV;
+        }
       }
     });
 
-    addSeg(prevX, Y_TOP, L.rightX, Y_TOP, trunkCurrent, 'lead-corner');
-    addNode(L.rightX, Y_TOP, prevPot, 'corner-top');
-    addSeg(L.rightX, Y_TOP, L.rightX, Y_RET, trunkCurrent, 'right-vert');
-    addSeg(L.rightX, Y_RET, X_START, Y_RET, trunkCurrent, 'return');
-    addNode((L.rightX + X_START) / 2, Y_RET, 0, 'ret-mid');
-    addNode(X_START, Y_RET, 0, 'src-');
+    if (endedOnReturnRail) {
+      // already on the Y_RET rail (the branches merged directly into it) -
+      // just extend it to the same right-hand margin as every other
+      // topology, then straight back to the battery. No top-rail detour,
+      // so there is nothing left that could be mistaken for a bypass.
+      addSeg(prevX, Y_RET, L.rightX, Y_RET, trunkCurrent, 'lead-corner-bottom');
+      addNode(L.rightX, Y_RET, 0, 'corner-bot');
+      addSeg(L.rightX, Y_RET, X_START, Y_RET, trunkCurrent, 'return');
+      addNode((L.rightX + X_START) / 2, Y_RET, 0, 'ret-mid');
+      addNode(X_START, Y_RET, 0, 'src-');
+    } else {
+      addSeg(prevX, Y_TOP, L.rightX, Y_TOP, trunkCurrent, 'lead-corner');
+      addNode(L.rightX, Y_TOP, prevPot, 'corner-top');
+      addSeg(L.rightX, Y_TOP, L.rightX, Y_RET, trunkCurrent, 'right-vert');
+      addSeg(L.rightX, Y_RET, X_START, Y_RET, trunkCurrent, 'return');
+      addNode((L.rightX + X_START) / 2, Y_RET, 0, 'ret-mid');
+      addNode(X_START, Y_RET, 0, 'src-');
+    }
 
     // style + animate segments
     segs.forEach(function (g) {
