@@ -712,12 +712,21 @@
     while (svg.firstChild) svg.removeChild(svg.firstChild);
     var shape = SHAPES[topoKey].shape;
     var L = computeLayout(shape);
-    svg.setAttribute('viewBox', '0 0 ' + L.totalW + ' 300');
+    // A chain that ends in a parallel split merges straight into the return
+    // rail (see endedOnReturnRail below) and never reaches L.rightX, which
+    // was sized for a right-side closing wire that no longer gets drawn -
+    // use a tighter, snug width instead so there's no dead space or a wire
+    // stub trailing off past the last branch.
+    var lastItem = L.items[L.items.length - 1];
+    var totalW = (lastItem.kind === 'split')
+      ? lastItem.branchXs[lastItem.branchXs.length - 1] + 60
+      : L.totalW;
+    svg.setAttribute('viewBox', '0 0 ' + totalW + ' 300');
     // width:100% + height:auto has no guaranteed intrinsic ratio on an <svg>
     // in every engine, especially one whose viewBox was set while its panel
     // was still display:none (e.g. the Quiz tab before it's first opened) -
     // pin the ratio explicitly so the diagram can't collapse to 0 height.
-    svg.style.aspectRatio = L.totalW + ' / 300';
+    svg.style.aspectRatio = totalW + ' / 300';
     svg.classList.toggle('meter-volt', opts.interactive && opts.meterMode === 'volt');
     svg.classList.toggle('meter-amm', opts.interactive && opts.meterMode === 'amm');
     var segs = []; // {el, current}
@@ -830,14 +839,14 @@
     });
 
     if (endedOnReturnRail) {
-      // already on the Y_RET rail (the branches merged directly into it) -
-      // just extend it to the same right-hand margin as every other
-      // topology, then straight back to the battery. No top-rail detour,
-      // so there is nothing left that could be mistaken for a bypass.
-      addSeg(prevX, Y_RET, L.rightX, Y_RET, trunkCurrent, 'lead-corner-bottom');
-      addNode(L.rightX, Y_RET, 0, 'corner-bot');
-      addSeg(L.rightX, Y_RET, X_START, Y_RET, trunkCurrent, 'return');
-      addNode((L.rightX + X_START) / 2, Y_RET, 0, 'ret-mid');
+      // Already on the Y_RET rail (the branches merged directly into it) -
+      // run straight back to the battery. No detour out past the last
+      // branch first: that used to leave a dangling wire stub trailing off
+      // to the right with nothing at the end of it.
+      addSeg(prevX, Y_RET, X_START, Y_RET, trunkCurrent, 'return');
+      // no extra probe point here: with the rail this short, a midpoint
+      // node would land right on top of a branch's own bottom node, which
+      // already sits on this same rail and works fine as a probe target.
       addNode(X_START, Y_RET, 0, 'src-');
     } else {
       addSeg(prevX, Y_TOP, L.rightX, Y_TOP, trunkCurrent, 'lead-corner');
