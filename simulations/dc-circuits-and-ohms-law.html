@@ -824,14 +824,18 @@
           prevX = lastX; prevPot = anyLeaf._botV;
           endedOnReturnRail = true;
         } else {
-          // Offset the riser away from the last branch's own top-tap x
-          // position. Landing it exactly on that point would visually fuse
-          // the "merged, now continuing in series" wire with the branch's
-          // own shared-top-node wire, making the next component look like
-          // it's wired in parallel with this split rather than after it.
-          var riserX = lastX + Math.min(30, (item.x1 - lastX) / 2);
+          // Offset the riser well clear of the last branch's own top-tap x
+          // position. A small nudge reads as a continuation of that
+          // branch's own top wire (same height, close together), which
+          // makes the merge-and-rejoin detour invisible and lets the top
+          // rail look like it runs straight through the branches to the
+          // next component. A wider jog, plus explicit corner dots, makes
+          // the down-across-up detour unmistakable.
+          var riserX = lastX + Math.min(60, (item.x1 - lastX) - 15);
           addSeg(lastX, botY, riserX, botY, trunkCurrent, 'bot-bus-out');
+          addNode(riserX, botY, anyLeaf._botV, 'split-out-bot-' + itemIdx);
           addSeg(riserX, botY, riserX, Y_TOP, trunkCurrent, 'riser');
+          addNode(riserX, Y_TOP, anyLeaf._botV, 'split-out-top-' + itemIdx);
           addSeg(riserX, Y_TOP, item.x1, Y_TOP, trunkCurrent, 'lead-out-split');
           prevX = item.x1; prevPot = anyLeaf._botV;
         }
